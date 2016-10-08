@@ -1,0 +1,41 @@
+
+
+.container
+  .row
+    .col-lg-12
+      h1.page-header Monitors: 
+      ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-repeat='monitor in availableMonitors')
+        li
+          a(href='/monitors/{{monitor._id}}') {{monitor.name}}
+            button.close(type='button', ng-click='deleteMonitor(monitor)') × 
+
+  .row
+    button.btn.btn-primary(href="#" ng-click="showAddMonitorForm = !showAddMonitorForm") Add New Monitor
+    form.review-form(name="monitorform" ng-show="showAddMonitorForm" ng-submit="monitorform.$valid && addMonitor()")
+      label Use this form to add new monitors
+      p.input-group
+        input.form-control(type='text', placeholder='Enter the name here.', ng-model='newName' required)
+        input.form-control(type='text', placeholder='Enter the description here.', ng-model='newDescription' required)
+        input.form-control(type='text', placeholder='Enter the brand here.', ng-model='newBrand' required)
+        input.form-control(type='number', placeholder='Enter the price here.', ng-model='newPrice' required)
+        input.form-control(type='number', placeholder='Enter the screen size here.', ng-model='newScreenSize' required)
+        input.form-control(type='number', placeholder='Enter the vertical resolution here.', ng-model='newVertRes' required)
+        input.form-control(type='number', placeholder='Enter the horizontal resolution here.', ng-model='newHorzRes' required)
+        input.form-control(type='text', placeholder='Enter the input type here.', ng-model='newInput' required)
+        label.checkbox-inline Online Only?
+          input.form-control(type='checkbox', name='OnlineOnly', ng-model='newOnlineOnly')
+        label.checkbox-inline Featured?
+          input.form-control(type='checkbox', name='Featured', ng-model='newFeatured')
+        label.checkbox-inline On Sale?
+          input.form-control(type='checkbox', name='OnSale', ng-model='newOnSale')  
+        div
+          button.btn.btn-primary(type='submit') Add Monitor
+
+footer.footer
+  .container
+    p
+      | Angular Fullstack v2.1.1
+      = ' | '
+      a(href='https://twitter.com/tyhenkel') @tyhenkel
+      = ' | '
+      a(href='https://github.com/DaftMonk/generator-angular-fullstack/issues?state=open') Issues

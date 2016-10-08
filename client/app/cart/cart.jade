@@ -1,0 +1,14 @@
+
+.container
+	ngcart-cart
+
+	.row
+		.col-lg-4
+			p Paypal
+			ngcart-checkout(service="paypal" settings="paypal-settings")
+		.col-lg-4
+			p Log
+			ngcart-checkout(service="log")
+		.col-lg-4
+			p Http
+			ngcart-checkout(service="http" settings="{ url:'/checkout' }")

@@ -1,0 +1,14 @@
+
+.container
+	.row
+		.col-lg-12
+			h1 Pictures
+
+	.row
+		.col-lg-12
+			ul.nav.nav-tabs.col-md-4.col-lg-4.col-sm-6(ng-repeat='picture in currentPictures')
+				.col-lg-4
+					li 
+						img.nthumb(src="{{picture.path}}" width="150" height="150")
+						a(href="/pictures/{{picture._id}}") Click Here to View in Native Resolution
+						button.btn.btn-primary(ng-click="deletePicture(picture)") x

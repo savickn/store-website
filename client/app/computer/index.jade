@@ -1,0 +1,192 @@
+
+///////////////////////////////////////////////////////////// BANNER CONTENT
+
+
+.container
+  .row
+    .col-lg-offset-3
+      h2 Computers
+  .row
+    .col-lg-7.col-lg-offset-3
+      span Back to 
+      a(href="/computers") Computers 
+
+    .col-lg-2
+      .sort.push-right(uib-dropdown)  
+        button.btn.btn-default(type="button" uib-dropdown-toggle) Sort
+          span.caret
+        ul(uib-dropdown-menu)
+          li
+            a(href="#" ng-click="sortType = 'price'; sortReverse = false") Price: Low to High
+          li
+            a(href="#" ng-click="sortType = 'price'; sortReverse = true") Price: High to Low
+          li
+            a(href="#" ng-click="sortType = 'name'; sortReverse = false") Name: A-Z
+          li
+            a(href="#" ng-click="sortType = 'name'; sortReverse = true") Name: Z-A
+
+
+  ////////////////////////////////////////////////MAIN CONTENT
+
+
+  .row
+    .col-lg-3
+      nav.navbar.sidebar
+        form.container-fluid(name="sidebarForm")
+          .navbar-header
+            a.navbar-brand(href="#" ng-click="getSearch(filterExpr)") Search
+
+          .collapse.navbar-collapse
+            ul.nav.navbar-nav
+              li(uib-dropdown)
+                a(href="#" uib-dropdown-toggle) Product Name
+                ul(uib-dropdown-menu ng-click="$event.stopPropagation()")
+                  li
+                    input.form-control(type='text' placeholder='Enter the name here.' ng-model='filterExpr.name' ng-click="$event.stopPropagation()")
+              
+              li(uib-dropdown)
+                a(href="#" uib-dropdown-toggle ng-click="toggleAdvSearch") Price
+                ul(uib-dropdown-menu ng-click="$event.stopPropagation()") 
+                  li
+                    input.form-control(type="number" placeholder='Enter minimum price.' ng-model="priceExpr.minPrice")
+                  li
+                    input.form-control(type="number" placeholder='Enter maximum price.' ng-model="priceExpr.maxPrice")
+
+              li(uib-dropdown)
+                a(href="#" uib-dropdown-toggle) Brand
+                ul(role="menu" uib-dropdown-menu ng-repeat="brand in computerBrands" ng-click="$event.stopPropagation()") 
+                  li
+                    a(href="" ng-click="this[brand + '-checked'] = !this[brand + '-checked']") {{brand}}
+                      span.glyphicon.glyphicon-unchecked(ng-if="!this[brand + '-checked']" ng-value="filterExpr.brand.remove(brand)")
+                      span.glyphicon.glyphicon-check(ng-if="this[brand + '-checked']" ng-value="filterExpr.brand.pushUnique(brand)")
+              li(uib-dropdown)
+                a(href="#" uib-dropdown-toggle) CPU
+                ul(role="menu" uib-dropdown-menu ng-repeat="cpu in computerCPUs" ng-click="$event.stopPropagation()") 
+                  li
+                    a(href="" ng-click="this[cpu + '-checked'] = !this[cpu + '-checked']") {{cpu}}
+                      span.glyphicon.glyphicon-unchecked(ng-if="!this[cpu + '-checked']" ng-value="filterExpr.cpu.remove(cpu)")
+                      span.glyphicon.glyphicon-check(ng-if="this[cpu + '-checked']" ng-value="filterExpr.cpu.pushUnique(cpu)")
+              li(uib-dropdown)
+                a(href="#" uib-dropdown-toggle) GPU
+                ul(role="menu" uib-dropdown-menu ng-repeat="gpu in computerGPUs" ng-click="$event.stopPropagation()") 
+                  li
+                    a(href="" ng-click="this[gpu + '-checked'] = !this[gpu + '-checked']") {{gpu}}
+                      span.glyphicon.glyphicon-unchecked(ng-if="!this[gpu + '-checked']" ng-value="filterExpr.gpu.remove(gpu)")
+                      span.glyphicon.glyphicon-check(ng-if="this[gpu + '-checked']" ng-value="filterExpr.gpu.pushUnique(gpu)")
+              li(uib-dropdown)
+                a(href="#" uib-dropdown-toggle) Motherboard
+                ul(role="menu" uib-dropdown-menu ng-repeat="motherboard in computerMotherboards" ng-click="$event.stopPropagation()") 
+                  li
+                    a(href="" ng-click="this[motherboard + '-checked'] = !this[motherboard + '-checked']") {{motherboard}}
+                      span.glyphicon.glyphicon-unchecked(ng-if="!this[motherboard + '-checked']" ng-value="filterExpr.motherboard.remove(motherboard)")
+                      span.glyphicon.glyphicon-check(ng-if="this[motherboard + '-checked']" ng-value="filterExpr.motherboard.pushUnique(motherboard)")
+              li(uib-dropdown)
+                a(href="#" uib-dropdown-toggle) Other
+                ul(role="menu" uib-dropdown-menu ng-click="$event.stopPropagation()") 
+                  li
+                    a(href="" ng-click="onSaleTag = !onSaleTag") On Sale
+                      span.glyphicon.glyphicon-unchecked(ng-if="!onSaleTag" ng-value="filterExpr.onSale = false")
+                      span.glyphicon.glyphicon-check(ng-if="onSaleTag" ng-value="filterExpr.onSale = true")
+                  li
+                    a(href="" ng-click="featuredTag = !featuredTag") Featured
+                      span.glyphicon.glyphicon-unchecked(ng-if="!featuredTag" ng-value="filterExpr.featured = false")
+                      span.glyphicon.glyphicon-check(ng-if="featuredTag" ng-value="filterExpr.featured = true")
+                  li
+                    a(href="" ng-click="onlineOnlyTag = !onlineOnlyTag") Online Only
+                      span.glyphicon.glyphicon-unchecked(ng-if="!onlineOnlyTag" ng-value="filterExpr.onlineOnly = false")
+                      span.glyphicon.glyphicon-check(ng-if="onlineOnlyTag" ng-value="filterExpr.onlineOnly = true")
+
+
+    .col-lg-9
+      .col-lg-4(dir-paginate="computer in availableComputers | priceFilter : priceExpr | productFilter : filterExpr | orderBy : sortType : sortReverse | itemsPerPage: pageSize" total-items="totalComputers" current-page="currentPage")
+        img.center-block(src='{{computer.displayPicture.path}}' width='150' height='150' ng-if='computer.displayPicture')
+        img.center-block(src='no_image.jpg' width='150' height='150' ng-if='!computer.displayPicture') 
+        
+        .product-content.divider
+          a.text-center(href="/computers/{{computer._id}}") {{computer.name}} 
+          p.text-center Price: {{computer.price}}
+          ngcart-addtocart.center-block(id="{{ computer._id }}" name="{{ computer.name }}" price="{{ computer.price }}" quantity="1" quantity-max="30" data="computer") Add to Cart    
+          button.close(type='button', ng-if="isAdmin" ng-click='deleteComputer(computer)') ×
+      
+
+  //////////////////////////////////////////////PAGINATION
+
+
+  .row
+    .col-lg-4.col-lg-offset-3
+      dir-pagination-controls(on-page-change="pageChanged(newPageNumber)")
+    .col-lg-2.col-lg-offset-10
+      .pagination-control
+        label Items per page: 
+          .pagination(uib-dropdown)
+            button.btn.btn-default(type="button" uib-dropdown-toggle) {{pageSize}} 
+              span.caret 
+            ul(uib-dropdown-menu)
+              li(ng-repeat="pageOpt in paginationOptions")
+                a(href="#" ng-click="sizeChanged(pageOpt)") {{pageOpt}}
+
+
+  /////////////////////////////////////////////// ADD COMPUTER FORM
+
+
+  .row(ng-show="isAdmin")
+    button.btn.btn-primary(href="#" ng-click="showAddComputerForm = !showAddComputerForm") Add New Computer
+    form(name="computerform" ng-show="showAddComputerForm" ng-submit="computerform.$valid && addComputer()")
+      p Use this form to add new computers
+      .form-group
+        input.form-control(type='text', name='name', placeholder='Enter a name here.', ng-model='newComputer.name' required)
+        p.help-block(ng-show='computerform.name.$error.mongoose')
+          | {{ validationErrors.name }}
+      .form-group
+        input.form-control(type='text' name='description' placeholder='Enter a description here.' ng-model='newComputer.description' required)
+      .form-group
+        input.form-control(type='text' name='brand' placeholder='Enter a brand here.' ng-model='newComputer.brand' required)
+      .form-group
+        input.form-control(type='number' name='price' placeholder='Enter a price here.' ng-model='newComputer.price' ng-min="0" ng-max="1000000" required)
+      .form-group
+        input.form-control(type='text' name='cpu' placeholder='Enter a CPU model here.' ng-model='newComputer.cpu')
+      .form-group
+        input.form-control(type='text' name='gpu' placeholder='Enter a GPU model here.' ng-model='newComputer.gpu')
+      .form-group
+        input.form-control(type='text' name='motherboard' placeholder='Enter the motherboard here.' ng-model='newComputer.motherboard')
+      .checkbox-inline
+        label Online Only?
+          input(type='checkbox' name='onlineOnly' ng-model='newComputer.onlineOnly')
+      .checkbox-inline 
+        label Featured?
+          input(type='checkbox' name='featured' ng-model='newComputer.featured')
+      .checkbox-inline  
+        label On Sale?
+          input(type='checkbox' name='onSale' ng-model='newComputer.onSale')
+      
+      .embedded-form(ng-show="newComputer.onSale")
+        p Please input the details of the sale
+        input.form-control(type="date" placeholder="Enter the sale's start date here." ng-model="newComputer.sale.startDate")
+        input.form-control(type="date" placeholder="Enter the sale's end date here." ng-model="newComputer.sale.endDate")
+        input.form-control(type="number" placeholder="Enter the sale's discount rate here." ng-model="newComputer.sale.discountRate" step="0.01" ng-min="0.01" ng-max="0.99")
+
+      .embedded-form
+        p Please choose related products that are recommended for this product 
+          select.form-control(type='select' name='recommendedProducts' ng-options="computer as computer.name for computer in availableComputers track by computer._id" ng-model='newComputer.recommendedProducts' multiple)
+        ul.list-group(ng-repeat="product in newComputer.recommendedProducts")
+          li.list-group-item {{product.name}}
+
+      //.embedded-form
+        ng-include(src="/picture/picture.form.html")
+
+      .embedded-form
+        p Choose pictures to upload
+          input(type="file" ngf-select ng-model="newPictures" name="file" accept="image/*" ngf-max-size="4MB" ngf-multiple="true")
+          p(ng-show="newPictures.length > 0") Click on an Image to set it as a display picture
+          ul.list-group(ng-repeat="picture in newPictures")
+            li.list-group-item(ng-class="{highlightOption: picture.displayPicture}" ng-click="setAsDisplayPicture(picture.name)")
+              img.thumb(ng-show="computerform.file.$valid" ngf-thumbnail="picture" height="100" width="100")
+          
+        //span.progress(ng-show="newPicture.progress >= 0")
+        //div(style="width:{{newPicture.progress}}%" ng-bind="newPicture.progress + '%'")
+        //span(ng-show="newPicture.result") Upload Successful 
+        span.err(ng-show="errorMsg") {{errorMsg}}
+        br
+        button.btn.btn-primary(ng-disabled="computerform.$invalid" type='submit') Create Computer
+
+

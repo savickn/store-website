@@ -1,0 +1,37 @@
+
+
+.edit-message {
+	//color: green;
+	background-color: #80ff80;
+	font-size: 16pt;
+}
+.pristine_form {
+	//white-space: nowrap;
+	background-color: #80ff80;  
+}
+.dirty_form {
+	background-color: #ff5c33;
+}
+
+.rating{
+  color: #a9a9a9;
+  margin: 0;
+  padding: 0;
+}
+
+ul.rating {
+  display: inline-block;
+}
+
+.rating li {
+  list-style-type: none;
+  display: inline-block;
+  padding: 1px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.rating .filled {
+  color: #21568b;
+}

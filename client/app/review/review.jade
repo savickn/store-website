@@ -1,0 +1,19 @@
+.container
+	.col-lg-12
+		h1.page-header Review for {{currentReview.product.name}} by {{currentReview.author.name}}
+		ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-init="rating = star.rating + 1")
+			li Upvotes: {{currentReview.score}}
+			li Rating: {{currentReview.rating}}
+				div.no-touch(class='star-rating' star-rating rating-value="rating" data-max="10")
+			li Description: {{currentReview.summary}}
+
+	.col-lg-12
+		a(href='#', ng-click='upvoteReview(currentReview)' ng-hide='checkDuplicateLike(currentReview)') Mark as Helpful?
+		a(href='#', ng-click='removeUpvote(currentReview)' ng-show='checkDuplicateLike(currentReview)') Unhelpful? 
+		ul.nav.nav-tabs.nav-stacked(ng-repeat='upvote in currentReview.upvotes')
+			li {{upvote.author}}
+	.col-lg-12 {{reviewError}}
+
+
+
+

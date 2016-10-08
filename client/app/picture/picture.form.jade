@@ -1,0 +1,8 @@
+
+//p Choose pictures to upload
+  input(type="file" ngf-select ng-model="newPictures" name="file" accept="image/*" ngf-max-size="4MB" ngf-multiple="true")
+  p(ng-show="newPictures.length > 0") Click on an Image to set it as a display picture
+  ul.list-group(ng-repeat="picture in newPictures")
+    li.list-group-item(ng-class="{highlightOption: picture.displayPicture}" ng-click="setAsDisplayPicture(picture.name)")
+      img.thumb(ng-show="computerform.file.$valid" ngf-thumbnail="picture" height="100" width="100")
+          
