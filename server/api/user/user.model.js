@@ -2,6 +2,8 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+
+
 var crypto = require('crypto');
 var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
@@ -17,6 +19,27 @@ var UserSchema = new Schema({
     ref: 'Purchase',
     index: true
   }],
+  wishlist: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Product',
+    index: true
+  }],
+  uRewards: {
+    type: Schema.Types.ObjectId,
+    ref: 'uReward'
+  }, 
+  shippingAddress: {
+    type: Schema.Types.ObjectId,
+    ref: 'Address'
+  }, 
+  billingAddress: {
+    type: Schema.Types.ObjectId,
+    ref: 'Address'
+  },  
+  promotionalEmails: {
+    type: Boolean,
+    default: false
+  },
   hashedPassword: String,
   provider: String,
   salt: String,

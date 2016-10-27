@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    saleSchema = require('../sale/sale.model'),
+    Sale = require('../sale/sale.model').schema,
     Schema = mongoose.Schema;
 
 var ProductSchema = new Schema({
@@ -43,7 +43,10 @@ var ProductSchema = new Schema({
 	publicFields: [{
 		type: String
 	}],
-	sale: saleSchema.schema,
+	/*inventory: [{
+
+	}],*/
+	sale: Sale,
 	/*sale: {
 		type: Schema.Types.ObjectId,
 		ref: 'Sale'

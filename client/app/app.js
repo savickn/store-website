@@ -14,7 +14,8 @@ angular.module('passportApp', [
   'passportAppFilters',
   'passportAppDirectives',
   'angularUtils.directives.dirPagination',
-  'rzModule' //for price slider
+  'rzModule', //for price slider,
+  'mgo-angular-wizard'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, 
       RestangularProvider) {

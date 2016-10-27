@@ -6,6 +6,9 @@ angular.module('passportApp')
     var service = {
       getFeatured: function() {
         return Restangular.all('products').getList('featured'); 
+      },
+      addProduct: function(product) {
+      	return Restangular.all('products').post(product);
       }
     };
     

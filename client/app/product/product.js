@@ -8,9 +8,17 @@ angular.module('passportApp')
         url: '/featured',
         templateUrl: 'app/product/index.html',
         controller: function($scope, ProductService) {
-        	ProductService.getFeatured().then(function(products) {
+        	$scope.featuredProducts = [];
+          ProductService.getFeatured().then(function(products) {
         		$scope.featuredProducts = products;
         	});
+        }
+      })
+      .state('products.new', {
+        url: '/products/new',
+        templateUrl: 'app/product/new.html',
+        controller: function($scope) {
+          $scope.productTypes = ['Computer', 'Monitor', 'Keyboard'];
         }
       })
   });

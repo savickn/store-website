@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('ComputersCtrl', function ($scope, $stateParams, $timeout,
+  .controller('ComputerCollectionCtrl', function ($scope, $stateParams, $timeout,
       Auth, Upload, ComputerService, CartService, ngCart) {
     //check why $setValidity is not working sometime
     $scope.isAdmin = Auth.isAdmin();

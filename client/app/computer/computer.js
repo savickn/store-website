@@ -7,7 +7,7 @@ angular.module('passportApp')
       .state('computers', {
         url: '/computers?page&pagecount',
         templateUrl: 'app/computer/index.html',
-        controller: 'ComputersCtrl',
+        controller: 'ComputerCollectionCtrl',
         params: {
           page: {
             value: '1',
@@ -19,7 +19,12 @@ angular.module('passportApp')
           }
         }
       })
-      .state('computers/show', {
+      .state('computers.new', {
+        url: '/computers/new',
+        templateUrl: 'app/computer/new.html',
+        controller: 'ComputerUploadCtrl'
+      })
+      .state('computers.show', {
       	url: '/computers/:id',
       	templateUrl: 'app/computer/show.html',
       	controller: 'ComputerCtrl'

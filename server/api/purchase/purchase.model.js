@@ -21,17 +21,26 @@ var PurchaseSchema = new Schema({
 		type: Number,
 		required: true	
 	},
-	shipping: {
+	shippingCost: {
 		type: Number,
 		required: true
 	},
 	finalPrice: {
 		type: Number,
 		required: true
+	},
+	orderDate: {
+		type: Date,
+		required: true
+	},
+	status: {
+		type: String,
+		required: true
 	}
 });
 
 
-//PurchaseSchema.set('toJSON', {virtuals: true});
+
+PurchaseSchema.set('toJSON', {virtuals: true});
 
 module.exports = mongoose.model('Purchase', PurchaseSchema);

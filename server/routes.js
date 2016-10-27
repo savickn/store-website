@@ -18,6 +18,10 @@ module.exports = function(app) {
   app.use('/api/monitors', require('./api/monitor'));
   app.use('/api/keyboards', require('./api/keyboard'));
   app.use('/api/products', require('./api/product'));
+  app.use('/api/addresses', require('./api/address'));
+  app.use('/api/urewards', require('./api/uReward'));
+  app.use('/api/purchases', require('./api/purchase'));
+  
 
   app.use('/auth', require('./auth'));
   
