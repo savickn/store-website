@@ -53,6 +53,15 @@ angular.module('passportAppDirectives', [])
 	            });
 	        }
 	    };
+	})
+	.directive('address', function() {
+		return {
+			restrict: 'A',
+			templateUrl : 'views/address.jade',
+			scope : {
+				address : '@'
+			},	
+		}
 	});
 
 	/*.directive('addToCart', function() {

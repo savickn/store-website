@@ -3,6 +3,23 @@ title Computer Form
 .container
   .row
     .col-lg-12
+      
+
+
+      wizard(on-finish="finishedWizard()") 
+        wz-step(wz-title="Starting" wz-disabled="{{disabled}}")
+          h1 This is the first step
+          p Here you can use whatever you want. You can use other directives, binding, etc.
+          input(type="submit" wz-next value="Continue")
+        wz-step(wz-title="Continuing")
+          h1 Continuing
+          p You have continued here!
+          input(type="submit" wz-next value="Go on")
+        wz-step(wz-title="More steps")
+          p Even more steps!!
+          input(type="submit" wz-next value="Finish now")
+
+
       form(name="computerform" ng-submit="computerform.$valid && addComputer()")
         p Use this form to add new computers
         .form-group

@@ -36,9 +36,16 @@ var PurchaseSchema = new Schema({
 	status: {
 		type: String,
 		required: true
+	},
+	trackingNumber: {
+		type: Number
 	}
 });
 
+
+PurchaseSchema.methods.cancelPurchase = function(purchase) {
+
+};
 
 
 PurchaseSchema.set('toJSON', {virtuals: true});

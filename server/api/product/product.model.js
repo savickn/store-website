@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose'),
     Sale = require('../sale/sale.model').schema,
+    Inventory = require('../inventory/inventory.model').schema,
     Schema = mongoose.Schema;
 
 var ProductSchema = new Schema({
@@ -43,9 +44,7 @@ var ProductSchema = new Schema({
 	publicFields: [{
 		type: String
 	}],
-	/*inventory: [{
-
-	}],*/
+	inventory: [Inventory],
 	sale: Sale,
 	/*sale: {
 		type: Schema.Types.ObjectId,

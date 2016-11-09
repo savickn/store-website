@@ -14,7 +14,7 @@ angular.module('passportApp')
         	});
         }
       })
-      .state('products.new', {
+      .state('newproducts', {
         url: '/products/new',
         templateUrl: 'app/product/new.html',
         controller: function($scope) {

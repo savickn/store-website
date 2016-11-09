@@ -14,6 +14,11 @@ var UserSchema = new Schema({
     type: String,
     default: 'user'
   },
+  phoneNumber: {
+    type: Number
+    //write function to strip input before saving to db
+    //validattion - can only be 10 or 11 digits
+  },
   purchases: [{
     type: Schema.Types.ObjectId,
     ref: 'Purchase',

@@ -21,6 +21,8 @@ module.exports = function(app) {
   app.use('/api/addresses', require('./api/address'));
   app.use('/api/urewards', require('./api/uReward'));
   app.use('/api/purchases', require('./api/purchase'));
+  app.use('/api/addresses', require('./api/address'));
+  app.use('/api/sales', require('./api/sale'));
   
 
   app.use('/auth', require('./auth'));

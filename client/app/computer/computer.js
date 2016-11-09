@@ -19,19 +19,19 @@ angular.module('passportApp')
           }
         }
       })
-      .state('computers.new', {
+      .state('newcomputer', {
         url: '/computers/new',
         templateUrl: 'app/computer/new.html',
         controller: 'ComputerUploadCtrl'
       })
-      .state('computers.show', {
+      .state('showcomputer', {
       	url: '/computers/:id',
       	templateUrl: 'app/computer/show.html',
       	controller: 'ComputerCtrl'
       });
   });
 
-/* nested route
+/* nested route - must have <ui-view> in parent template, will embed the child within the parent template
       .state('computers.show', {
         url: '/:id',
         templateUrl: 'app/computer/show.html',
