@@ -1,0 +1,10 @@
+h2 Change Info and Preferences
+
+form.form(name='infoForm', role='form' ng-submit='infoForm.$valid && updateUser(user)')
+	.form-group
+		label Phone Number
+		input.form-control(type='tel' name='phoneNumber' ng-model='user.phoneNumber' pattern='^((1)?\d{10})$' required)
+	.form-group
+		label Would you like to receive promotional emails?
+		input.form-control(type='checkbox' name='promos' ng-model='user.promotionalEmails')
+	button.btn.btn-lg.btn-primary(ng-disabled='infoForm.$invalid' type='submit') Save changes

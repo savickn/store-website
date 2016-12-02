@@ -1,7 +1,11 @@
+h2 Rewards
 
-p Rewards
+.alert(ng-if="message" ng-class="{'alert-success': type === 'Success', 'alert-danger': type === 'Error', 'alert-warning': type === 'Warning'}") {{message}}
+	//span.glyphicon.glyphicon-remove(ng-click="$parent.alertService.clearAlert()")
 
+.rewards(ng-if="user.reward")
+	p Card Number: {{user.reward.cardNumber}}
+	p Card Balance: {{user.reward.points}}
 
-
-
-
+.create-rewards(ng-if="!user.reward")
+	button.btn.btn-primary(ng-click="createRewards()") Sign up for our rewards program!

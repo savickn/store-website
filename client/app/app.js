@@ -6,7 +6,6 @@ angular.module('passportApp', [
   'ngSanitize',
   'ngAnimate',
   'ngCart',
-  'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
   'restangular',

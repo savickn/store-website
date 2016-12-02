@@ -1,11 +1,8 @@
 
 .container
   .row 
-    .alert.alert-success(href="#" ng-if="successMessages") {{successMessages}}
-      span.edit-message-close.glyphicon.glyphicon-remove(ng-click="successMessages = ''")
-    .alert.alert-warning(href="#" ng-if="failureMessages") {{failureMessages}}
-      span.edit-message-close.glyphicon.glyphicon-remove(ng-click="failureMessages = ''")
-    .alert.alert-warning(href="#" ng-if="updateDisplayPic") Display picture set. Please click 'Save Changes' via the 'Edit' button to save these changes to the database.
+    .alert(ng-if="message" ng-class="{'alert-success': type === 'Success', 'alert-danger': type === 'Error', 'alert-warning': type === 'Warning'}") {{message}}
+      //span.glyphicon.glyphicon-remove(ng-click="clearAlert()")
 
     h1 {{currentProduct.name}}
       h3
@@ -18,18 +15,15 @@
         .col-lg-3(ng-repeat='picture in currentProduct.pictures')
           .gallery-img
             img.img-rounded(src="{{picture.path}}" ng-click='setPreviewImage(picture)' height="100" width="100")
-            div
-              button.btn.btn-primary.full-width(href="#" ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin") Set as DP
+            //i.glyphicon.glyphicon-remove.top-right(ng-click="removePicture(picture._id)" ng-if="isAdmin")
+            i.glyphicon.glyphicon-picture.bottom-right(ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin")
 
-
-
-        //ul.nav.nav-tabs.col-md-2(ng-repeat='picture in currentProduct.pictures')
-          li 
-            img.img-rounded(src="{{picture.path}}" ng-click='setPreviewImage(picture)' height="100" width="100")
-            button.btn.btn-primary(href="#" ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin") Set as Display Picture
-    
     .col-lg-6
       ul.list-group
+        li.list-group-item
+          toggle-item-wishlist(product-id="{{currentProduct._id}}" ng-if="isLoggedIn")
+          //toggle-item-wishlist(product-id="{{currentProduct._id}}" wishlist-id="{{wishlist._id}}" wishlist="wishlist" state="{{wishlist.contains(currentProduct._id)}}")
+        li.list-group-item {{wishlist._id}}
         li.list-group-item Name: {{currentProduct.name}}
         li.list-group-item Description: {{currentProduct.description}}
         li.list-group-item Brand: {{currentProduct.brand}}
@@ -41,13 +35,14 @@
         li.list-group-item Featured: {{currentProduct.featured | yesNo }}
         li.list-group-item On Sale: {{currentProduct.onSale | yesNo }}
 
+  /////////////////////////// EDIT PRODUCT ////////////////////////////////
+
   .row(ng-if="isAdmin")
     .col-lg-12
-      button.btn.btn-primary(href="#" ng-click="showEditComputerForm = !showEditComputerForm") Edit
-      form.computer-edit-form(name="computerEditForm" ng-show="showEditComputerForm" ng-submit="computerEditForm.$valid && updateComputer()")
+      form.computer-edit-form(name="computerEditForm" ng-submit="computerEditForm.$valid && updateComputer()")
         label Use this form to edit computer properties
-        .alert.alert-success(ng-if="computerEditForm.$pristine && !updateDisplayPic" class="pristine_form") You have made no changes that require saving.
-        .alert.alert-warning(ng-if="!computerEditForm.$pristine || updateDisplayPic" class="dirty_form") Please click the button below to save changes.
+        .alert.alert-success(ng-if="computerEditForm.$pristine && !updateDisplayPic") You have made no changes that require saving.
+        .alert.alert-warning(ng-if="!computerEditForm.$pristine || updateDisplayPic") Please click the button below to save changes.
         p.input-group
           input.form-control(type='text', placeholder='Enter the name here.', ng-model='currentProduct.name')
           input.form-control(type='text', placeholder='Enter the description here.', ng-model='currentProduct.description')
@@ -62,7 +57,9 @@
             input.form-control(type='checkbox', ng-model='currentProduct.featured')
           label.checkbox-inline On Sale?
             input.form-control(type='checkbox', ng-model='currentProduct.onSale')  
-          button.btn.btn-primary(type='submit') Save changes
+          button.btn.btn-primary(ng-disabled="computerEditForm.$invalid" type='submit') Save changes
+
+  ////////////////////////// PICTURE UPLOAD ////////////////////////////////
 
   .row(ng-controller='PictureUploadCtrl' ng-if='isAdmin')
     .col-lg-12
@@ -80,6 +77,9 @@
         span(ng-show="newPicture.result") Upload Successful 
         span.err(ng-show="errorMsg") {{errorMsg}}
 
+
+  ///////////////////////// PRODUCT REVIEWS /////////////////////////////// 
+
   .row
     .col-lg-12
       h2 Product Reviews:
@@ -90,7 +90,7 @@
           a(href='reviews/{{review._id}}') Read the full review...  
       p(ng-if="currentProduct.reviews.length < 1") There are no reviews for this product.
 
-  .row(ng-controller='ReviewsCtrl' ng-if='isAdmin')
+  .row(ng-controller='ReviewsCtrl' ng-if='isLoggedIn')
     .col-lg-12
       .alert.alert-warning(ng-if="alertMessage") {{alertMessage}}
       form.computer-review-form(name="reviewForm" ng-submit="reviewForm.$valid && addReview()")
@@ -103,16 +103,6 @@
           input.form-control(type='number', name="rating", placeholder='Enter your rating here.', ng-model='newRating', required, min=0, max=10, ng-hide="true")
           span.input-group-btn
             button.btn.btn-primary(ng-disabled="reviewForm.$invalid" type='submit') Add Review
-
-footer.footer
-  .container
-    p
-      | Angular Fullstack v2.1.1
-      = ' | '
-      a(href='https://twitter.com/tyhenkel') @tyhenkel
-      = ' | '
-      a(href='https://github.com/DaftMonk/generator-angular-fullstack/issues?state=open') Issues
-
 
 
   //data:image/png;base64,
@@ -137,3 +127,20 @@ footer.footer
       </span>
       <span ng-show="picFile.result">Upload Successful</span>
       <span class="err" ng-show="errorMsg">{{errorMsg}}</span>
+                
+        button.btn.btn-primary.full-width(href="#" ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin") Set as DP
+
+
+
+        ul.nav.nav-tabs.col-md-2(ng-repeat='picture in currentProduct.pictures')
+          li 
+            img.img-rounded(src="{{picture.path}}" ng-click='setPreviewImage(picture)' height="100" width="100")
+            button.btn.btn-primary(href="#" ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin") Set as Display Picture
+    
+
+
+    .alert.alert-success(href="#" ng-if="successMessages") {{successMessages}}
+      span.edit-message-close.glyphicon.glyphicon-remove(ng-click="successMessages = ''")
+    .alert.alert-warning(href="#" ng-if="failureMessages") {{failureMessages}}
+      span.edit-message-close.glyphicon.glyphicon-remove(ng-click="failureMessages = ''")
+    .alert.alert-warning(href="#" ng-if="updateDisplayPic") Display picture set. Please click 'Save Changes' via the 'Edit' button to save these changes to the database.

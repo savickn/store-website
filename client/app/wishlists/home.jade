@@ -1,0 +1,20 @@
+
+.container
+	.row
+		.col-lg-12
+			h2 Wishlists
+			form.form(role="form" name="wishlistSearch" ng-submit="wishlistSearch.$valid && searchWishlists(giftee)")
+				p.help-text Use this form to search for people's wishlists. Not all fields must be filled out.
+				.form-group
+					label(for="name") Full Name
+					input.form-control(type="text" name="name" placeholder="Please enter the giftee's full name." ng-model="giftee.name")
+				.form-group
+					label(for="email") Email Address
+					input.form-control(type="email" name="email" placeholder="Please enter the giftee's email address." ng-model="giftee.email")
+				button.btn.btn-primary(ng-disabled="wishlistSearch.$invalid" type="submit") Search
+	.row
+		.col-lg-12
+			ui-view
+
+
+

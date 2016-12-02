@@ -8,11 +8,11 @@
 			li Description: {{currentReview.summary}}
 
 	.col-lg-12
-		a(href='#', ng-click='upvoteReview(currentReview)' ng-hide='checkDuplicateLike(currentReview)') Mark as Helpful?
-		a(href='#', ng-click='removeUpvote(currentReview)' ng-show='checkDuplicateLike(currentReview)') Unhelpful? 
+		a(href='#', ng-click='upvoteReview(currentReview)' ng-if='!isDuplicateLike') Mark as Helpful?
+		a(href='#', ng-click='removeUpvote(currentReview)' ng-if='isDuplicateLike') Unhelpful? 
 		ul.nav.nav-tabs.nav-stacked(ng-repeat='upvote in currentReview.upvotes')
 			li {{upvote.author}}
-	.col-lg-12 {{reviewError}}
+
 
 
 

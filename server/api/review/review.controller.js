@@ -33,20 +33,24 @@ exports.create = function(req, res) {
 
 // Updates an existing review in the DB.
 exports.update = function(req, res) {
-  Review.findOneAndUpdate(
-      {_id: req.params.id}, 
-      {$set: req.body},
-      {new: true}
-    )
-    .populate('product', '_id name')
-    .populate('author', '_id name')
+  function isDuplicateLike() {
+    req.body.upvotes.forEach(function(upvote) {
+      if(upvote.authorId === req.body.newUpvote.authorId) {
+        return true;
+      } 
+    });
+    return false;   
+  }
+
+  if(isDuplicateLike()) { return res.status(501).send('Duplicate Like') };
+
+  Review.findOneAndUpdate({_id: req.params.id}, {$set: {rating: req.body.rating, summary: req.body.summary}, $addToSet: {upvotes: req.body.newUpvote}}, {new: true})
+    .populate('product author', '_id name')
+    //.populate('author', '_id name')
     .exec(function(err, review) {
       if (err) { return handleError(res, err); }
       return res.status(200).json(review);
     });
-
-
-
 
 
   /*Review.findById(req.params.id, function (err, review) {

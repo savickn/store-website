@@ -1,0 +1,16 @@
+h2 Billing Address
+
+form.form(name='billingForm', role='form' ng-submit='billingForm.$valid && updateUser(user)')
+	.form-group
+		label(for="street") Street Address: 
+		input.form-control(type="text" name="street" placeholder="Enter a street address." ng-model="user.billingAddress.street" required)
+	.form-group
+		label(for="city") City:
+		input.form-control(type="text" name="city" ng-model="user.billingAddress.city" required)
+	.form-group
+		label(for="province") Province: 
+		input.form-control(type="select" name="province" ng-model="user.billingAddress.province" required)
+	.form-group
+		label(for="postalCode") Postal Code:
+		input.form-control(type="text" name="postalCode" ng-model="user.billingAddress.postalCode" required)
+	button.btn.btn-primary(ng-disabled='billingForm.$invalid' type='submit') Save Changes

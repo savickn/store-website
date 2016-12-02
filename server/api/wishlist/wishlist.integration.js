@@ -3,9 +3,9 @@
 var app = require('../..');
 import request from 'supertest';
 
-describe('UReward API:', function() {
+describe('Wishlist API:', function() {
   describe('GET /y', function() {
-    var uRewards;
+    var wishlists;
 
     beforeEach(function(done) {
       request(app)
@@ -16,13 +16,13 @@ describe('UReward API:', function() {
           if(err) {
             return done(err);
           }
-          uRewards = res.body;
+          wishlists = res.body;
           done();
         });
     });
 
     it('should respond with JSON array', function() {
-      uRewards.should.be.instanceOf(Array);
+      wishlists.should.be.instanceOf(Array);
     });
   });
 });

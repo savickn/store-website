@@ -90,18 +90,6 @@ exports.update = function(req, res) {
       if (err) { return handleError(res, err); }
       return res.status(200).json(computer);
     });
-
-  /*Computer.findById(req.params.id, function (err, computer) {
-    if (err) { return handleError(res, err); }
-    if(!computer) { return res.status(404).send('Not Found'); }
-    var updated = _.merge(computer, req.body);
-    updated.save().populate('displayPicture pictures', '_id contentType path')
-    .exec(function (err, computer) {
-      if (err) { return handleError(res, err); }
-
-      return res.status(200).json(computer);
-    });
-  });*/
 };
 
 // Deletes a computer from the DB.
@@ -119,3 +107,21 @@ exports.destroy = function(req, res) {
 function handleError(res, err) {
   return res.status(500).send(err);
 }
+
+
+
+
+  /* old update function
+
+
+  Computer.findById(req.params.id, function (err, computer) {
+    if (err) { return handleError(res, err); }
+    if(!computer) { return res.status(404).send('Not Found'); }
+    var updated = _.merge(computer, req.body);
+    updated.save().populate('displayPicture pictures', '_id contentType path')
+    .exec(function (err, computer) {
+      if (err) { return handleError(res, err); }
+
+      return res.status(200).json(computer);
+    });
+  });*/

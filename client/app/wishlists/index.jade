@@ -1,0 +1,9 @@
+
+
+ul.list-group(ng-repeat="wishlist in wishlistQuery")
+	li.list-group-item 
+		p Name: {{wishlist.name}}
+		p Items: {{wishlist.products.length}}
+		a(href="/wishlists/{{wishlist._id}}") Go to Wishlist
+
+

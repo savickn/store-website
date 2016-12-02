@@ -3,11 +3,14 @@
 
 angular.module('passportApp')
   .controller('ComputerCtrl', function ($scope, $stateParams, $timeout, ComputerService, FlashService, 
-      Auth, ngCart, ReviewService) {
+      Auth, ngCart, ReviewService, AlertService, WishlistService) {
     $scope.isAdmin = Auth.isAdmin();
+    $scope.isLoggedIn = Auth.isLoggedIn();
 
-    $scope.successMessages = "";
-    $scope.failureMessages = "";
+    $scope.$watch( function () { return AlertService.alert; }, function (alert) {
+      $scope.message = alert.message;
+      $scope.type = alert.type;
+    }, true);
 
     $scope.currentProduct = {};
     $scope.previewImage = {};
@@ -20,7 +23,7 @@ angular.module('passportApp')
       $scope.currentProduct = computer;
       $scope.previewImage = computer.displayPicture;
 
-      var publicProperties = getPublicProperties(computer);
+      /*var publicProperties = getPublicProperties(computer);
       var keyNames = Object.keys(publicProperties);
 
       for(var x in publicProperties) {
@@ -36,7 +39,7 @@ angular.module('passportApp')
           key: value,
           value: publicProperties[index]
         }
-      });
+      });*/
 
     });
 
@@ -53,25 +56,17 @@ angular.module('passportApp')
       return propertiesArray;
     }*/
 
-    $scope.updateComputer = function() {
-      var updatedComputer = $scope.currentProduct;
 
-      if(!$scope.updateDisplayPic) {
-        delete updatedComputer.displayPicture;
-      }
-      delete updatedComputer.pictures;
-      delete updatedComputer.reviews;
-      
-      ComputerService.updateComputer(updatedComputer).then(function(newComputer) {
+    $scope.updateComputer = function() {
+      ComputerService.updateComputer($scope.currentProduct).then(function(newComputer) {
         $scope.currentProduct = newComputer;
         $scope.previewImage = newComputer.displayPicture;
         $scope.updateDisplayPic = false;
+        AlertService.setAlert("The computer was successfully updated.", "Success");
         $scope.computerEditForm.$setPristine();
-        $scope.successMessages = "The computer was successfully updated.";
-        $timeout(function() {$scope.successMessages = ''}, 5000);
       }, function(err) {
-        $scope.failureMessages = "The computer could not be updated.";
-        $timeout(function() {$scope.failureMessages = ''}, 5000);
+        console.log(err);
+        AlertService.setAlert('The computer could not be updated.', "Error");
       });
     };
 
@@ -82,6 +77,7 @@ angular.module('passportApp')
     $scope.setDisplayPicture = function(pictureId) {
       $scope.currentProduct.displayPicture = pictureId;
       $scope.updateDisplayPic = true;
+      AlertService.setAlert("Display picture set. Please click 'Save Changes' via the 'Edit' button to save these changes.", "Warning");
     }
 
     $scope.removeReview = function(review) {

@@ -4,6 +4,19 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var AddressSchema = new Schema({
+	type: {
+		type: String,
+		enum: ['Billing', 'Shipping'],
+		required: true
+	},
+	primary: {
+		type: Boolean,
+		default: true
+	},
+	nickname: {
+		type: String,
+		required: true
+	},
 	street: {
 		type: String, 
 		required: true
@@ -16,6 +29,11 @@ var AddressSchema = new Schema({
 	},
 	postalCode: {
 		type: String, 
+		required: true
+	},
+	user: {
+		type: Schema.Types.ObjectId,
+		ref: 'User',
 		required: true
 	}
 });

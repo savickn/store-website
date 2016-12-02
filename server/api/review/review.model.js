@@ -7,14 +7,11 @@ var mongoose = require('mongoose'),
 var ReviewSchema = new Schema({
   author: 	{ 	
     type: Schema.Types.ObjectId, 
-    ref: 'User', 
-  	index: true 
+    ref: 'User'
   },
   product: 	{	
     type: Schema.Types.ObjectId, 
-  	ref: 'Product',
-    //refPath: 'productType',
-    index: true
+  	ref: 'Product'
   },
   rating: 	{	
     type: Number, 
@@ -32,6 +29,32 @@ var ReviewSchema = new Schema({
   upvotes: [Upvotes.schema]
 });
 
+//prevents duplicate likes
+ReviewSchema.pre("save", function(next) {
+
+  function pushUnique(array, item) {
+    if (array.indexOf(item) == -1) {
+      array.push(item);
+    }
+    return false;
+  }
+
+  /*function checkForDuplicates() {
+    var newUpvotes = [];
+    this.upvotes.forEach((upvote) => {
+      if(!pushUnique(newUpvotes, upvote)) {
+        this.invalidate("author", "You have already liked this post!");
+        done();
+      }
+    })
+    return newUpvotes;
+  }
+  if(this.upvotes) {
+    this.upvotes = checkForDuplicates();
+  };*/
+  next();
+});
+
 //data consistency with product
 ReviewSchema.pre("save", function(next) {
   var self = this;
@@ -44,36 +67,6 @@ ReviewSchema.pre("save", function(next) {
       next();
     }
   );
-});
-
-//prevents duplicate likes
-ReviewSchema.pre("save", function(next) {
-
-  var duplicates = function() {
-    var i,
-        len=this.upvotes.length,
-        out=[],
-        obj={};
-
-    for (i=0;i<len;i++) {
-      obj[this.upvotes[i]]=0;
-    }
-    for (i in obj) {
-      out.push(i);
-    }
-    if (len === obj.length) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  if(duplicates === true) {
-    self.invalidate("authorId", "You have already liked this post");
-    done();
-  } 
-
-  next();
 });
 
 //data consistency with product
@@ -91,9 +84,7 @@ ReviewSchema.pre("remove", function(next) {
 }); 
 
 ReviewSchema.virtual('score').get(function() {
-	var score = this.upvotes.length;
-
-	return score;
+	return this.upvotes.length;
 });
 
 ReviewSchema.set('toJSON', {virtuals: true});
@@ -124,3 +115,23 @@ mongoose.model(self.productType).findOne({_id: self.product}, function(err, prod
     }
 
   });*/
+
+
+  /*function duplicates() {
+    var i,
+        len=this.upvotes.length,
+        out=[],
+        obj={};
+
+    for (i=0;i<len;i++) {
+      obj[this.upvotes[i]]=0;
+    }
+    for (i in obj) {
+      out.push(i);
+    }
+    if (len === obj.length) {
+      return false;
+    } else {
+      return true;
+    }
+  }*/

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('MainCtrl', function ($scope, $http, socket, Restangular) {
+  .controller('MainCtrl', function ($scope) {
     
 
   });

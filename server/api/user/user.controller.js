@@ -4,88 +4,138 @@ var User = require('./user.model');
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
+
 var nodemailer = require('nodemailer');
 var EmailTemplate = require('email-templates').EmailTemplate;
 var path = require('path');
+
+var Wishlist = require('../wishlist/wishlist.model');
 
 var validationError = function(res, err) {
   return res.status(422).json(err);
 };
 
 var sendWelcomeEmail = function(req, res) {
-  var transporter = nodemailer.createTransport({
-      service: 'Gmail',
+  var transporter = nodemailer.createTransport("SMTP", {
+      service: 'gmail',
       auth: {
           user: 'kingn3gu5@gmail.com', // Your email id
           pass: 'YaNeCk7799' // Your password
       }
   });
 
-  var sendWelcome = transporter.templateSender(new EmailTemplate('./server/templates/welcome-email'));
+  //transporter.templateSender(new EmailTemplate('./server/templates/welcome-email'));
+
+  var templateDir = path.join(__dirname, 'templates', 'welcome-email');
+  var welcomeEmail = new EmailTemplate(templateDir);
   var data = {name: req.body.name};
 
-  /*var text = 'Hello world from \n\n' + req.body.name;
-  var templateDir = path.join(__dirname, 'templates', 'welcome-email');
-  var html = new EmailTemplate(templateDir);*/
+  welcomeEmail.render(data, function (err, result) {
+    var mailOptions = {
+      from: 'kingn3gu5@gmail.com',
+      to: 'nsavickas988@hotmail.com',
+      //to: req.body.email, // list of receivers
+      subject: 'Welcome',
+      text: result.text, 
+      html: result.html
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if(err) return res.status(500).send(err);
+      return res.status(200).json(info);
+    });
+  });
+};
+
+exports.sendEmail = function(req, res) {
+  debugger;
+
+  var transporter = nodemailer.createTransport("SMTP", {
+      service: 'gmail',
+      auth: {
+          user: 'kingn3gu5@gmail.com', // Your email id
+          pass: 'YaNeCk7799' // Your password
+      }
+  });
 
   var mailOptions = {
-    from: 'kingn3gu5@gmail.com', // sender address
-    to: req.body.email, // list of receivers
-    subject: 'Welcome' // Subject line
-    //text: text, // plaintext body
-    //html: html  //'<b>Hello world ✔</b>' // You can choose to send an HTML body instead
+    from: 'kingn3gu5@gmail.com',
+    to: 'nsavickas988@hotmail.com',
+    subject: 'Welcome',
+    text: 'Hello Guy',
+    html:'<b>Hello world ✔</b>'
   };
 
-  sendWelcome(mailOptions, data, function(error, info){
-    if(error){
-        res.header('debug', error);
-        console.log(error);
-        //res.json({yo: 'error'});
-    }else{
-        res.header('success', info);
-        console.log('Message sent: ' + info.response);
-        //res.json({yo: info.response});
-    };
-});
-}
+  transporter.sendMail(mailOptions, function(err, info){
+    if(err) return res.status(500).send(err);
+    return res.status(200).json(info);
+  });
+};
 
 /**
  * Get list of users
  * restriction: 'admin'
  */
-exports.index = function(req, res) {
+/*exports.index = function(req, res) {
   User.find({}, '-salt -hashedPassword', function (err, users) {
     if(err) return res.status(500).send(err);
-    res.status(200).json(users);
+    return res.status(200).json(users);
+  });
+};*/
+
+exports.search = function(req, res) {
+  var searchObj = _.merge({}, req.query);
+
+  User.find(searchObj)
+  .select('-password -')
+  .populate('reward')
+  .exec(function(err, users) {
+    if(err) return res.status(500).send(err);
+
+
   });
 };
 
 /**
  * Creates a new user
  */
-exports.create = function (req, res, next) {
-  //sendWelcomeEmail(req, res, function() {
-    var newUser = new User(req.body);
-      newUser.provider = 'local';
-      newUser.role = 'user';
-      newUser.save(function(err, user) {
-        if (err) return validationError(res, err);
+exports.create = function (req, res) {
+  var newUser = new User(req.body);
+  newUser.provider = 'local';
+  newUser.role = 'user';
+
+  newUser.save(function(err, user) {
+    if (err) return validationError(res, err);
+
+    var newWishlist = new Wishlist({user: user._id});
+
+    newWishlist.save(function(err, wishlist) {
+      if(err) return res.status(500).send(err);
+
+      var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
+      return res.json({ token: token });
+      
+      /*sendWelcomeEmail(req, res, function(err, data) {
+        if(err) return res.status(500).send(err);
+        //res.header('debug3', data);
+
         var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
         res.json({ token: token });
-      });
-    //});
+      });*/
+    })
+  });
 };
 
 /**
  * Get a single user
  */
-exports.show = function (req, res, next) {
+exports.show = function (req, res) {
   var userId = req.params.id;
 
   User.findById(userId, function (err, user) {
     if (err) return next(err);
     if (!user) return res.status(401).send('Unauthorized');
-    res.json(user.profile);
+    return res.json(user.profile);
   });
 };
 
@@ -103,7 +153,7 @@ exports.destroy = function(req, res) {
 /**
  * Change a users password
  */
-exports.changePassword = function(req, res, next) {
+exports.changePassword = function(req, res) {
   var userId = req.user._id;
   var oldPass = String(req.body.oldPassword);
   var newPass = String(req.body.newPassword);
@@ -122,13 +172,51 @@ exports.changePassword = function(req, res, next) {
 };
 
 /**
+** Generic update function
+**/
+
+exports.update = function(req, res) {
+  User.findOneAndUpdate(
+    {_id: req.params.id}, 
+    {$set: req.body},
+    {new: true}
+  )
+  .select('-salt -hashedPassword')
+  .populate('reward wishlist')
+  .exec(function(err, user) {
+    if (err) { return handleError(res, err); }
+    return res.status(200).json(user);
+  });
+};
+
+
+/**
+* Changes email
+*/
+
+exports.changeEmail = function(req, res) {
+  var email = req.user.email.toLowerCase();
+
+  User.findOne({email: email}, function(err, user) {
+    if(user) { return validationError('This email is already in use.'); } 
+
+    User.findByIdAndUpdate(req.params.id, {$set: {email: email}}, function(err, user) {
+      if (err){ return validationError(res, err); }
+      return res.status(200).send('Ok');
+    });
+  })
+};
+
+/**
  * Get my info
  */
-exports.me = function(req, res, next) {
+exports.me = function(req, res) {
   var userId = req.user._id;
-  User.findOne({
-    _id: userId
-  }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
+  var query = User.findOne({_id: userId});
+  query.select('-salt -hashedPassword');
+  query.populate('reward wishlist');
+  //query.populate('purchases reward wishlist shippingAddress billingAddress'); 
+  query.exec(function(err, user) { // don't ever give out the password or salt
     if (err) return next(err);
     if (!user) return res.status(401).send('Unauthorized');
     res.json(user);

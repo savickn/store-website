@@ -1,10 +1,12 @@
 'use strict';
 
 angular.module('passportApp')
-  .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q) {
+  .factory('Auth', function Auth($location, $rootScope, $http, UserService, $cookieStore, $q) {
     var currentUser = {};
     if($cookieStore.get('token')) {
-      currentUser = User.get();
+      UserService.getMe().then(function(me) {
+        currentUser = me;
+      });
     }
 
     return {
@@ -26,7 +28,9 @@ angular.module('passportApp')
         }).
         success(function(data) {
           $cookieStore.put('token', data.token);
-          currentUser = User.get();
+          UserService.getMe().then(function(me) {
+            currentUser = me;
+          });
           deferred.resolve(data);
           return cb();
         }).
@@ -37,6 +41,17 @@ angular.module('passportApp')
         }.bind(this));
 
         return deferred.promise;
+      },
+
+      /*
+      ** used to update user info
+      */
+
+      refreshUser: function(user, cb) {
+        return UserService.getMe().then(function(me) {
+          currentUser = me;
+          return currentUser;
+        });
       },
 
       /**
@@ -59,16 +74,16 @@ angular.module('passportApp')
       createUser: function(user, callback) {
         var cb = callback || angular.noop;
 
-        return User.save(user,
-          function(data) {
-            $cookieStore.put('token', data.token);
-            currentUser = User.get();
-            return cb(user);
-          },
-          function(err) {
-            this.logout();
-            return cb(err);
-          }.bind(this)).$promise;
+        return UserService.addUser(user).then(function(data) {
+          $cookieStore.put('token', data.token);
+          UserService.getMe().then(function(me) {
+            currentUser = me;
+          })
+          return cb(user);
+        }).catch(function(err) {
+          //this.logout();
+          return cb(err);
+        });
       },
 
       /**
@@ -79,17 +94,42 @@ angular.module('passportApp')
        * @param  {Function} callback    - optional
        * @return {Promise}
        */
-      changePassword: function(oldPassword, newPassword, callback) {
+      changePassword: function(oldPassword, newPassword, confirmPassword, callback) {
         var cb = callback || angular.noop;
 
-        return User.changePassword({ id: currentUser._id }, {
+        if(newPassword != confirmPassword) {
+          let err = new Error("The new password does not match!");
+          return cb(err);
+        }
+
+        return UserService.changePassword(currentUser._id, {
           oldPassword: oldPassword,
           newPassword: newPassword
-        }, function(user) {
+        }).then(function(user) {
           return cb(user);
-        }, function(err) {
+        }).catch(function(err) {
           return cb(err);
-        }).$promise;
+        });
+      },
+
+      changeEmail: function() {
+        console.log('auth.changeEmail');
+      },
+
+      /**
+      ** Used to update client-side wishlist after adding or removeing from wishlist
+      **/
+
+      updateWishlist: function(wishlist) {
+        currentUser.wishlist = wishlist;
+      },
+
+      /**
+      ** Setter for user saved in service
+      **/
+
+      setCurrentUser: function(user) {
+        currentUser = user;
       },
 
       /**

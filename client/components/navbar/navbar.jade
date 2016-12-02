@@ -30,6 +30,12 @@ div.navbar.navbar-default.navbar-static-top(ng-controller='NavbarCtrl' style='ma
         li(ng-show='isLoggedIn()')
           p.navbar-text Hello {{ getCurrentUser().name }}
 
+        li(ng-show='isLoggedIn()', ng-class='{active: isActive("/wishlists")}')
+          a(href='/wishlists') Wishlists
+
+        li(ng-show='isAdmin()', ng-class='{active: isActive("/test")}')
+          a(href='/test') Test Page
+
         li(ng-show='isLoggedIn()', ng-class='{active: isActive("/settings")}')
           a(href='/settings')
             span.glyphicon.glyphicon-cog

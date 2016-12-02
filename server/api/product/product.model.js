@@ -64,14 +64,14 @@ var ProductSchema = new Schema({
 	}
 }, {collection: 'products'});
 
-ProductSchema.virtual('getPublicFields').get(function() {
+/*ProductSchema.virtual('getPublicFields').get(function() {
 	var obj = {};
 	var self = this;
 	self.publicFields.forEach(function(field) {
 		obj[field] = self.field;
 	})
 	return obj;
-});
+});*/
 
 ProductSchema.pre('remove', function(next) {
 	mongoose.model('Review').remove({product: this._id}).exec();

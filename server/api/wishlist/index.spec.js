@@ -2,8 +2,8 @@
 
 var proxyquire = require('proxyquire').noPreserveCache();
 
-var uRewardCtrlStub = {
-  index: 'uRewardCtrl.index'
+var wishlistCtrlStub = {
+  index: 'wishlistCtrl.index'
 };
 
 var routerStub = {
@@ -11,24 +11,24 @@ var routerStub = {
 };
 
 // require the index with our stubbed out modules
-var uRewardIndex = proxyquire('./index.js', {
+var wishlistIndex = proxyquire('./index.js', {
   express: {
     Router() {
       return routerStub;
     }
   },
-  './uReward.controller': uRewardCtrlStub
+  './wishlist.controller': wishlistCtrlStub
 });
 
-describe('UReward API Router:', function() {
+describe('Wishlist API Router:', function() {
   it('should return an express router instance', function() {
-    uRewardIndex.should.equal(routerStub);
+    wishlistIndex.should.equal(routerStub);
   });
 
   describe('GET /y', function() {
-    it('should route to uReward.controller.index', function() {
+    it('should route to wishlist.controller.index', function() {
       routerStub.get
-        .withArgs('/', 'uRewardCtrl.index')
+        .withArgs('/', 'wishlistCtrl.index')
         .should.have.been.calledOnce;
     });
   });

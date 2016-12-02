@@ -22,6 +22,18 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
     padding: 0.2em 0;
 }
 
+.top-right {
+	position: absolute;
+	right: 5px;
+	top: 5px;
+}
+
+.bottom-right {
+	position: absolute;
+	right: 5px;
+	bottom: 5px;	
+}
+
 
 // Component styles are injected through grunt
 // injector
@@ -31,6 +43,7 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 @import 'computer/show.scss';
 @import 'main/main.scss';
 @import 'review/review.scss';
+@import 'test/test.scss';
 @import 'modal/modal.scss';
 @import 'navbar/navbar.scss';
 // endinjector

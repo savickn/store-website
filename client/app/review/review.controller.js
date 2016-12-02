@@ -1,50 +1,38 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('ReviewCtrl', function ($scope, $stateParams, Auth, ReviewService) {
-    $scope.currentReview = {};
-    $scope.reviewError = "";
-
-
+  .controller('ReviewCtrl', function ($scope, $stateParams, Auth, ReviewService, AlertService) {
+    
     ReviewService.getReview($stateParams.id).then(function(review) {
       $scope.currentReview = review;
       $scope.rating = review.rating;
+
+      $scope.isDuplicateLike = isDuplicateLike(review);
     });
+
+    function isDuplicateLike(review) {
+      review.upvotes.forEach(function(upvote) {
+        if(upvote.authorId === Auth.getCurrentUser()._id) {
+          return true;
+        } 
+      });
+      return false; 
+    };
 
     $scope.upvoteReview = function(review) {
       var author = Auth.getCurrentUser();
-      var newUpvote = {author: author.name, authorId: author._id, 
-        reviewId: review._id, date: Date.now};
+      var newUpvote = {author: author.name, authorId: author._id, date: Date.now};
 
-      /*review.upvotes.push(newUpvote);
-      ReviewService.updateReview(review).then(function(review) {
-        $scope.currentReview = review;
-      }, function(err) {
-        $scope.reviewError = err;
-      });*/
+      if(isDuplicateLike(review) === false) {
+        review.newUpvote = newUpvote;
 
-      if($scope.checkDuplicateLike(review) === false) {
-        review.upvotes.push(newUpvote);
         ReviewService.updateReview(review).then(function(review) {
           $scope.currentReview = review;
+          AlertService.setAlert("You liked this review!", "Success");
         });
       } else {
-        $scope.reviewError = "You have already liked this review.";
+        AlertService.setAlert("You have already liked this review once.", "Error");
       }
-    };
-
-    $scope.checkDuplicateLike = function(review) {
-      var unique = false;
-      if(review.upvotes) {
-        review.upvotes.forEach(function(upvote) {
-        if(upvote.authorId === Auth.getCurrentUser()._id) {
-          unique = true;
-          return unique;
-          //$scope.reviewError = "You cannot upvote a review more than once";
-        }
-        });
-      }
-      return unique;
     };
 
     $scope.removeUpvote = function(review) {
@@ -72,3 +60,13 @@ angular.module('passportApp')
       });
     };
   });
+
+
+/*
+review.upvotes.forEach(function(upvote) {
+          if(upvote.authorId === Auth.getCurrentUser()._id) {
+            return true;
+            //$scope.reviewError = "You cannot upvote a review more than once";
+          } 
+        });
+*/

@@ -3,8 +3,6 @@
 angular.module('passportApp')
   .controller('ReviewsCtrl', function ($scope, $stateParams, Auth, ReviewService, AlertService) {
 
-    $scope.alertMessage = AlertService.getAlertMessage();
-    $scope.alertType = AlertService.getAlertType();
     $scope.rating = 1;
     //$scope.newReview = {};
 

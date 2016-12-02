@@ -1,0 +1,25 @@
+
+.container
+	.row
+		.col-lg-6
+			h2 Wishlists
+			form.form(role="form" name="camForm" ng-submit="camForm.$valid && searchUsers()")
+				p.help-text Use this form to search for people's wishlists. Not all fields must be filled out.
+				.form-group
+					label(for="firstName") First Name
+					input.form-control(type="text" name="firstName" placeholder="Please enter the giftee's first name." ng-model="giftee.firstName")
+				.form-group
+					label(for="lastName") Last Name
+					input.form-control(type="text" name="lastName" placeholder="Please enter the giftee's last name." ng-model="giftee.lastName")
+				.form-group
+					label(for="phoneNumber") Phone Number
+					input.form-control(type="tel" name="phoneNumber" placeholder="Please enter the giftee's phone number." ng-model="giftee.phoneNumber")
+				.form-group
+					label(for="email") Email Address
+					input.form-control(type="email" name="email" placeholder="Please enter the giftee's email address." ng-model="giftee.email")
+	.row
+		.col-lg-12
+			ui-view
+
+
+

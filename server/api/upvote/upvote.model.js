@@ -1,20 +1,12 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema,
-    ObjectId = Schema.ObjectId;
+    Schema = mongoose.Schema;
 
 var UpvoteSchema = new Schema({
-  author: String,
-  authorId: 	{ 	
-    type: Schema.Types.ObjectId, 
-  	ref: 'User', 
-  	index: true 
-  },
-  reviewId: 	{ 	
-    type: Schema.Types.ObjectId, 
-  	ref: 'Review', 
-  	index: true 
+  user: String,
+  userId: {
+    type: Schema.Types.ObjectId
   },
   date: Date
 }); 

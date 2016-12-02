@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('passportAppDirectives', [])
-	.directive('starRating',function() {
+	.directive('starRating', function() {
 		return {
 			restrict : 'A',
 			template : '<ul class="rating">'
@@ -61,44 +61,61 @@ angular.module('passportAppDirectives', [])
 			scope : {
 				address : '@'
 			},	
-		}
-	});
-
-	/*.directive('addToCart', function() {
+		};
+	})
+	.directive('toggleItemWishlist', function(Auth, WishlistService) {
 		return {
-			restrict : 'E',
-			template : '<ul class="rating">'
-			   + ' <li ng-repeat="star in stars" ng-class="star" ng-click="toggle($index)">'
-			   + '  <i class="fa fa-star-o"></i>'
-			   + ' </li>'
-			   + '</ul>',
-			scope : {
-				ratingValue : '=',
-				max : '=',
-				onRatingSelected : '&'
+			restrict: 'E',
+			//template: "<button class='btn btn-primary' ng-click='addToWishlist(productId)'> Add to Wishlist </button>",
+			templateUrl : '../components/directives/views/toggleItemWishlist.html',
+			scope: {
+				productId: '@'
+				//wishlistId: '@',
+				//wishlist: '=',
+				//state: '@'
 			},
-			link : function(scope, elem, attrs) {
-				var updateStars = function() {
-			  		scope.stars = [];
-			  		for ( var i = 0; i < scope.max; i++) {
-			   			scope.stars.push({
-			    			filled : i < scope.ratingValue
-			   			});
-			  		}
-			 	};
-			 
-		 		scope.toggle = function(index) {
-			  		scope.ratingValue = index + 1;
-			  		scope.onRatingSelected({
-			   			rating : index + 1
-			  		});
-		 		};
-		 
-			 	scope.$watch('ratingValue', function(oldVal, newVal) {
-			   		if (newVal) {
-			    		updateStars();
-			   		}
-			  	});
+			//controller: "WishlistController as ctrl",
+			link: function(scope, elem, attrs) {
+				var wishlist = Auth.getCurrentUser().wishlist;
+				scope.state = wishlist.products.includes(scope.productId);
+
+				var updateWishlist = function() {
+					WishlistService.updateWishlist(wishlist._id, wishlist).then(function(wishlist) {
+            			Auth.updateWishlist(wishlist);
+            			scope.state = !scope.state;
+	            	}).catch(function(err) {
+	            		console.log(err);
+	            	});					
+				};
+
+				scope.addToWishlist = function(productId) {
+					if(wishlist.products.pushUnique(productId)) {
+						updateWishlist();
+					}
+				};
+
+				scope.removeFromWishlist = function(productId) {
+					if(wishlist.products.remove(productId)) {
+						updateWishlist();
+					}
+				};
+			}
+		};
+	});
+	/*.directive('testWishlist', function(Auth) {
+		return {
+			restrict: 'E',
+			template: '<div ng-if="state">{{productId}}: {{wishlistId}}</div>',
+			scope: {
+				productId: '@',
+				state: '@'
+			},
+			link: function(scope, element, attrs) {
+				scope.wishlistId = Auth.getCurrentUser().name;
+				console.log(scope.wishlistId);
 			}
 		};
 	});*/
+
+
+

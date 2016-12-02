@@ -2,49 +2,46 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-
+var Address = require('../address/address.model').schema;
 
 var crypto = require('crypto');
 var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
 var UserSchema = new Schema({
-  name: String,
-  email: { type: String, lowercase: true },
   role: {
     type: String,
     default: 'user'
   },
-  phoneNumber: {
-    type: Number
-    //write function to strip input before saving to db
-    //validattion - can only be 10 or 11 digits
+  name: String,
+  email: { 
+    type: String, 
+    lowercase: true 
   },
+  phoneNumber: {
+    type: Number,
+    match: /^((1)?\d{10})$/
+    //write function to strip input before saving to db
+  },
+  billingAddress: Address,
+  shippingAddress: [Address],
+  promotionalEmails: {
+    type: Boolean,
+    default: false
+  },
+
   purchases: [{
     type: Schema.Types.ObjectId,
     ref: 'Purchase',
     index: true
   }],
-  wishlist: [{
+  wishlist: {
     type: Schema.Types.ObjectId,
-    ref: 'Product',
-    index: true
-  }],
-  uRewards: {
-    type: Schema.Types.ObjectId,
-    ref: 'uReward'
-  }, 
-  shippingAddress: {
-    type: Schema.Types.ObjectId,
-    ref: 'Address'
-  }, 
-  billingAddress: {
-    type: Schema.Types.ObjectId,
-    ref: 'Address'
-  },  
-  promotionalEmails: {
-    type: Boolean,
-    default: false
+    ref: 'Wishlist'
   },
+  reward: {
+    type: Schema.Types.ObjectId,
+    ref: 'Reward'
+  }, 
   hashedPassword: String,
   provider: String,
   salt: String,
@@ -146,6 +143,24 @@ UserSchema
     else
       next();
   });
+
+/*UserSchema
+  .pre('save', function(next) {
+    if(!user.wishlist) {
+      mongoose.model('wishlist').create()
+    }
+  });*/
+
+/*
+* Pre-remove hooks
+*/
+
+UserSchema.pre('remove', function(next) {
+  mongoose.model('Wishlist').remove({user: this._id}).exec();
+  mongoose.model('Reward').remove({user: this._id}).exec();
+
+  next();
+});
 
 /**
  * Methods

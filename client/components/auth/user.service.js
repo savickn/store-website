@@ -1,7 +1,60 @@
 'use strict';
 
 angular.module('passportApp')
-  .factory('User', function ($resource) {
+  .factory('UserService', function (Restangular) {
+    
+    var restAngular = 
+      Restangular.withConfig(function(RestangularConfigurer) {
+        RestangularConfigurer.setFullResponse(true);
+        //.setBaseUrl('api');
+      }); 
+
+    var service = {
+      getUsers: function() {
+        return Restangular.all('users').getList(); 
+      },
+      getUser: function(userId) {
+        return Restangular.one('users', userId).get(); 
+      },
+      addUser: function(user) {
+        return Restangular.all('users').post(user);
+      },
+      updateUser: function(userId, user) {
+        return Restangular.one('users', userId).customPUT(user);
+      },
+      removeUser: function(userId) {
+        return Restangular.one('users', userId).remove();
+      },
+
+
+      getMe: function() {
+        return Restangular.one('users', 'me').get();
+      },
+      changePassword: function(userId, newPass) {
+        return Restangular.one('users', userId).customPUT(newPass, 'password');
+      },
+      changeEmail: function(userId, newEmail) {
+        return Restangular.one('users', userId).customPUT(newEmail, 'email');
+      },
+      updateUserInfo: function(user) {
+        return Restangular.one('users', user._id).customPUT(user);
+      },
+
+
+
+      sendEmail: function(data) {
+        return Restangular.all('users').get('email', {data});
+      }
+    };
+    
+    return service;
+  });
+
+
+
+
+
+  /*.factory('User', function ($resource) {
     return $resource('/api/users/:id/:controller', {
       id: '@_id'
     },
@@ -19,4 +72,4 @@ angular.module('passportApp')
         }
       }
 	  });
-  });
+  });*/

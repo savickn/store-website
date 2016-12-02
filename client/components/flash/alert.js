@@ -2,19 +2,17 @@
 
 angular.module('passportApp')
 .factory("AlertService", function($timeout) {
-  var newAlert = {};
-
   return {
+    alert: {},
     setAlert: function(message, type) {
-      newAlert.message = message;
-      newAlert.type = type;
-      $timeout(function() {newAlert = {}}, 10000);
+      this.alert.message = message;
+      this.alert.type = type;
+      $timeout(() => {
+        this.clearAlert();
+      }, 10000);
     },
-    getAlertMessage: function() {
-      return newAlert.message;
-    },
-    getAlertType: function() {
-      return newAlert.type;
+    clearAlert: function() {
+      this.alert = {};
     }
   };
 });

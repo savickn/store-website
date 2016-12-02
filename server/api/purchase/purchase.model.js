@@ -1,7 +1,8 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+    Schema = mongoose.Schema,
+    Address = require('../address/address.model').schema;
 
 var PurchaseSchema = new Schema({
 	customer: {
@@ -33,6 +34,8 @@ var PurchaseSchema = new Schema({
 		type: Date,
 		required: true
 	},
+	shippedAddress: Address,
+	billingAddress: Address,
 	status: {
 		type: String,
 		required: true

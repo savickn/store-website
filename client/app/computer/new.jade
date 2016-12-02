@@ -5,77 +5,82 @@ title Computer Form
     .col-lg-12
       
 
-
-      wizard(on-finish="finishedWizard()") 
-        wz-step(wz-title="Starting" wz-disabled="{{disabled}}")
-          h1 This is the first step
-          p Here you can use whatever you want. You can use other directives, binding, etc.
-          input(type="submit" wz-next value="Continue")
-        wz-step(wz-title="Continuing")
-          h1 Continuing
-          p You have continued here!
-          input(type="submit" wz-next value="Go on")
-        wz-step(wz-title="More steps")
-          p Even more steps!!
-          input(type="submit" wz-next value="Finish now")
-
-
       form(name="computerform" ng-submit="computerform.$valid && addComputer()")
-        p Use this form to add new computers
-        .form-group
-          input.form-control(type='text', name='name', placeholder='Enter a name here.', ng-model='newComputer.name' required)
-          p.help-block(ng-show='computerform.name.$error.mongoose')
-            | {{ validationErrors.name }}
-        .form-group
-          input.form-control(type='text' name='description' placeholder='Enter a description here.' ng-model='newComputer.description' required)
-        .form-group
-          input.form-control(type='text' name='brand' placeholder='Enter a brand here.' ng-model='newComputer.brand' required)
-        .form-group
-          input.form-control(type='number' name='price' placeholder='Enter a price here.' ng-model='newComputer.price' ng-min="0" ng-max="1000000" required)
-        .form-group
-          input.form-control(type='text' name='cpu' placeholder='Enter a CPU model here.' ng-model='newComputer.cpu')
-        .form-group
-          input.form-control(type='text' name='gpu' placeholder='Enter a GPU model here.' ng-model='newComputer.gpu')
-        .form-group
-          input.form-control(type='text' name='motherboard' placeholder='Enter the motherboard here.' ng-model='newComputer.motherboard')
-        .checkbox-inline
-          label Online Only?
-            input(type='checkbox' name='onlineOnly' ng-model='newComputer.onlineOnly')
-        .checkbox-inline 
-          label Featured?
-            input(type='checkbox' name='featured' ng-model='newComputer.featured')
-        .checkbox-inline  
-          label On Sale?
-            input(type='checkbox' name='onSale' ng-model='newComputer.onSale')
-        
-        .embedded-form(ng-show="newComputer.onSale")
-          p Please input the details of the sale
-          input.form-control(type="date" placeholder="Enter the sale's start date here." ng-model="newComputer.sale.startDate")
-          input.form-control(type="date" placeholder="Enter the sale's end date here." ng-model="newComputer.sale.endDate")
-          input.form-control(type="number" placeholder="Enter the sale's discount rate here." ng-model="newComputer.sale.discountRate" step="0.01" ng-min="0.01" ng-max="0.99")
+        wizard(on-finish="finishedWizard()") 
+          wz-step(wz-title="Computer" wz-disabled="{{disabled}}")
 
-        .embedded-form
-          p Please choose related products that are recommended for this product 
-            select.form-control(type='select' name='recommendedProducts' ng-options="computer as computer.name for computer in availableComputers track by computer._id" ng-model='newComputer.recommendedProducts' multiple)
-          ul.list-group(ng-repeat="product in newComputer.recommendedProducts")
-            li.list-group-item {{product.name}}
+            h2 Computer Information
+            .form-group
+              input.form-control(type='text', name='name', placeholder='Enter a name here.', ng-model='newComputer.name' required)
+              p.help-block(ng-show='computerform.name.$error.mongoose')
+                | {{ validationErrors.name }}
+            .form-group
+              input.form-control(type='text' name='description' placeholder='Enter a description here.' ng-model='newComputer.description' required)
+            .form-group
+              input.form-control(type='text' name='brand' placeholder='Enter a brand here.' ng-model='newComputer.brand' required)
+            .form-group
+              input.form-control(type='number' name='price' placeholder='Enter a price here.' ng-model='newComputer.price' ng-min="0" ng-max="1000000" required)
+            .form-group
+              input.form-control(type='text' name='cpu' placeholder='Enter a CPU model here.' ng-model='newComputer.cpu')
+            .form-group
+              input.form-control(type='text' name='gpu' placeholder='Enter a GPU model here.' ng-model='newComputer.gpu')
+            .form-group
+              input.form-control(type='text' name='motherboard' placeholder='Enter the motherboard here.' ng-model='newComputer.motherboard')
+            .checkbox-inline
+              label Online Only?
+                input(type='checkbox' name='onlineOnly' ng-model='newComputer.onlineOnly')
+            .checkbox-inline 
+              label Featured?
+                input(type='checkbox' name='featured' ng-model='newComputer.featured')
+            br
+            input(type="submit" wz-next value="Continue")
 
-        //.embedded-form
-          ng-include(src="/picture/picture.form.html")
+          wz-step(wz-title="Sale")
 
-        .embedded-form
-          p Choose pictures to upload
-            input(type="file" ngf-select ng-model="newPictures" name="file" accept="image/*" ngf-max-size="4MB" ngf-multiple="true")
-            p(ng-show="newPictures.length > 0") Click on an Image to set it as a display picture
-            ul.list-group(ng-repeat="picture in newPictures")
-              li.list-group-item(ng-class="{highlightOption: picture.displayPicture}" ng-click="setAsDisplayPicture(picture.name)")
-                img.thumb(ng-show="computerform.file.$valid" ngf-thumbnail="picture" height="100" width="100")
+            h2 Sale Information
+            .checkbox-inline  
+              label On Sale?
+                input(type='checkbox' name='onSale' ng-model='newComputer.onSale')
+
+            .embedded-form(ng-show="newComputer.onSale")
+              p Please input the details of the sale
+              input.form-control(type="date" placeholder="Enter the sale's start date here." ng-model="newComputer.sale.startDate")
+              input.form-control(type="date" placeholder="Enter the sale's end date here." ng-model="newComputer.sale.endDate")
+              input.form-control(type="number" placeholder="Enter the sale's discount rate here." ng-model="newComputer.sale.discountRate" step="0.01" ng-min="0.01" ng-max="0.99")
+            input(type="submit" wz-next value="Continue")
+
+          wz-step(wz-title="Related Products")
             
-          //span.progress(ng-show="newPicture.progress >= 0")
-          //div(style="width:{{newPicture.progress}}%" ng-bind="newPicture.progress + '%'")
-          //span(ng-show="newPicture.result") Upload Successful 
+            h2 Related Products
+            .embedded-form
+              p Please choose related products that are recommended for this product 
+                select.form-control(type='select' name='recommendedProducts' ng-options="computer as computer.name for computer in availableComputers track by computer._id" ng-model='newComputer.recommendedProducts' multiple)
+              ul.list-group(ng-repeat="product in newComputer.recommendedProducts")
+                li.list-group-item {{product.name}}
+            input(type="submit" wz-next value="Continue")
+
+          wz-step(wz-title="Pictures")
+
+            h2 Add Pictures
+              .embedded-form
+                p Choose pictures to upload
+                  input(type="file" ngf-select ng-model="newPictures" name="file" accept="image/*" ngf-max-size="4MB" ngf-multiple="true")
+                  p(ng-show="newPictures.length > 0") Click on an Image to set it as a display picture
+                  ul.list-group(ng-repeat="picture in newPictures")
+                    li.list-group-item(ng-class="{highlightOption: picture.displayPicture}" ng-click="setAsDisplayPicture(picture.name)")
+                      img.thumb(ng-show="computerform.file.$valid" ngf-thumbnail="picture" height="100" width="100")
+                  
+                  //span.progress(ng-show="newPicture.progress >= 0")
+                  //div(style="width:{{newPicture.progress}}%" ng-bind="newPicture.progress + '%'")
+                  //span(ng-show="newPicture.result") Upload Successful 
+            input(type="submit" wz-next value="Continue")          
+
+          wz-step(wz-title="Review")
+            h2 Review
+              .embedded-form
+                p Please review all information before finalizing this product
+            button.btn.btn-primary(ng-disabled="computerform.$invalid" type='submit') Create Computer  
+
           span.err(ng-show="errorMsg") {{errorMsg}}
-          br
-          button.btn.btn-primary(ng-disabled="computerform.$invalid" type='submit') Create Computer
 
 
