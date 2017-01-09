@@ -1,4 +1,10 @@
 .row
+  alert-message
+
+.row
+  ui-view(id="updateForm")
+
+.row
   h2 Account Details
   p Name: {{user.name}}
   p Email: {{user.email}}
@@ -7,6 +13,8 @@
     a.btn.btn-primary(href="/settings/account/password") Change Password
   .col-lg-6
     a.btn.btn-primary(href="/settings/account/email") Change Email
+
+  //.view(ui-view="main")
 
 .row 
   h2 Addresses
@@ -37,13 +45,14 @@
           button.btn.btn-primary(ng-click='setAsPrimaryAddress(address)') Set this as your primary shipping address.
       a.btn.btn-primary(href="/settings/account/shipping") Edit your billing address
 
+  //.view(ui-view="address")
+
 .row
   h2 Information
   p Phone Number: {{user.phoneNumber}}
   p Receive Promotional Emails?: {{user.promotionalEmails | yesNo}}
   a.btn.btn-primary(href="/settings/account/info") Change Info
 
-.row
-  ui-view
+  //.view(ui-view="info")
 
 

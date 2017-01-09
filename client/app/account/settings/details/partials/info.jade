@@ -1,10 +1,20 @@
 h2 Change Info and Preferences
 
-form.form(name='infoForm', role='form' ng-submit='infoForm.$valid && updateUser(user)')
-	.form-group
+form.form(name='infoForm' role='form' ng-submit='infoForm.$valid && updateUser(infoForm, user._id, userUpdates)' no-validate)
+	.form-group(ng-class='{ "has-success": infoForm.phoneNumber.$valid && submitted, "has-error": infoForm.phoneNumber.$invalid && submitted}')
 		label Phone Number
-		input.form-control(type='tel' name='phoneNumber' ng-model='user.phoneNumber' pattern='^((1)?\d{10})$' required)
-	.form-group
-		label Would you like to receive promotional emails?
-		input.form-control(type='checkbox' name='promos' ng-model='user.promotionalEmails')
-	button.btn.btn-lg.btn-primary(ng-disabled='infoForm.$invalid' type='submit') Save changes
+		input.form-control(type='tel' name='phoneNumber' ng-model='userUpdates.phoneNumber' pattern='((1-)|1)?[0-9]{3}-?[0-9]{3}-?[0-9]{4}' required)
+		p.help-block(ng-show='infoForm.phoneNumber.$error.required && submitted')
+			| Please enter a phone number.
+		p.help-block(ng-show='infoForm.phoneNumber.$error.pattern && submitted')
+			| The phone number you entered is not in the correct format.
+		p.help-block(ng-show='infoForm.phoneNumber.$error.mongoose')
+			| {{ errors.other }}
+
+	.form-group(ng-class='{ "has-success": infoForm.promos.$valid && submitted, "has-error": infoForm.promos.$invalid && submitted}')
+		label Receive Promotional Emails?
+		input.form-control(type='checkbox' name='promos' ng-model='userUpdates.promotionalEmails')
+		p.help-block(ng-show='infoForm.promos.$error.mongoose')
+			| {{ errors.other }}
+
+	button.btn.btn-lg.btn-primary(type='submit') Save changes

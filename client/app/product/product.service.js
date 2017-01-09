@@ -2,15 +2,20 @@
 
 angular.module('passportApp')
   .factory('ProductService', function (Restangular) {
-
-    var service = {
+    return {
       getFeatured: function() {
-        return Restangular.all('products').getList('featured'); 
+        return Restangular.all('products').customGET('featured'); 
       },
       addProduct: function(product) {
       	return Restangular.all('products').post(product);
+      },
+      getProducts: function() {
+
+      },
+      searchProducts: function(category, searchObj) {
+        return Restangular.all(category).customPOST(searchObj, 'search');
       }
     };
-    
-    return service;
   });
+
+

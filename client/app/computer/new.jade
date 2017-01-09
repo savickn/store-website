@@ -3,12 +3,9 @@ title Computer Form
 .container
   .row
     .col-lg-12
-      
-
       form(name="computerform" ng-submit="computerform.$valid && addComputer()")
         wizard(on-finish="finishedWizard()") 
           wz-step(wz-title="Computer" wz-disabled="{{disabled}}")
-
             h2 Computer Information
             .form-group
               input.form-control(type='text', name='name', placeholder='Enter a name here.', ng-model='newComputer.name' required)
@@ -36,12 +33,10 @@ title Computer Form
             input(type="submit" wz-next value="Continue")
 
           wz-step(wz-title="Sale")
-
             h2 Sale Information
             .checkbox-inline  
               label On Sale?
                 input(type='checkbox' name='onSale' ng-model='newComputer.onSale')
-
             .embedded-form(ng-show="newComputer.onSale")
               p Please input the details of the sale
               input.form-control(type="date" placeholder="Enter the sale's start date here." ng-model="newComputer.sale.startDate")
@@ -49,7 +44,7 @@ title Computer Form
               input.form-control(type="number" placeholder="Enter the sale's discount rate here." ng-model="newComputer.sale.discountRate" step="0.01" ng-min="0.01" ng-max="0.99")
             input(type="submit" wz-next value="Continue")
 
-          wz-step(wz-title="Related Products")
+          //wz-step(wz-title="Related Products")
             
             h2 Related Products
             .embedded-form
@@ -60,7 +55,6 @@ title Computer Form
             input(type="submit" wz-next value="Continue")
 
           wz-step(wz-title="Pictures")
-
             h2 Add Pictures
               .embedded-form
                 p Choose pictures to upload

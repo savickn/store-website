@@ -1,6 +1,14 @@
 title Product Form
 
 .container
-  .row
-    .col-lg-4(ng-repeat="type in productTypes")
-      a(href="/type/new") Create new {{type}}
+	nav.navbar.navbar-default
+		ul.nav.navbar-nav
+			li
+				a(ui-sref="newProduct.computer") New Computer
+			li
+				a(ui-sref="newProduct.monitor") New Monitor
+			li
+				a(ui-sref="newProduct.keyboard") New Keyboard
+
+	ui-view
+

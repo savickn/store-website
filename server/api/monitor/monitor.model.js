@@ -2,10 +2,10 @@
 
 var mongoose = require('mongoose'),
     extend = require('mongoose-schema-extend'),
-	ProductSchema = require('../product/product.model'),
+	Product = require('../product/product.model'),
     Schema = mongoose.Schema;
 
-var MonitorSchema = ProductSchema.extend({
+var MonitorSchema = Product.schema.extend({
   screenSize: Number,
   vertRes: Number,
   horzRes: Number, 

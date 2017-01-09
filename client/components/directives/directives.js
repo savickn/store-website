@@ -17,51 +17,42 @@ angular.module('passportAppDirectives', [])
 			},
 			link : function(scope, elem, attrs) {
 				var updateStars = function() {
-			  		scope.stars = [];
-			  		for ( var i = 0; i < scope.max; i++) {
-			   			scope.stars.push({
-			    			filled : i < scope.ratingValue
-			   			});
-			  		}
+		  		scope.stars = [];
+		  		for ( var i = 0; i < scope.max; i++) {
+		   			scope.stars.push({
+		    			filled : i < scope.ratingValue
+		   			});
+		  		}
 			 	};
 			 
 		 		scope.toggle = function(index) {
-			  		scope.ratingValue = index + 1;
-			  		scope.onRatingSelected({
-			   			rating : index + 1
-			  		});
+		  		scope.ratingValue = index + 1;
+		  		scope.onRatingSelected({
+		   			rating : index + 1
+		  		});
 		 		};
 		 
 			 	scope.$watch('ratingValue', function(oldVal, newVal) {
-			   		if (newVal) {
-			    		updateStars();
-			   		}
-			  	});
+		   		if (newVal) {
+		    		updateStars();
+		   		}
+		  	});
 			}
 		};
 	})
 	.directive('toggleClass', function() {
-	    return {
-	        restrict: 'A',
-	        link: function(scope, element, attrs) {
-	            element.bind('click', function() {
-	                if(element.attr("class") !== attrs.toggleClass) {
-	                    element.addClass(attrs.toggleClass);
-	                } else {
-	                    element.removeClass(attrs.toggleClass);
-	                }
-	            });
-	        }
-	    };
-	})
-	.directive('address', function() {
-		return {
-			restrict: 'A',
-			templateUrl : 'views/address.jade',
-			scope : {
-				address : '@'
-			},	
-		};
+    return {
+      restrict: 'A',
+      link: function(scope, element, attrs) {
+        element.bind('click', function() {
+          if(element.attr("class") !== attrs.toggleClass) {
+            element.addClass(attrs.toggleClass);
+          } else {
+            element.removeClass(attrs.toggleClass);
+          }
+        });
+      }
+    };
 	})
 	.directive('toggleItemWishlist', function(Auth, WishlistService) {
 		return {
@@ -75,17 +66,20 @@ angular.module('passportAppDirectives', [])
 				//state: '@'
 			},
 			//controller: "WishlistController as ctrl",
+			/*compile: function(tElem, tAttrs) {
+				var wishlist = Auth.getCurrentUser().wishlist;
+			},*/
 			link: function(scope, elem, attrs) {
 				var wishlist = Auth.getCurrentUser().wishlist;
 				scope.state = wishlist.products.includes(scope.productId);
 
 				var updateWishlist = function() {
 					WishlistService.updateWishlist(wishlist._id, wishlist).then(function(wishlist) {
-            			Auth.updateWishlist(wishlist);
-            			scope.state = !scope.state;
-	            	}).catch(function(err) {
-	            		console.log(err);
-	            	});					
+      			Auth.updateWishlist(wishlist);
+      			scope.state = !scope.state;
+        	}).catch(function(err) {
+        		console.log(err);
+        	});					
 				};
 
 				scope.addToWishlist = function(productId) {
@@ -101,7 +95,26 @@ angular.module('passportAppDirectives', [])
 				};
 			}
 		};
-	});
+	})
+	.directive('alertMessage', function(AlertService) {
+		return {
+			restrict: 'E',
+			templateUrl : '../components/directives/views/alert.html',
+			scope : {
+				//message : '@',
+				//type: '@'
+			},
+			link: function(scope, elem, attrs) {
+				scope.$watch( function () { return AlertService.alert; }, function (alert) {
+			    scope.message = alert.message;
+			    scope.type = alert.type;
+			  }, true);
+			}
+		};
+	})
+
+
+
 	/*.directive('testWishlist', function(Auth) {
 		return {
 			restrict: 'E',

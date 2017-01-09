@@ -2,10 +2,10 @@
 
 var mongoose = require('mongoose'),
     extend = require('mongoose-schema-extend'),
-	ProductSchema = require('../product/product.model'),
+    Product = require('../product/product.model'),
     Schema = mongoose.Schema;
 
-var KeyboardSchema = new Schema({
+var KeyboardSchema = Product.schema.extend({
   size: String, //e.g. full, mini
   macro: {
   	type: Boolean,
@@ -19,6 +19,6 @@ var KeyboardSchema = new Schema({
   	type: Boolean,
   	default: false
   }
-});
+}, {collection: 'products'});
 
 module.exports = mongoose.model('Keyboard', KeyboardSchema);

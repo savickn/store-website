@@ -8,5 +8,17 @@ angular.module('passportApp')
         url: '/test',
         templateUrl: 'app/test/test.html',
         controller: 'TestCtrl'
+      })
+      .state('test.email', {
+      	url: '/email',
+        templateUrl: 'app/test/email.html',
+      })
+      .state('test.style', {
+      	url: '/style',
+        templateUrl: 'app/test/style.html',
+      })
+      .state('test.computers', {
+      	url: '/computers',
+      	templateUrl: 'app/test/computers.html'
       });
   });

@@ -25,21 +25,27 @@ exports.show = function(req, res) {
 
 exports.search = function(req, res) {
   var searchObj = _.merge({}, req.query);
+  var wishlists = {};
 
-  var query = User.find(searchObj);
-  query.select('name wishlist');
-  query.populate('wishlist');
-  query.exec(function(err, users) {
-    if(err) return res.status(500).send(err);
+  /*if(searchObj.name) {
+    var err = new Error('')
+    return res.status(500).send(err);
+  }*/
 
-    var wishlists = users.map((user) => {
-    	if(!user.wishlist.private) {
-    		return {_id: user.wishlist._id, name: user.name, products: user.wishlist.products};
-    	}
+  User.find(searchObj)
+    .select('name wishlist')
+    .populate('wishlist')
+    .exec(function(err, users) {
+      if(err) return res.status(500).send(err);
+
+      wishlists = users.map((user) => {
+      	if(!user.wishlist.private) {
+      		return {_id: user.wishlist._id, name: user.name, products: user.wishlist.products};
+      	}
+      });
+
+      return res.status(200).json(wishlists);
     });
-
-    return res.status(200).json(wishlists);
-  });
 }
 
 /**

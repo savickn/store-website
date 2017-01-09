@@ -1,16 +1,16 @@
 header#banner.hero-unit
   .container
-    h1 Negus Store
+    h1 Negus Website
     p.lead Purchase state-of-the-art electronics for discounted prices.
 
 .container
   .row
     .col-lg-4
-      a(href='/computers')
+      a(href='/products/computers')
         img.center(src='computer.jpg' height='200' width='200')
       p.center Computers
     .col-lg-4
-      a(href='/keyboards')
+      a(href='/products/keyboards')
         img.center(src='keyboard.jpg' height='200' width='200')
       p.center Keyboards
     .col-lg-4
@@ -54,13 +54,3 @@ header#banner.hero-unit
         li
           a(href='#', tooltip='{{thing.info}}')
             | {{product.name}}
-
-
-footer.footer
-  .container
-    p
-      | Angular Fullstack v2.1.1
-      = ' | '
-      a(href='https://twitter.com/tyhenkel') @tyhenkel
-      = ' | '
-      a(href='https://github.com/DaftMonk/generator-angular-fullstack/issues?state=open') Issues

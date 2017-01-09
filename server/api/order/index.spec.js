@@ -2,7 +2,7 @@
 
 var proxyquire = require('proxyquire').noPreserveCache();
 
-var purchaseCtrlStub = {
+var orderCtrlStub = {
   index: 'purchaseCtrl.index'
 };
 
@@ -11,24 +11,24 @@ var routerStub = {
 };
 
 // require the index with our stubbed out modules
-var purchaseIndex = proxyquire('./index.js', {
+var orderIndex = proxyquire('./index.js', {
   express: {
     Router() {
       return routerStub;
     }
   },
-  './purchase.controller': purchaseCtrlStub
+  './order.controller': orderCtrlStub
 });
 
-describe('Purchase API Router:', function() {
+describe('Order API Router:', function() {
   it('should return an express router instance', function() {
-    purchaseIndex.should.equal(routerStub);
+    orderIndex.should.equal(routerStub);
   });
 
-  describe('GET /api/purchases', function() {
-    it('should route to purchase.controller.index', function() {
+  describe('GET /api/orders', function() {
+    it('should route to order.controller.index', function() {
       routerStub.get
-        .withArgs('/', 'purchaseCtrl.index')
+        .withArgs('/', 'orderCtrl.index')
         .should.have.been.calledOnce;
     });
   });

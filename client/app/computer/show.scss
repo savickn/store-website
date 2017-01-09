@@ -1,4 +1,22 @@
 
+.product-pictures-flexbox {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.product-flexbox:nth-child(1) {
+  //work with flex and order properties
+}
+
+.flex-item {
+  padding: 2px;
+}
+
+
+
 
 .gallery-img {
   position: relative;

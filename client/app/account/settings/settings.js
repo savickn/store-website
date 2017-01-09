@@ -24,6 +24,12 @@ angular.module('passportApp')
       .state('settings.account.email', {
         url: '/email',
         templateUrl: 'app/account/settings/details/partials/email.html'
+
+        /*views: {
+          'main@settings.account.email' : {
+            templateURL: 'app/account/settings/details/partials/email.html'
+          }
+        }*/
       })
       .state('settings.account.info', {
         url: '/info',
@@ -39,10 +45,13 @@ angular.module('passportApp')
       })
       
 
-      .state('settings.wishlist', {
-        url: '/wishlist',
-        templateUrl: 'app/account/settings/wishlist/wishlist.html',
+      .state('settings.myWishlist', {
+        url: '/myWishlist',
+        templateUrl: 'app/wishlists/show.html',
         controller: 'WishlistCtrl',
+        params: {
+          wishlist: {}
+        },
         authenticate: true
       })
       .state('settings.orderHistory', {

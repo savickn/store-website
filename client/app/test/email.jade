@@ -1,0 +1,14 @@
+
+form(name="emailForm" role="form" ng-submit="emailForm.$valid && sendEmail()")
+	input.form-control(type="text" name="subject" placeholder="Subject" ng-model="email.subject" required) 
+	input.form-control(type="textarea" name="body" placeholder="Body" ng-model="email.body" required)
+	button.btn.btn-primary(ng-disabled="emailForm.$invalid" type="submit") Submit
+
+button.btn.btn-primary(ng-click="send()") Send Email
+
+		//toggle-item-wishlist(productId="10")
+
+		//div
+			item(name="Item-1")
+			item(name="Item-2")
+			item(name="Item-3")

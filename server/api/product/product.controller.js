@@ -5,14 +5,16 @@ var Product = require('./product.model');
 
 // Get list of products
 exports.index = function(req, res) {
-  Product.find(function (err, products) {
+  Product.model.find(function (err, products) {
     if(err) { return handleError(res, err); }
     return res.status(200).json(products);
   });
 };
 
 exports.featured = function(req, res) {
-  Product.find({featured: true}, function(err, products) {
+  Product.model.find({featured: true})
+  .populate('displayPicture')
+  .exec(function(err, products) {
     if(err) {return handleError(res, err);}
     return res.status(200).json(products);
   });

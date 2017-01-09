@@ -9,7 +9,10 @@ angular.module('passportApp')
         //.setBaseUrl('api');
       }); 
 
-    var service = {
+    return {
+      searchUsers: function(query) {
+        return Restangular.all('users').customGET('search', query);
+      },
       getUsers: function() {
         return Restangular.all('users').getList(); 
       },
@@ -27,32 +30,30 @@ angular.module('passportApp')
       },
 
 
+
       getMe: function() {
         return Restangular.one('users', 'me').get();
       },
       changePassword: function(userId, newPass) {
         return Restangular.one('users', userId).customPUT(newPass, 'password');
       },
-      changeEmail: function(userId, newEmail) {
-        return Restangular.one('users', userId).customPUT(newEmail, 'email');
+
+
+      send: function() {
+        return Restangular.all('users').get('email');
       },
-      updateUserInfo: function(user) {
-        return Restangular.one('users', user._id).customPUT(user);
-      },
-
-
-
       sendEmail: function(data) {
-        return Restangular.all('users').get('email', {data});
+        return Restangular.all('users').customGET('email', data);
       }
     };
-    
-    return service;
   });
 
 
 
-
+/*
+      changeEmail: function(userId, newEmail) {
+        return Restangular.one('users', userId).customPUT(newEmail, 'email');
+      },*/
 
   /*.factory('User', function ($resource) {
     return $resource('/api/users/:id/:controller', {

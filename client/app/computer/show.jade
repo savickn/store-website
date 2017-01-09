@@ -1,18 +1,14 @@
 
 .container
-  .row 
-    .alert(ng-if="message" ng-class="{'alert-success': type === 'Success', 'alert-danger': type === 'Error', 'alert-warning': type === 'Warning'}") {{message}}
-      //span.glyphicon.glyphicon-remove(ng-click="clearAlert()")
+  .alert(ng-if="message" ng-class="{'alert-success': type === 'Success', 'alert-danger': type === 'Error', 'alert-warning': type === 'Warning'}") {{message}}
+    //span.glyphicon.glyphicon-remove(ng-click="clearAlert()")
 
-    h1 {{currentProduct.name}}
-      h3
-        a(href="/computers") Back to Computers
+  a(ui-sref="products.computers") Back to Computers
   .row
     .col-lg-6
-      .row
-        img.previewImage(src='{{previewImage.path}}' width='400' hight='400' ng-if='previewImage')
-      .row
-        .col-lg-3(ng-repeat='picture in currentProduct.pictures')
+      img.previewImage.img-rounded(src='{{previewImage.path}}' width='400' hight='400' ng-if='previewImage')
+      .product-pictures-flexbox
+        .flex-item(ng-repeat='picture in currentProduct.pictures')
           .gallery-img
             img.img-rounded(src="{{picture.path}}" ng-click='setPreviewImage(picture)' height="100" width="100")
             //i.glyphicon.glyphicon-remove.top-right(ng-click="removePicture(picture._id)" ng-if="isAdmin")
@@ -35,9 +31,28 @@
         li.list-group-item Featured: {{currentProduct.featured | yesNo }}
         li.list-group-item On Sale: {{currentProduct.onSale | yesNo }}
 
+  ////////////////////////// NAVBAR ///////////////////////////////
+
+  nav.navbar.navbar-default
+    ul.nav.navbar-nav
+      li
+        a(href="#" ng-click="viewState = 'specs'") Specifications
+      
+      li
+        a(href="#" ng-click="viewState = 'warranty'") Warranty
+      
+      li
+        a(href="#" ng-click="viewState = 'reviews'") Reviews
+      
+      li(ng-click="viewState = 'edit'" ng-if="isAdmin")
+        a(href="#") Edit
+      
+      li(ng-click="viewState = 'picture'" ng-if="isAdmin")
+        a(href="#") Add Pictures
+
   /////////////////////////// EDIT PRODUCT ////////////////////////////////
 
-  .row(ng-if="isAdmin")
+  .row(ng-if="isAdmin" ng-show="viewState === 'edit'")
     .col-lg-12
       form.computer-edit-form(name="computerEditForm" ng-submit="computerEditForm.$valid && updateComputer()")
         label Use this form to edit computer properties
@@ -61,7 +76,7 @@
 
   ////////////////////////// PICTURE UPLOAD ////////////////////////////////
 
-  .row(ng-controller='PictureUploadCtrl' ng-if='isAdmin')
+  .row(ng-controller='PictureUploadCtrl' ng-if='isAdmin' ng-show="viewState === 'picture'")
     .col-lg-12
       form.picture-upload(name="pictureForm" ng-submit="pictureForm.$valid && uploadPic(currentProduct.__t, currentProduct._id)")
         label Use this form to upload pictures | {{status}}
@@ -86,7 +101,7 @@
       ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-if="currentProduct.reviews.length > 0" ng-repeat='review in currentProduct.reviews')
         li
           a(href='#') {{review.rating}} | {{review.score}} | {{review.summary}}
-            button.close(type='button', ng-click='removeReview(review)' ng-if="isAdmin") ×
+            button.close(type='button', ng-click='removeReview(review)') ×
           a(href='reviews/{{review._id}}') Read the full review...  
       p(ng-if="currentProduct.reviews.length < 1") There are no reviews for this product.
 

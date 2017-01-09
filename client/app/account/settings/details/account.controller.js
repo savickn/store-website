@@ -1,39 +1,48 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('AccountCtrl', function ($scope, AlertService, UserService, Auth, AddressService) {
+  .controller('AccountCtrl', function ($scope, AlertService, UserService, Auth, $state) {
     //$scope.user = Auth.getCurrentUser();
     //console.log($scope.user);
+    $scope.errors = {};
+    $scope.userUpdates = {};
 
-    $scope.changeEmail = function(form) {
+
+    $scope.countries = [];
+    $scope.provinces = {};
+    $scope.cities = {};
+
+
+    $scope.setAsPrimaryAddress = function(primaryAddress) {
+      //add to cookies
 
     };
 
-    $scope.setAsPrimaryAddress = function(updatedAddress) {
-      $scope.user.shippingAddress = $scope.user.shippingAddress.map(function(address) {
-        if(address._id === updatedAddress._id) {
-          return address.primary = true;
-        } else {
-          return address;
-        }
-      })
-      console.log($scope.user.shippingAddress);
+		$scope.updateUser = function(form, userId, userUpdates) {
+      $scope.submitted = true
 
-      $scope.updateUser($scope.user);
-    };
+      if(form.$valid) {
+        UserService.updateUser(userId, userUpdates).then(function(user) {
+          $scope.user = user;
+          $scope.userUpdates = {};
 
-		$scope.updateUser = function(user) {
-			console.log('clicked');
+          Auth.setCurrentUser(user);
+          $scope.submitted = false;
+          AlertService.setAlert("Your account was successfully updated.", "Success");
+          $state.go('settings.account');
+        }, function(err) {
+          err = err.data;
+          $scope.errors = {};
 
-      UserService.updateUser(user).then(function(user) {
-        $scope.user = newComputer;
-        $scope.previewImage = newComputer.displayPicture;
-        $scope.updateDisplayPic = false;
-        $scope.computerEditForm.$setPristine();
-        AlertService.setAlert("The computer was successfully updated.", "Success");
-      }, function(err) {
-        AlertService.setAlert(err, "Error");
-      });
+          // Update validity of form fields that match the mongoose errors
+          angular.forEach(err.errors, function(error, field) {
+            form[field].$setValidity('mongoose', false);
+            $scope.errors[field] = error.message;
+          });
+
+          AlertService.setAlert("Your account could not be updated. Please try again.", "Error");
+        });
+      }
     };
 
     $scope.changePassword = function(form) {
@@ -50,6 +59,18 @@ angular.module('passportApp')
         });
       }
     };
-
-    
   });
+
+
+
+
+      /*$scope.user.shippingAddress = $scope.user.shippingAddress.map(function(address) {
+        if(address._id === primaryAddress._id) {
+          return address.primary = true;
+        } else {
+          return address;
+        }
+      })
+      console.log($scope.user.shippingAddress);
+
+      $scope.updateUser($scope.user);*/

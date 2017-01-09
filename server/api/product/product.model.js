@@ -36,20 +36,25 @@ var ProductSchema = new Schema({
 		type: Schema.Types.ObjectId, 
 		ref: 'Picture'
 	},
-	recommendedAccessories: [{
-		type: Schema.Types.ObjectId,
-		ref: 'Product',
-		index: true
-	}],
-	publicFields: [{
-		type: String
-	}],
 	inventory: [Inventory],
-	sale: Sale,
-	/*sale: {
-		type: Schema.Types.ObjectId,
-		ref: 'Sale'
-	},*/
+	availability: {
+		type: String,
+		enum: ['In Stock', '2-3 Weeks', 'On Re-Order', 'Unavailable'],
+		required: true
+	},
+	UPC: {
+		type: String,
+		required: true
+	},
+	sale: {
+		type: [Sale],
+		validate: {
+			validator: function(arr) {
+				return arr.length === 1;
+			},
+			message: 'Only one sale can be active at a time.'
+		}
+	},
 	onSale: {
 		type: Boolean,
 		default: false
@@ -63,6 +68,38 @@ var ProductSchema = new Schema({
 		default: false
 	}
 }, {collection: 'products'});
+
+
+ProductSchema.virtual('recommended').get(function() {
+	//refers to products that are frequently bought with this item
+
+
+});
+
+/*ProductSchema
+  .virtual('searchableCategories')
+  .get(function() {
+    	return _.extend(this.searchableCategories, ['featured', 'onlineOnly', 'onSale', 'brand'])
+    };
+  });*/
+
+// Public product information
+ProductSchema
+  .virtual('publicProperties')
+  .get(function() {
+    return {
+      'name': this.name,
+      'description': this.description,
+      'price': this.price,
+      'brand': this.brand,
+      'onSale': this.onSale,
+      'onlineOnly': this.onlineOnly,
+      'cpu': this.cpu,
+      'gpu': this.gpu,
+      'motherboard': this.motherboard
+    };
+  });
+
 
 /*ProductSchema.virtual('getPublicFields').get(function() {
 	var obj = {};
@@ -89,4 +126,15 @@ ProductSchema.virtual('salePrice').get(function() {
 
 ProductSchema.set('toJSON', {virtuals: true});
 
-module.exports = ProductSchema, mongoose.model('Product', ProductSchema);
+exports.schema = ProductSchema;
+exports.model = mongoose.model('Product', ProductSchema);
+
+
+/*
+	// recommended refers to frequently bought with
+	recommendedAccessories: [{
+		type: Schema.Types.ObjectId,
+		ref: 'Product',
+		index: true
+	}],
+	*/

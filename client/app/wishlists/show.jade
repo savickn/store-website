@@ -1,6 +1,6 @@
-h2 {{wishlistQuery.wishlist.name}}'s Wishlist
+h2 {{wishlist.name}}'s Wishlist
 
-ul.list-group(ng-repeat="product in wishlistQuery.wishlist.products")
+ul.list-group(ng-repeat="product in wishlist.products")
 	li.list-group-item 
 		a.pull-left(src="product.displayPicture")
 		p {{product.name}}

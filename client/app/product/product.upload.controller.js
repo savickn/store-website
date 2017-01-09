@@ -20,9 +20,6 @@ angular.module('passportApp')
       !$scope.newComputer.cpu ? 'Not Specified' : $scope.newComputer.cpu;
       !$scope.newComputer.motherboard ? 'Not Specified' : $scope.newComputer.motherboard; 
 
-      $scope.newComputer.publicFields = ['name', 'description', 'price', 'brand', 'onSale', 
-        'onlineOnly', 'featured', 'cpu', 'gpu', 'motherboard'];
-
       if($scope.computerform.$valid && Auth.isAdmin()) {
         ComputerService.addComputer($scope.newComputer).then(function(computer) {
           var newComputer = computer;

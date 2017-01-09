@@ -1,0 +1,8 @@
+.col-lg-4(ng-repeat="product in featuredProducts")
+  img.center-block(src='{{product.displayPicture.path}}' width='150' height='150' ng-if='product.displayPicture')
+  img.center-block(src='no_image.jpg' width='150' height='150' ng-if='!product.displayPicture')
+  
+  .product-content.divider
+    a.text-center(href="#") {{product.name}} 
+    p.text-center Price: {{computer.price}}
+    ngcart-addtocart.center-block(id="{{product._id}}" name="{{product.name}}" price="{{product.price}}" quantity="1" quantity-max="30" data="product") Add to Cart

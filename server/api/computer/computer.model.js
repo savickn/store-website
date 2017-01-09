@@ -2,10 +2,10 @@
 
 var mongoose = require('mongoose'),
 	extend = require('mongoose-schema-extend'),
-	ProductSchema = require('../product/product.model'),
-    Schema = mongoose.Schema;
+	Product = require('../product/product.model'),
+  Schema = mongoose.Schema;
 
-var ComputerSchema = ProductSchema.extend({
+var ComputerSchema = Product.schema.extend({
 	cpu: {
 		type: String,
 		default: 'Not Specified'
@@ -19,5 +19,12 @@ var ComputerSchema = ProductSchema.extend({
 		default: 'Not Specified'
 	},
 }, {collection: 'products'});
+
+ComputerSchema
+	.virtual('searchableCategories')
+	.get(function() {
+		return ['CPU', 'GPU', 'Motherboard'];
+	})
+
 
 module.exports = mongoose.model('Computer', ComputerSchema);

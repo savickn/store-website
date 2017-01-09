@@ -1,9 +1,11 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('ComputerCollectionCtrl', function ($scope, $stateParams, $timeout,
+  .controller('ComputerCollectionCtrl', function ($scope, $stateParams, $timeout, $location,
       Auth, Upload, ComputerService, CartService, ngCart) {
     //check why $setValidity is not working sometime
+    //work on page anchors
+
     $scope.isAdmin = Auth.isAdmin();
 
     $scope.errorMessages = "";
@@ -16,6 +18,17 @@ angular.module('passportApp')
     $scope.computerCPUs = [];
     $scope.computerGPUs = [];
     $scope.computerMotherboards = [];
+
+    $scope.searchableCategories = [];
+
+    /*$scope.searchableCategories = [{
+        name: 'hello',
+        list: ['aaa', 'bbb', 'ccc']
+      }, {
+        name: 'world',
+        list: ['ddd', 'eee', 'fff']
+      }
+    ];*/
 
     ///////////////////////////////////////////////////////////////////////////
     
@@ -42,7 +55,7 @@ angular.module('passportApp')
       ComputerService.getComputers(options).then(function(response) {
         $scope.availableComputers = response.data;   
         $scope.totalComputers = response.headers('total-Computers');
-        getComputerInfo(response.data);
+        getProductInfo(response.data);
       });
     }
 
@@ -91,13 +104,31 @@ angular.module('passportApp')
 
     ///////////////////////////////////////////////////////////////////
 
+    $scope.refresh = function(computers) {
+      getProductInfo(computers);
+    }
+
     //GET COMPUTERS
     function getComputers() {
       ComputerService.getComputers().then(function(computers) {
         $scope.availableComputers = computers;
-        getComputerInfo(computers);
+        //getComputerInfo(computers);
       });
-    }
+    };
+
+    function getProductInfo(products) {
+      products[0].searchableCategories.forEach(function(category) {
+        var obj = {};
+        obj.name = category;
+        obj.list = [];
+
+        products.forEach(function(product) {
+          obj.list.pushUnique(product[category]);
+        });
+
+        $scope.searchableCategories.pushUnique(obj);
+      });
+    };
 
     //populates page data
     function getComputerInfo(computers) {
@@ -109,8 +140,49 @@ angular.module('passportApp')
       });
     };
 
+
     ///////////////////////////////////////////////////////////////////////
 
+
+    $scope.deleteComputer = function(computer) {
+      var idx = $scope.availableComputers.indexOf(computer);
+      
+      ComputerService.removeComputer(computer._id).then(function() {
+        $scope.availableComputers.splice(idx, 1);
+      });
+    };
+
+    /*$scope.addToCart = function(item) {
+      CartService.addToCart(item);
+    };*/
+
+  });
+
+
+
+            /*Upload.upload({
+              url: '/api/pictures',
+              method: 'POST',
+              data: {file: picture, filename: picture.name, contentType: picture.type, size: picture.size, product: computer._id}
+            }).then(function (response) {
+              $timeout(function () {
+                $scope.status = "success";
+                $scope.newPictures.remove(response);
+
+                if(newPictures.length === 0) {
+                  $scope.availableComputers.push(computer);
+                  $scope.newComputer = {};
+                  getComputerInfo();
+                }
+              });
+            }, function (err) {
+              if (err.status > 0)
+                $scope.errorMsg = err.status + ': ' + err.data;
+            }, function (evt) {
+              file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            });*/
+
+/*
     $scope.newComputer = {};
     $scope.newPictures = [];
     $scope.newDisplayPicture = {};
@@ -181,42 +253,4 @@ angular.module('passportApp')
           pic.displayPicture = false;
         }
       })
-    }
-
-    $scope.deleteComputer = function(computer) {
-      var idx = $scope.availableComputers.indexOf(computer);
-      
-      ComputerService.removeComputer(computer._id).then(function() {
-        $scope.availableComputers.splice(idx, 1);
-      });
-    };
-
-    /*$scope.addToCart = function(item) {
-      CartService.addToCart(item);
-    };*/
-
-  });
-
-
-
-            /*Upload.upload({
-              url: '/api/pictures',
-              method: 'POST',
-              data: {file: picture, filename: picture.name, contentType: picture.type, size: picture.size, product: computer._id}
-            }).then(function (response) {
-              $timeout(function () {
-                $scope.status = "success";
-                $scope.newPictures.remove(response);
-
-                if(newPictures.length === 0) {
-                  $scope.availableComputers.push(computer);
-                  $scope.newComputer = {};
-                  getComputerInfo();
-                }
-              });
-            }, function (err) {
-              if (err.status > 0)
-                $scope.errorMsg = err.status + ': ' + err.data;
-            }, function (evt) {
-              file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-            });*/
+    }*/

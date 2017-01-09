@@ -4,16 +4,22 @@ var User = require('./user.model');
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
+var _ = require('lodash');
+
+var fs = require('fs');
+const output = fs.createWriteStream('./stdout.log');
+const errorOutput = fs.createWriteStream('./stderr.log');
+const myConsole = new console.Console(output, errorOutput);
 
 var nodemailer = require('nodemailer');
+var smtpTransport = require('nodemailer-smtp-transport');
 var EmailTemplate = require('email-templates').EmailTemplate;
 var path = require('path');
 
 var Wishlist = require('../wishlist/wishlist.model');
+var Reward = require('../reward/reward.model');
 
-var validationError = function(res, err) {
-  return res.status(422).json(err);
-};
+
 
 var sendWelcomeEmail = function(req, res) {
   var transporter = nodemailer.createTransport("SMTP", {
@@ -47,16 +53,14 @@ var sendWelcomeEmail = function(req, res) {
   });
 };
 
-exports.sendEmail = function(req, res) {
-  debugger;
-
-  var transporter = nodemailer.createTransport("SMTP", {
+exports.email = function(req, res) {
+  var transporter = nodemailer.createTransport(smtpTransport({
       service: 'gmail',
       auth: {
           user: 'kingn3gu5@gmail.com', // Your email id
           pass: 'YaNeCk7799' // Your password
       }
-  });
+  }));
 
   var mailOptions = {
     from: 'kingn3gu5@gmail.com',
@@ -67,8 +71,11 @@ exports.sendEmail = function(req, res) {
   };
 
   transporter.sendMail(mailOptions, function(err, info){
-    if(err) return res.status(500).send(err);
-    return res.status(200).json(info);
+    if(err) {
+      console.log(err);
+      return res.status(500).send(err);
+    }
+    return res.status(200).json({status: 'success'});
   });
 };
 
@@ -84,15 +91,25 @@ exports.sendEmail = function(req, res) {
 };*/
 
 exports.search = function(req, res) {
+  myConsole.log(req);
+
+  if(req.query.cardNumber) {
+    Reward.find({cardNumber: req.query.cardNumber})
+    .populate('user', '-salt -hashedPassword')
+    .exec(function(err, reward) {
+      if(err) return res.status(500).send(err);
+      return res.status(200).json(reward.user);  
+    })
+  }
+
   var searchObj = _.merge({}, req.query);
 
   User.find(searchObj)
-  .select('-password -')
-  .populate('reward')
+  .select('-salt -hashedPassword')
+  .populate('reward wishlist')
   .exec(function(err, users) {
     if(err) return res.status(500).send(err);
-
-
+    return res.status(200).json(users);
   });
 };
 
@@ -129,7 +146,7 @@ exports.create = function (req, res) {
 /**
  * Get a single user
  */
-exports.show = function (req, res) {
+exports.show = function (req, res, next) {
   var userId = req.params.id;
 
   User.findById(userId, function (err, user) {
@@ -172,7 +189,7 @@ exports.changePassword = function(req, res) {
 };
 
 /**
-** Generic update function
+** Generic update function (for email, addresses, phone number, email settings, etc)
 **/
 
 exports.update = function(req, res) {
@@ -184,16 +201,51 @@ exports.update = function(req, res) {
   .select('-salt -hashedPassword')
   .populate('reward wishlist')
   .exec(function(err, user) {
-    if (err) { return handleError(res, err); }
+    if (err) { return validationError(res, err); }
     return res.status(200).json(user);
   });
 };
+
+/**
+ * Get my info
+ */
+exports.me = function(req, res, next) {
+  var userId = req.user._id;
+  User.findOne({_id: userId})
+  .select('-salt -hashedPassword')
+  .populate('reward wishlist')
+  //query.populate('purchases reward wishlist shippingAddress billingAddress'); 
+  .exec(function(err, user) { // don't ever give out the password or salt
+    if (err) return next(err);
+    if (!user) return res.status(401).send('Unauthorized');
+    res.json(user);
+  });
+};
+
+/**
+ * Authentication callback
+ */
+exports.authCallback = function(req, res, next) {
+  res.redirect('/');
+};
+
+/*
+** Respond with validation error
+*/
+
+var validationError = function(res, err) {
+  return res.status(422).json(err);
+};
+
+
+
+
 
 
 /**
 * Changes email
 */
-
+/*
 exports.changeEmail = function(req, res) {
   var email = req.user.email.toLowerCase();
 
@@ -207,25 +259,4 @@ exports.changeEmail = function(req, res) {
   })
 };
 
-/**
- * Get my info
- */
-exports.me = function(req, res) {
-  var userId = req.user._id;
-  var query = User.findOne({_id: userId});
-  query.select('-salt -hashedPassword');
-  query.populate('reward wishlist');
-  //query.populate('purchases reward wishlist shippingAddress billingAddress'); 
-  query.exec(function(err, user) { // don't ever give out the password or salt
-    if (err) return next(err);
-    if (!user) return res.status(401).send('Unauthorized');
-    res.json(user);
-  });
-};
-
-/**
- * Authentication callback
- */
-exports.authCallback = function(req, res, next) {
-  res.redirect('/');
-};
+*/

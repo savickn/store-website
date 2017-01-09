@@ -1,20 +1,20 @@
 
 .container
   .row
-    .col-lg-4
+    .col-lg-4.col-md-4.col-sm-4
       ul.list-group
         li.list-group-item 
           //make this a dropdown
-          a(href="/settings/account") Account Details  
+          a(ui-sref="settings.account") Account Details  
         li.list-group-item
-          a(href="/settings/rewards") My Rewards
+          a(ui-sref="settings.rewards") My Rewards
         li.list-group-item
-          a(href="/settings/wishlist") Wishlist
+          a(ui-sref="settings.myWishlist({wishlist: user.wishlist})") Wishlist
         li.list-group-item
-          a(href="/settings/paymentOptions") Payment Options
+          a(ui-sref="settings.paymentOptions") Payment Options
         li.list-group-item
-          a(href="/settings/orders") Order History
-    .col-lg-8
+          a(ui-sref="settings.orderHistory") Order History
+    .col-lg-8.col-md-8.col-sm-8
       ui-view
 
 

@@ -4,11 +4,12 @@
 .container
   .row
     .col-lg-offset-3
-      h2 Computers
-      a(href='computers/new') New Computer
+      h2#top Computers
+      a(href='/products/computers/new') New Computer
+      ui-view
   .row
     .col-lg-2
-      .sort.push-right(uib-dropdown)  
+      .sort.pull-right(uib-dropdown)  
         button.btn.btn-default(type="button" uib-dropdown-toggle) Sort
           span.caret
         ul(uib-dropdown-menu)
@@ -22,8 +23,7 @@
             a(href="#" ng-click="sortType = 'name'; sortReverse = true") Name: Z-A
 
 
-  ////////////////////////////////////////////////MAIN CONTENT
-
+  //////////////////////////////////////////////// SEARCH SIDEBAR
 
   .row
     .col-lg-3
@@ -32,7 +32,8 @@
           .navbar-header
             a.navbar-brand(href="#" ng-click="getSearch(filterExpr)") Search
 
-          .collapse.navbar-collapse
+          //.collapse.navbar-collapse
+          div
             ul.nav.navbar-nav
               li(uib-dropdown)
                 a(href="#" uib-dropdown-toggle) Product Name
@@ -55,27 +56,61 @@
                     a(href="" ng-click="this[brand + '-checked'] = !this[brand + '-checked']") {{brand}}
                       span.glyphicon.glyphicon-unchecked(ng-if="!this[brand + '-checked']" ng-value="filterExpr.brand.remove(brand)")
                       span.glyphicon.glyphicon-check(ng-if="this[brand + '-checked']" ng-value="filterExpr.brand.pushUnique(brand)")
-              li(uib-dropdown)
+
+
+
+
+
+
+
+
+
+
+
+
+              li(ng-repeat="category in searchableCategories" uib-dropdown)
+                a(href="#" uib-dropdown-toggle) {{category.name}}
+                ul(role="menu" uib-dropdown-menu ng-click="$event.stopPropagation()") 
+                  li(ng-repeat="field in category.list")
+                    a(href="" ng-click="this[field + '-checked'] = !this[field + '-checked']") {{field}}
+                      span.glyphicon.glyphicon-unchecked(ng-if="!this[field + '-checked']" ng-value="filterExpr.field.remove(field)")
+                      span.glyphicon.glyphicon-check(ng-if="this[field + '-checked']" ng-value="filterExpr.field.pushUnique(field)")
+
+
+              //li(uib-dropdown)
                 a(href="#" uib-dropdown-toggle) CPU
                 ul(role="menu" uib-dropdown-menu ng-repeat="cpu in computerCPUs" ng-click="$event.stopPropagation()") 
                   li
                     a(href="" ng-click="this[cpu + '-checked'] = !this[cpu + '-checked']") {{cpu}}
                       span.glyphicon.glyphicon-unchecked(ng-if="!this[cpu + '-checked']" ng-value="filterExpr.cpu.remove(cpu)")
                       span.glyphicon.glyphicon-check(ng-if="this[cpu + '-checked']" ng-value="filterExpr.cpu.pushUnique(cpu)")
-              li(uib-dropdown)
+
+              //li(uib-dropdown)
                 a(href="#" uib-dropdown-toggle) GPU
-                ul(role="menu" uib-dropdown-menu ng-repeat="gpu in computerGPUs" ng-click="$event.stopPropagation()") 
-                  li
+                ul(role="menu" uib-dropdown-menu ng-click="$event.stopPropagation()") 
+                  li(ng-repeat="gpu in computerGPUs")
                     a(href="" ng-click="this[gpu + '-checked'] = !this[gpu + '-checked']") {{gpu}}
                       span.glyphicon.glyphicon-unchecked(ng-if="!this[gpu + '-checked']" ng-value="filterExpr.gpu.remove(gpu)")
                       span.glyphicon.glyphicon-check(ng-if="this[gpu + '-checked']" ng-value="filterExpr.gpu.pushUnique(gpu)")
-              li(uib-dropdown)
+
+              //li(uib-dropdown)
                 a(href="#" uib-dropdown-toggle) Motherboard
                 ul(role="menu" uib-dropdown-menu ng-repeat="motherboard in computerMotherboards" ng-click="$event.stopPropagation()") 
                   li
                     a(href="" ng-click="this[motherboard + '-checked'] = !this[motherboard + '-checked']") {{motherboard}}
                       span.glyphicon.glyphicon-unchecked(ng-if="!this[motherboard + '-checked']" ng-value="filterExpr.motherboard.remove(motherboard)")
                       span.glyphicon.glyphicon-check(ng-if="this[motherboard + '-checked']" ng-value="filterExpr.motherboard.pushUnique(motherboard)")
+              
+
+
+
+
+
+
+
+
+
+
               li(uib-dropdown)
                 a(href="#" uib-dropdown-toggle) Other
                 ul(role="menu" uib-dropdown-menu ng-click="$event.stopPropagation()") 
@@ -93,19 +128,38 @@
                       span.glyphicon.glyphicon-check(ng-if="onlineOnlyTag" ng-value="filterExpr.onlineOnly = true")
 
 
+
+
+    ///////////////////////////////////////////////////////////// PRODUCTS DISPLAY
+
+    button(ng-click="refresh(availableComputers)") Refresh
+
     .col-lg-9
+      .product-container-flexbox
+        .product-flexbox(dir-paginate="computer in availableComputers | priceFilter : priceExpr | productFilter : filterExpr | orderBy : sortType : sortReverse | itemsPerPage: pageSize" total-items="totalComputers" current-page="currentPage")
+          .flex-item
+            img(src='{{computer.displayPicture.path}}' width='150' height='150' ng-if='computer.displayPicture')
+            img(src='no_image.jpg' width='150' height='150' ng-if='!computer.displayPicture') 
+          .flex-item
+            a.text-center(href="/products/computers/{{computer._id}}") {{computer.name}} 
+          .flex-item  
+            p.text-center Price: {{computer.price}}
+          .flex-item
+            ngcart-addtocart.center-block(id="{{ computer._id }}" name="{{ computer.name }}" price="{{ computer.price }}" quantity="1" quantity-max="30" data="computer") Add to Cart
+
+    //.col-lg-9
       .col-lg-4(dir-paginate="computer in availableComputers | priceFilter : priceExpr | productFilter : filterExpr | orderBy : sortType : sortReverse | itemsPerPage: pageSize" total-items="totalComputers" current-page="currentPage")
         img.center-block(src='{{computer.displayPicture.path}}' width='150' height='150' ng-if='computer.displayPicture')
         img.center-block(src='no_image.jpg' width='150' height='150' ng-if='!computer.displayPicture') 
         
         .product-content.divider
-          a.text-center(href="/computers/{{computer._id}}") {{computer.name}} 
+          a.text-center(href="/products/computers/{{computer._id}}") {{computer.name}} 
           p.text-center Price: {{computer.price}}
           ngcart-addtocart.center-block(id="{{ computer._id }}" name="{{ computer.name }}" price="{{ computer.price }}" quantity="1" quantity-max="30" data="computer") Add to Cart    
           button.close(type='button', ng-if="isAdmin" ng-click='deleteComputer(computer)') ×
       
 
-  //////////////////////////////////////////////PAGINATION
+  //////////////////////////////////////////////  PAGINATION
 
 
   .row
@@ -125,7 +179,9 @@
   /////////////////////////////////////////////// ADD COMPUTER FORM
 
 
-  .row(ng-show="isAdmin")
+
+
+  //.row(ng-show="isAdmin")
     button.btn.btn-primary(href="#" ng-click="showAddComputerForm = !showAddComputerForm") Add New Computer
     form(name="computerform" ng-show="showAddComputerForm" ng-submit="computerform.$valid && addComputer()")
       p Use this form to add new computers
@@ -184,5 +240,6 @@
         span.err(ng-show="errorMsg") {{errorMsg}}
         br
         button.btn.btn-primary(ng-disabled="computerform.$invalid" type='submit') Create Computer
-
+  //.row
+    button(ng-click="hash = '#top'") Back to Top
 

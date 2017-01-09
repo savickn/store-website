@@ -7,7 +7,7 @@ angular.module('passportApp')
       .state('users', {
         url: '/users?page&pagecount',
         templateUrl: 'app/user/home.html',
-        controller: 'UsersCtrl',
+        controller: 'UserCollectionCtrl',
         params: {
           page: {
             value: '1',
@@ -25,7 +25,8 @@ angular.module('passportApp')
       })
       .state('users.show', {
         url: '/:id',
-        templateUrl: 'app/user/show.html'
+        templateUrl: 'app/user/show.html',
+        controller: 'UserCtrl'
       });
   });
 

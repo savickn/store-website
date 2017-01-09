@@ -4,21 +4,22 @@
 angular.module('passportApp')
   .config(function ($stateProvider) {
     $stateProvider
-      .state('featured', {
+      .state('products', {
+        url: '/products',
+        templateUrl: 'app/product/home.html'
+      })
+      .state('newProduct', {
+        url: '/products/new',
+        templateUrl: 'app/product/new.html'
+      })
+      .state('products.featured', {
         url: '/featured',
-        templateUrl: 'app/product/index.html',
+        templateUrl: 'app/product/featured.html',
         controller: function($scope, ProductService) {
         	$scope.featuredProducts = [];
           ProductService.getFeatured().then(function(products) {
         		$scope.featuredProducts = products;
         	});
-        }
-      })
-      .state('newproducts', {
-        url: '/products/new',
-        templateUrl: 'app/product/new.html',
-        controller: function($scope) {
-          $scope.productTypes = ['Computer', 'Monitor', 'Keyboard'];
         }
       })
   });

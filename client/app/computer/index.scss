@@ -1,5 +1,30 @@
 
 
+.product-container-flexbox {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+
+.product-flexbox {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+
+	padding: 5px;
+}
+
+.product-flexbox:nth-child(1) {
+	//work with flex and order properties
+}
+
+.flex-item {
+	padding: 2px;
+}
+
+
 .highlightOption {
 	border: 5px solid green;
 }

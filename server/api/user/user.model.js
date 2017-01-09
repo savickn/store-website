@@ -12,26 +12,42 @@ var UserSchema = new Schema({
     type: String,
     default: 'user'
   },
-  name: String,
+  name: {
+    type: String,
+    maxlength: 30,
+    required: 'You must provide a username.'
+  },
   email: { 
     type: String, 
-    lowercase: true 
+    lowercase: true,
+    match: [/[A-Za-z0-9]+@([A-Za-z])+(\.[A-Za-z]+)+/, "This email address is not in the correct format. Please enter an email address in the format, 'example@example.com'."],
+    required: 'You must provide an email address.'
   },
   phoneNumber: {
-    type: Number,
-    match: /^((1)?\d{10})$/
-    //write function to strip input before saving to db
+    type: String,
+    match: [/((1-)|1)?[0-9]{3}-?[0-9]{3}-?[0-9]{4}/, "This phone number is not in the correct format."]
   },
-  billingAddress: Address,
-  shippingAddress: [Address],
+  shippingAddresses: [Address], //primary shipping address is saved to cookie
+  billingAddress: {
+    type: [Address],
+    validate: {
+      validator: function(arr) {
+        return arr.length === 1 || arr.length === 0;
+      },
+      message: 'An user can only have one billing address.'
+    }
+  },
   promotionalEmails: {
     type: Boolean,
     default: false
   },
-
-  purchases: [{
+  onlineCredit: {
+    type: Number,
+    default: 0     //in US dollars
+  },
+  orders: [{
     type: Schema.Types.ObjectId,
-    ref: 'Purchase',
+    ref: 'Order',
     index: true
   }],
   wishlist: {
@@ -58,7 +74,27 @@ var UserSchema = new Schema({
 UserSchema
   .virtual('numberOfPurchases')
   .get(function() {
-    return purchases.length;
+    return this.orders.length;
+  })
+
+UserSchema
+  .virtual('amountSpent')
+  .get(function() {
+    //add up all orders
+
+  })
+
+
+//strips dashes from phoneNumber
+UserSchema
+  .virtual('phone_number')
+  .get(function() {
+    var phone_number = "";
+    for(let char of this.phoneNumber)
+      if(/[0-9]/.test(char)) {
+        phone_number.concat(char);
+      }
+    return phone_number;
   })
 
 UserSchema
@@ -126,6 +162,7 @@ UserSchema
       respond(true);
     });
 }, 'The specified email address is already in use.');
+
 
 var validatePresenceOf = function(value) {
   return value && value.length;
@@ -202,3 +239,22 @@ UserSchema.methods = {
 };
 
 module.exports = mongoose.model('User', UserSchema);
+
+
+
+/*    type: [Address],
+    validate: {
+      validator: function(arr) {
+        var primary = [];
+        arr.forEach(address) {
+          if(address.primary) {
+            primary.push(address);
+          }
+        };
+
+        return primary.length <= 1;
+      },
+      message: 'You can only have one primary shipping address.'
+    }
+
+    */

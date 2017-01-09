@@ -1,0 +1,55 @@
+
+///////////////////////////////////////////////////////////// BANNER CONTENT
+
+.container
+  .row
+    .col-lg-offset-3
+      h2 Computers
+      a(href='/products/computers/new') New Computer
+      ui-view
+  .row
+    .col-lg-2
+      .sort.push-right(uib-dropdown)  
+        button.btn.btn-default(type="button" uib-dropdown-toggle) Sort
+          span.caret
+        ul(uib-dropdown-menu)
+          li
+            a(href="#" ng-click="sortType = 'price'; sortReverse = false") Price: Low to High
+          li
+            a(href="#" ng-click="sortType = 'price'; sortReverse = true") Price: High to Low
+          li
+            a(href="#" ng-click="sortType = 'name'; sortReverse = false") Name: A-Z
+          li
+            a(href="#" ng-click="sortType = 'name'; sortReverse = true") Name: Z-A
+
+
+  ////////////////////////////////////////////////MAIN CONTENT
+
+  .row
+    .col-lg-9
+      .col-lg-4(dir-paginate="computer in availableComputers | priceFilter : priceExpr | productFilter : filterExpr | orderBy : sortType : sortReverse | itemsPerPage: pageSize" total-items="totalComputers" current-page="currentPage")
+        img.center-block(src='{{computer.displayPicture.path}}' width='150' height='150' ng-if='computer.displayPicture')
+        img.center-block(src='no_image.jpg' width='150' height='150' ng-if='!computer.displayPicture') 
+        
+        .product-content.divider
+          a.text-center(href="/products/computers/{{computer._id}}") {{computer.name}} 
+          p.text-center Price: {{computer.price}}
+          ngcart-addtocart.center-block(id="{{ computer._id }}" name="{{ computer.name }}" price="{{ computer.price }}" quantity="1" quantity-max="30" data="computer") Add to Cart    
+          button.close(type='button', ng-if="isAdmin" ng-click='deleteComputer(computer)') ×
+      
+
+  //////////////////////////////////////////////PAGINATION
+
+
+  .row
+    .col-lg-4.col-lg-offset-3
+      dir-pagination-controls(on-page-change="pageChanged(newPageNumber)")
+    .col-lg-2.col-lg-offset-10
+      .pagination-control
+        label Items per page: 
+          .pagination(uib-dropdown)
+            button.btn.btn-default(type="button" uib-dropdown-toggle) {{pageSize}} 
+              span.caret 
+            ul(uib-dropdown-menu)
+              li(ng-repeat="pageOpt in paginationOptions")
+                a(href="#" ng-click="sizeChanged(pageOpt)") {{pageOpt}}

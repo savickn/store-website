@@ -6,8 +6,8 @@ var mongoose = require('mongoose'),
 var InventorySchema = new Schema({
 	warehouse: {
 		type: String,
-		enum: ['PEG', 'ING'],
-		required: 'You must include a name for this product.'
+		enum: ['PEG', 'ING', 'Back-Order'],
+		required: 'You must include the warehouse name.'
 	},
 	stock: {
 		type: Number,

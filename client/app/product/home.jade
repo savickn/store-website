@@ -1,0 +1,17 @@
+.container
+	nav.navbar.navbar-default
+		.navbar-header
+			a.navbar-brand(href="#") Products
+		ul.nav.navbar-nav
+			li
+				a(ui-sref="products.computers") Computers
+			li
+				a(ui-sref="products.monitors") Monitors
+			li
+				a(ui-sref="products.keyboards") Keyboards
+			li
+				a(ui-sref="products.featured") Featured 
+
+	.row
+		.col-lg-12
+			ui-view

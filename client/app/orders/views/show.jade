@@ -1,0 +1,146 @@
+
+.container
+  .row 
+    .alert(ng-if="message" ng-class="{'alert-success': type === 'Success', 'alert-danger': type === 'Error', 'alert-warning': type === 'Warning'}") {{message}}
+      //span.glyphicon.glyphicon-remove(ng-click="clearAlert()")
+
+    h1 {{currentProduct.name}}
+      h3
+        a(href="/computers") Back to Computers
+  .row
+    .col-lg-6
+      .row
+        img.previewImage(src='{{previewImage.path}}' width='400' hight='400' ng-if='previewImage')
+      .row
+        .col-lg-3(ng-repeat='picture in currentProduct.pictures')
+          .gallery-img
+            img.img-rounded(src="{{picture.path}}" ng-click='setPreviewImage(picture)' height="100" width="100")
+            //i.glyphicon.glyphicon-remove.top-right(ng-click="removePicture(picture._id)" ng-if="isAdmin")
+            i.glyphicon.glyphicon-picture.bottom-right(ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin")
+
+    .col-lg-6
+      ul.list-group
+        li.list-group-item
+          toggle-item-wishlist(product-id="{{currentProduct._id}}" ng-if="isLoggedIn")
+          //toggle-item-wishlist(product-id="{{currentProduct._id}}" wishlist-id="{{wishlist._id}}" wishlist="wishlist" state="{{wishlist.contains(currentProduct._id)}}")
+        li.list-group-item {{wishlist._id}}
+        li.list-group-item Name: {{currentProduct.name}}
+        li.list-group-item Description: {{currentProduct.description}}
+        li.list-group-item Brand: {{currentProduct.brand}}
+        li.list-group-item Price: {{currentProduct.price}}
+        li.list-group-item CPU: {{currentProduct.cpu}}
+        li.list-group-item GPU: {{currentProduct.gpu}}
+        li.list-group-item Motherboard: {{currentProduct.motherboard}}    
+        li.list-group-item Online Only: {{currentProduct.onlineOnly | yesNo }}
+        li.list-group-item Featured: {{currentProduct.featured | yesNo }}
+        li.list-group-item On Sale: {{currentProduct.onSale | yesNo }}
+
+  /////////////////////////// EDIT PRODUCT ////////////////////////////////
+
+  .row(ng-if="isAdmin")
+    .col-lg-12
+      form.computer-edit-form(name="computerEditForm" ng-submit="computerEditForm.$valid && updateComputer()")
+        label Use this form to edit computer properties
+        .alert.alert-success(ng-if="computerEditForm.$pristine && !updateDisplayPic") You have made no changes that require saving.
+        .alert.alert-warning(ng-if="!computerEditForm.$pristine || updateDisplayPic") Please click the button below to save changes.
+        p.input-group
+          input.form-control(type='text', placeholder='Enter the name here.', ng-model='currentProduct.name')
+          input.form-control(type='text', placeholder='Enter the description here.', ng-model='currentProduct.description')
+          input.form-control(type='text', placeholder='Enter the brand here.', ng-model='currentProduct.brand')
+          input.form-control(type='number', placeholder='Enter the price here.', ng-model='currentProduct.price')
+          input.form-control(type='text', placeholder='Enter the CPU here.', ng-model='currentProduct.cpu')
+          input.form-control(type='text', placeholder='Enter the GPU here.', ng-model='currentProduct.gpu')
+          input.form-control(type='text', placeholder='Enter the motherboard here.', ng-model='currentProduct.motherboard')
+          label.checkbox-inline Online Only?
+            input.form-control(type='checkbox', ng-model='currentProduct.onlineOnly')
+          label.checkbox-inline Featured?
+            input.form-control(type='checkbox', ng-model='currentProduct.featured')
+          label.checkbox-inline On Sale?
+            input.form-control(type='checkbox', ng-model='currentProduct.onSale')  
+          button.btn.btn-primary(ng-disabled="computerEditForm.$invalid" type='submit') Save changes
+
+  ////////////////////////// PICTURE UPLOAD ////////////////////////////////
+
+  .row(ng-controller='PictureUploadCtrl' ng-if='isAdmin')
+    .col-lg-12
+      form.picture-upload(name="pictureForm" ng-submit="pictureForm.$valid && uploadPic(currentProduct.__t, currentProduct._id)")
+        label Use this form to upload pictures | {{status}}
+        br
+        input(type="file" ngf-select ng-model="newPictures" name="file" accept="image/*" ngf-max-size="4MB" ngf-multiple="true" required)
+        ul.list-group(ng-repeat="pic in newPictures")
+          li.list-group-item
+            img.thumb(ngf-thumbnail="pic" height="100" width="100")
+        button(type="submit") Submit
+        
+        span.progress(ng-show="newPicture.progress >= 0")
+        div(style="width:{{newPicture.progress}}%" ng-bind="newPicture.progress + '%'")
+        span(ng-show="newPicture.result") Upload Successful 
+        span.err(ng-show="errorMsg") {{errorMsg}}
+
+
+  ///////////////////////// PRODUCT REVIEWS /////////////////////////////// 
+
+  .row
+    .col-lg-12
+      h2 Product Reviews:
+      ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-if="currentProduct.reviews.length > 0" ng-repeat='review in currentProduct.reviews')
+        li
+          a(href='#') {{review.rating}} | {{review.score}} | {{review.summary}}
+            button.close(type='button', ng-click='removeReview(review)' ng-if="isAdmin") ×
+          a(href='reviews/{{review._id}}') Read the full review...  
+      p(ng-if="currentProduct.reviews.length < 1") There are no reviews for this product.
+
+  .row(ng-controller='ReviewsCtrl' ng-if='isLoggedIn')
+    .col-lg-12
+      .alert.alert-warning(ng-if="alertMessage") {{alertMessage}}
+      form.computer-review-form(name="reviewForm" ng-submit="reviewForm.$valid && addReview()")
+        label Use this form to create reviews
+        p.input-group(ng-init="rating = star.rating + 1")
+          input.form-control(type='text', name="review" placeholder='Enter your review here.', ng-model='newSummary', required, ng-minlength=0, ng-maxlength=500)
+          
+          label Rating:
+            div(class='star-rating' star-rating rating-value="rating" data-max="10" on-rating-selected="setRating(rating)")
+          input.form-control(type='number', name="rating", placeholder='Enter your rating here.', ng-model='newRating', required, min=0, max=10, ng-hide="true")
+          span.input-group-btn
+            button.btn.btn-primary(ng-disabled="reviewForm.$invalid" type='submit') Add Review
+
+
+  //data:image/png;base64,
+
+  //<form name="myForm">
+      <input type="text" name="userName" ng-model="username" size="31" required>
+      <i ng-show="myForm.userName.$error.required">*required</i>
+      <br>Photo:
+      <input type="file" ngf-select ng-model="picFile" name="file"    
+             accept="image/*" ngf-max-size="2MB" required
+             ngf-model-invalid="errorFiles">
+      <i ng-show="myForm.file.$error.required">*required</i><br>
+      <i ng-show="myForm.file.$error.maxSize">File too large 
+          {{errorFiles[0].size / 1000000|number:1}}MB: max 2M</i>
+      <img ng-show="myForm.file.$valid" ngf-thumbnail="picFile" class="thumb"> <button ng-click="picFile = null" ng-show="picFile">Remove</button>
+      <br>
+      <button ng-disabled="!myForm.$valid" 
+              ng-click="uploadPic(picFile)">Submit</button>
+      <span class="progress" ng-show="picFile.progress >= 0">
+        <div style="width:{{picFile.progress}}%" 
+            ng-bind="picFile.progress + '%'"></div>
+      </span>
+      <span ng-show="picFile.result">Upload Successful</span>
+      <span class="err" ng-show="errorMsg">{{errorMsg}}</span>
+                
+        button.btn.btn-primary.full-width(href="#" ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin") Set as DP
+
+
+
+        ul.nav.nav-tabs.col-md-2(ng-repeat='picture in currentProduct.pictures')
+          li 
+            img.img-rounded(src="{{picture.path}}" ng-click='setPreviewImage(picture)' height="100" width="100")
+            button.btn.btn-primary(href="#" ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin") Set as Display Picture
+    
+
+
+    .alert.alert-success(href="#" ng-if="successMessages") {{successMessages}}
+      span.edit-message-close.glyphicon.glyphicon-remove(ng-click="successMessages = ''")
+    .alert.alert-warning(href="#" ng-if="failureMessages") {{failureMessages}}
+      span.edit-message-close.glyphicon.glyphicon-remove(ng-click="failureMessages = ''")
+    .alert.alert-warning(href="#" ng-if="updateDisplayPic") Display picture set. Please click 'Save Changes' via the 'Edit' button to save these changes to the database.

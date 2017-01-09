@@ -20,10 +20,11 @@ module.exports = function(app) {
   app.use('/api/products', require('./api/product'));
   app.use('/api/addresses', require('./api/address'));
   app.use('/api/rewards', require('./api/reward'));
-  app.use('/api/purchases', require('./api/purchase'));
+  app.use('/api/orders', require('./api/order'));
   app.use('/api/addresses', require('./api/address'));
   app.use('/api/wishlists', require('./api/wishlist'));
   app.use('/api/sales', require('./api/sale'));
+  app.use('/api/midiscores', require('./api/midi_score'));
   
 
   app.use('/auth', require('./auth'));

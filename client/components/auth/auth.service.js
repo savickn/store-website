@@ -75,14 +75,12 @@ angular.module('passportApp')
         var cb = callback || angular.noop;
 
         return UserService.addUser(user).then(function(data) {
+          console.log(data);
           $cookieStore.put('token', data.token);
           UserService.getMe().then(function(me) {
             currentUser = me;
           })
-          return cb(user);
-        }).catch(function(err) {
-          //this.logout();
-          return cb(err);
+          return cb(data);
         });
       },
 
@@ -112,8 +110,12 @@ angular.module('passportApp')
         });
       },
 
-      changeEmail: function() {
-        console.log('auth.changeEmail');
+      /**
+      ** Reset Password
+      **/ 
+
+      resetPassword: function(newPassword, confirmPassword, callback) {
+
       },
 
       /**
@@ -129,6 +131,7 @@ angular.module('passportApp')
       **/
 
       setCurrentUser: function(user) {
+        console.log('current user set');
         currentUser = user;
       },
 

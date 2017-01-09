@@ -1,7 +1,22 @@
+
 .container
-  p
+  .row
+    ul.list-group
+      li.list-group-item
+        a(ui-sref="products") Products
+      li.list-group-item
+        a(ui-sref="newProduct") Add a New Product
+      li.list-group-item
+        a(ui-sref="users") User Admin Tool
+      li.list-group-item
+        a(ui-sref="orders") Order Admin Tool
+
+
+
+
+  //p
     | The delete user and user index api routes are restricted to users with the 'admin' role.
-  ul.list-group
+  //ul.list-group
     li.list-group-item(ng-repeat='user in users')
       strong {{user.name}}
       br
@@ -9,20 +24,14 @@
       a.trash(ng-click='delete(user)')
         span.glyphicon.glyphicon-trash.pull-right
 
-.container
-  p Add new products to the store
-  ul.list-group
-    li.list-group-item
-      a(href="/computers") Add computer
-      //a(ui-sref="computers") Add computer
-    li.list-group-item
-      a(href='/monitors') Add monitor
-    li.list-group-item
-      a(href='/keyboards') Add keyboards
-    li.list-group-item
-      a(href='/pictures') Pictures
-    li.list-group-item
-      a(href="/featured") Featured
-    li.list-group-item
-      a(href="/products/new") New Products
-
+            li.list-group-item
+        a(href="/computers") Add computer
+        a(ui-sref="computers") Add computer
+      li.list-group-item
+        a(href='/monitors') Add monitor
+      li.list-group-item
+        a(href='/keyboards') Add keyboards
+      li.list-group-item
+        a(href='/pictures') Pictures
+      li.list-group-item
+        a(href="/featured") Featured

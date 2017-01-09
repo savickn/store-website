@@ -2,12 +2,18 @@
 .container
 	.row
 		.col-lg-12
-			form(name="emailForm" role="form" ng-submit="emailForm.$valid && sendEmail()")
-				input.form-control(type="text" name="subject" placeholder="Subject" required) 
-				input.form-control(type="textarea" name="email" placeholder="Email Body" required)
-				button.btn.btn-primary(type="submit") Submit
+			nav.navbar.navbar-default
+				ul.nav.navbar-nav
+					li
+						a(ui-sref="test.email") Email
+					li
+						a(ui-sref="test.style") Style
+					li
+						a(ui-sref="test.computers") Computers
 
-			button.btn.btn-primary(ng-click="sendEmail()") Send Email
+		.col-lg-12
+			ui-view
+
 
 		//toggle-item-wishlist(productId="10")
 
