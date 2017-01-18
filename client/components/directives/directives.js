@@ -72,14 +72,17 @@ angular.module('passportAppDirectives', [])
 			link: function(scope, elem, attrs) {
 				var wishlist = Auth.getCurrentUser().wishlist;
 				scope.state = wishlist.products.includes(scope.productId);
+				//console.log(scope.productId);
+				//console.log(wishlist);
+				//console.log(scope.state);
 
-				var updateWishlist = function() {
+				function updateWishlist() {
 					WishlistService.updateWishlist(wishlist._id, wishlist).then(function(wishlist) {
-      			Auth.updateWishlist(wishlist);
-      			scope.state = !scope.state;
-        	}).catch(function(err) {
-        		console.log(err);
-        	});					
+		      			Auth.updateWishlist(wishlist);
+		      			scope.state = !scope.state;
+		        	}).catch(function(err) {
+		        		console.log(err);
+		        	});					
 				};
 
 				scope.addToWishlist = function(productId) {
@@ -96,6 +99,64 @@ angular.module('passportAppDirectives', [])
 			}
 		};
 	})
+	.directive('nsSelectAddress', function(Auth) {
+		return {
+			restrict: 'E',
+			templateUrl: '../components/directives/views/selectAddress.html',
+			scope: {
+				address: '=',
+				addresses: '@',
+				type: '@'
+			},
+			link: function(scope, elem, attrs) {
+				//console.log(scope.address);
+				//console.log(scope.addresses);
+				//console.log(scope.type);
+
+				//scope.addresses = Auth.getCurrentUser().shippingAddresses
+				scope.setAddress = function(adr) {
+					scope.address = adr;
+					scope.address.type = scope.type;
+				};
+			}
+		};
+	})
+	.directive('nsNewAddress', function(DataService) {
+		return {
+			restrict: 'E',
+			templateUrl: '../components/directives/views/address.html',
+			scope: {
+				address: '=',
+				type: '@'
+			},
+			link: function(scope, elem, attrs) {
+				//check for favorite shipping address in Cookies
+				//create shipping address selector
+				//autofill billing address with user billing address
+
+				scope.address.type = scope.type;
+
+				scope.countries = [];
+			    scope.provinces = [];
+			    scope.cities = [];
+
+			    (function getCountries() {
+			      DataService.getCountries().then(function(countries) {
+			        scope.countries = countries;
+			        //console.log(countries);
+			      })
+			    }) ();
+
+			    scope.populateProvinces = function(country) {
+			      DataService.getProvinces({country: country}).then(function(provinces) {
+			        scope.provinces = provinces;
+			        //console.log($scope.addressType);
+			        //console.log(provinces);
+			      })
+			    }
+			}
+		}
+	})
 	.directive('alertMessage', function(AlertService) {
 		return {
 			restrict: 'E',
@@ -106,9 +167,9 @@ angular.module('passportAppDirectives', [])
 			},
 			link: function(scope, elem, attrs) {
 				scope.$watch( function () { return AlertService.alert; }, function (alert) {
-			    scope.message = alert.message;
-			    scope.type = alert.type;
-			  }, true);
+				    scope.message = alert.message;
+				    scope.type = alert.type;
+			  	}, true);
 			}
 		};
 	})

@@ -1,0 +1,9 @@
+
+ul.list-group
+	li.list-group-item(ng-repeat="adr in addresses track by $index" ng-click="setAddress(adr)" ng-class="{selected: address === adr}") {{adr.nickname}}
+
+
+
+
+
+

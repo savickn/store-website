@@ -2,7 +2,7 @@
 
 angular.module('passportApp')
   .controller('OrderCollectionCtrl', function ($scope, $timeout, Auth, OrderService) {
-    $scope.isAdmin = Auth.isAdmin();
+    /*$scope.isAdmin = Auth.isAdmin();
 
     $scope.availableOrders = [];
 
@@ -13,7 +13,7 @@ angular.module('passportApp')
     $scope.currentPage = 1;
     $scope.totalorders = 0;
     $scope.pageSize = 10;
-    getResultsPage($scope.currentPage, $scope.pageSize);
+    //getResultsPage($scope.currentPage, $scope.pageSize);
     
     $scope.pageChanged = function(newPage) {
       getResultsPage(newPage, $scope.pageSize);
@@ -64,10 +64,10 @@ angular.module('passportApp')
 
     //GET orderS
     $scope.searchOrders = function() {
-      OrderService.getorders().then(function(orders) {
+      OrderService.getOrders().then(function(orders) {
         $scope.availableorders = orders;
         getorderInfo(orders);
       });
-    }
+    }*/
   });
 

@@ -12,7 +12,7 @@ var Order = require('./order.model');
 exports.checkout = function(req, res) {
   console.log(req.body);
   return res.status(200).json(req.body);
-}
+};
 
 // Search orders
 exports.search = function(req, res) {
@@ -74,7 +74,7 @@ exports.destroy = function(req, res) {
 
 function handleError(res, err) {
   return res.status(500).send(err);
-}
+};
 
 
 

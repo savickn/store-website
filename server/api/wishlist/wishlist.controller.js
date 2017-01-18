@@ -12,7 +12,7 @@ var User = require('../user/user.model');
 
 // Get a single wishlist
 exports.show = function(req, res) {
-  Wishlist.findById(req.params.id, function (err, wishlist) {
+  Wishlist.findById(req.params.id).populate('products').exec(function (err, wishlist) {
     if(err) { return handleError(res, err); }
     if(!wishlist) { return res.status(404).send('Not Found'); }
     return res.json(wishlist);
@@ -26,11 +26,6 @@ exports.show = function(req, res) {
 exports.search = function(req, res) {
   var searchObj = _.merge({}, req.query);
   var wishlists = {};
-
-  /*if(searchObj.name) {
-    var err = new Error('')
-    return res.status(500).send(err);
-  }*/
 
   User.find(searchObj)
     .select('name wishlist')
@@ -65,6 +60,8 @@ exports.update = function(req, res) {
     }
 	);
 };
+
+
 
 function handleError(res, err) {
   return res.status(500).send(err);

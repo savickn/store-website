@@ -22,10 +22,10 @@ angular.module('passportApp')
       .state('orders.show', {
         url: '/:id',
         templateUrl: 'app/order/show.html',
-        controller: 'orderCtrl'
+        controller: 'OrderCtrl'
       })
-      .state('newOrder', {
-        url: '/orders/new',
+      .state('new_order', {
+        url: '/new_order',
         templateUrl: 'app/order/new.html',
         controller: 'OrderUploadCtrl',
         authenticate: true

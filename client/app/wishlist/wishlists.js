@@ -5,12 +5,12 @@ angular.module('passportApp')
     $stateProvider
       .state('wishlists', {
         url: '/wishlists',
-        templateUrl: 'app/wishlists/index.html',
+        templateUrl: 'app/wishlist/index.html',
         controller: 'WishlistsCtrl'
       })
       .state('wishlists.show', {
         url: '/:id',
-        templateUrl: 'app/wishlists/show.html',
+        templateUrl: 'app/wishlist/show.html',
         controller: 'WishlistCtrl',
         params: {
           wishlist: {}

@@ -1,8 +1,9 @@
-h2 {{wishlist.name}}'s Wishlist
+h3 {{wishlist.name}}'s Wishlist
 
 ul.list-group(ng-repeat="product in wishlist.products")
 	li.list-group-item 
 		a.pull-left(src="product.displayPicture")
 		p {{product.name}}
+		button.btn.btn-primary(ng-click="removeFromWishlist") Remove from Wishlist
 		button.btn.btn-primary(ng-click="purchaseFromWishlist()") Purchase for User 
 

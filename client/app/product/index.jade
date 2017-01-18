@@ -1,0 +1,87 @@
+
+///////////////////////////////////////////////////////////// BANNER CONTENT
+
+.container
+  .row
+    .col-lg-2
+      .sort.pull-right(uib-dropdown)  
+        button.btn.btn-default(type="button" uib-dropdown-toggle) Sort
+          span.caret
+        ul(uib-dropdown-menu)
+          li
+            a(href="#" ng-click="sortType = 'price'; sortReverse = false") Price: Low to High
+          li
+            a(href="#" ng-click="sortType = 'price'; sortReverse = true") Price: High to Low
+          li
+            a(href="#" ng-click="sortType = 'name'; sortReverse = false") Name: A-Z
+          li
+            a(href="#" ng-click="sortType = 'name'; sortReverse = true") Name: Z-A
+  .row
+    .col-lg-3
+      nav.navbar.sidebar
+        form.container-fluid(name="sidebarForm")
+          .navbar-header
+            a.navbar-brand(href="#" ng-click="getSearch(filterExpr)") Search
+
+          .collapse.navbar-collapse
+            ul.nav.navbar-nav
+              li(uib-dropdown)
+                a(href="#" uib-dropdown-toggle) Product Name
+                ul(uib-dropdown-menu ng-click="$event.stopPropagation()")
+                  li
+                    input.form-control(type='text' placeholder='Enter the name here.' ng-model='filterExpr.name' ng-click="$event.stopPropagation()")
+              
+              li(uib-dropdown)
+                a(href="#" uib-dropdown-toggle ng-click="toggleAdvSearch") Price
+                ul(uib-dropdown-menu ng-click="$event.stopPropagation()") 
+                  li
+                    input.form-control(type="number" placeholder='Enter minimum price.' ng-model="priceExpr.minPrice")
+                  li
+                    input.form-control(type="number" placeholder='Enter maximum price.' ng-model="priceExpr.maxPrice")
+
+              li(uib-dropdown)
+                a(href="#" uib-dropdown-toggle) Brand
+                ul(role="menu" uib-dropdown-menu ng-repeat="brand in computerBrands" ng-click="$event.stopPropagation()") 
+                  li
+                    a(href="" ng-click="this[brand + '-checked'] = !this[brand + '-checked']") {{brand}}
+                      span.glyphicon.glyphicon-unchecked(ng-if="!this[brand + '-checked']" ng-value="filterExpr.brand.remove(brand)")
+                      span.glyphicon.glyphicon-check(ng-if="this[brand + '-checked']" ng-value="filterExpr.brand.pushUnique(brand)")
+
+              li(ng-repeat="category in searchableCategories" uib-dropdown)
+                a(href="#" uib-dropdown-toggle) {{category.name}}
+                ul(role="menu" uib-dropdown-menu ng-click="$event.stopPropagation()") 
+                  li(ng-repeat="field in category.list")
+                    a(href="" ng-click="this[field + '-checked'] = !this[field + '-checked']") {{field}}
+                      span.glyphicon.glyphicon-unchecked(ng-if="!this[field + '-checked']" ng-value="filterExpr[field].remove(field)")
+                      span.glyphicon.glyphicon-check(ng-if="this[field + '-checked']" ng-value="filterExpr[field].pushUnique(field)")
+
+              li(uib-dropdown)
+                a(href="#" uib-dropdown-toggle) Other
+                ul(role="menu" uib-dropdown-menu ng-click="$event.stopPropagation()") 
+                  li
+                    a(href="" ng-click="onSaleTag = !onSaleTag") On Sale
+                      span.glyphicon.glyphicon-unchecked(ng-if="!onSaleTag" ng-value="filterExpr.onSale = false")
+                      span.glyphicon.glyphicon-check(ng-if="onSaleTag" ng-value="filterExpr.onSale = true")
+                  li
+                    a(href="" ng-click="featuredTag = !featuredTag") Featured
+                      span.glyphicon.glyphicon-unchecked(ng-if="!featuredTag" ng-value="filterExpr.featured = false")
+                      span.glyphicon.glyphicon-check(ng-if="featuredTag" ng-value="filterExpr.featured = true")
+                  li
+                    a(href="" ng-click="onlineOnlyTag = !onlineOnlyTag") Online Only
+                      span.glyphicon.glyphicon-unchecked(ng-if="!onlineOnlyTag" ng-value="filterExpr.onlineOnly = false")
+                      span.glyphicon.glyphicon-check(ng-if="onlineOnlyTag" ng-value="filterExpr.onlineOnly = true")
+
+  .row
+    .col-lg-12
+      .product-container-flexbox
+        .product-flexbox(ng-repeat="computer in availableComputers")
+          .flex-item
+            img(src='{{computer.displayPicture.path}}' width='150' height='150' ng-if='computer.displayPicture')
+            img(src='no_image.jpg' width='150' height='150' ng-if='!computer.displayPicture') 
+          .flex-item
+            a.text-center(href="/products/computers/{{computer._id}}") {{computer.name}} 
+          .flex-item  
+            p.text-center Price: {{computer.price}}
+          .flex-item
+            ngcart-addtocart.center-block(id="{{ computer._id }}" name="{{ computer.name }}" price="{{ computer.price }}" quantity="1" quantity-max="30" data="computer") Add to Cart
+

@@ -3,6 +3,9 @@
 angular.module('passportApp')
   .factory('WishlistService', function (Restangular) {
   	return {
+      getWishlist: function(wishlistId) {
+        return Restangular.one('wishlists', wishlistId).get();
+      },
   		searchWishlists: function(query) {
   			return Restangular.all('wishlists').customGET('search', query);
   		},

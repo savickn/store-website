@@ -9,11 +9,11 @@ angular.module('passportApp')
       addProduct: function(product) {
       	return Restangular.all('products').post(product);
       },
-      getProducts: function() {
-
+      searchProducts: function(searchObj) {
+        return Restangular.all('products').customGET('search', searchObj);
       },
-      searchProducts: function(category, searchObj) {
-        return Restangular.all(category).customPOST(searchObj, 'search');
+      removeProduct: function(productId) {
+        return Restangular.one('products', productId).remove();
       }
     };
   });

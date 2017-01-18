@@ -24,7 +24,6 @@ angular.module('passportApp')
       .state('settings.account.email', {
         url: '/email',
         templateUrl: 'app/account/settings/details/partials/email.html'
-
         /*views: {
           'main@settings.account.email' : {
             templateURL: 'app/account/settings/details/partials/email.html'
@@ -37,17 +36,37 @@ angular.module('passportApp')
       })
       .state('settings.account.billing', {
         url: '/billing',
-        templateUrl: 'app/account/settings/details/partials/billing.html'
+        templateUrl: 'app/account/settings/details/partials/address.html',
+        params: {
+          type: 'Billing'
+        }
       })
       .state('settings.account.shipping', {
         url: '/shipping',
-        templateUrl: 'app/account/settings/details/partials/shipping.html'
+        templateUrl: 'app/account/settings/details/partials/address.html',
+        params: {
+          type: 'Shipping'
+        }
       })
       
 
+      .state('settings.paymentOptions', {
+        url: '/paymentOptions',
+        templateUrl: 'app/account/settings/paymentOptions/index.html',
+        controller: 'PaymentCtrl',
+        authenticate: true
+      })
+      .state('settings.paymentOptions.new', {
+        url: '/new',
+        templateUrl: 'app/account/settings/paymentOptions/new.html',
+        controller: 'PaymentCtrl',
+        authenticate: true
+      })
+
+
       .state('settings.myWishlist', {
         url: '/myWishlist',
-        templateUrl: 'app/wishlists/show.html',
+        templateUrl: 'app/wishlist/show.html',
         controller: 'WishlistCtrl',
         params: {
           wishlist: {}
@@ -56,7 +75,7 @@ angular.module('passportApp')
       })
       .state('settings.orderHistory', {
         url: '/orders',
-        templateUrl: 'app/account/settings/orders/orderHistory.html',
+        templateUrl: 'app/account/settings/orders/index.html',
         controller: 'HistoryCtrl',
         authenticate: true
       })
@@ -64,12 +83,6 @@ angular.module('passportApp')
         url: '/rewards',
         templateUrl: 'app/account/settings/rewards/rewards.html',
         controller: 'RewardsCtrl',
-        authenticate: true
-      })
-      .state('settings.paymentOptions', {
-        url: '/paymentOptions',
-        templateUrl: 'app/account/settings/paymentOptions/options.html',
-        controller: 'PaymentCtrl',
         authenticate: true
       });
   });

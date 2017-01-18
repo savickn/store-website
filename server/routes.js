@@ -18,13 +18,14 @@ module.exports = function(app) {
   app.use('/api/monitors', require('./api/monitor'));
   app.use('/api/keyboards', require('./api/keyboard'));
   app.use('/api/products', require('./api/product'));
-  app.use('/api/addresses', require('./api/address'));
   app.use('/api/rewards', require('./api/reward'));
   app.use('/api/orders', require('./api/order'));
   app.use('/api/addresses', require('./api/address'));
   app.use('/api/wishlists', require('./api/wishlist'));
   app.use('/api/sales', require('./api/sale'));
   app.use('/api/midiscores', require('./api/midi_score'));
+  app.use('/api/data', require('./api/data'));
+  app.use('/api/payments', require('./api/payment'));
   
 
   app.use('/auth', require('./auth'));

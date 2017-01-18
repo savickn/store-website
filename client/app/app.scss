@@ -39,8 +39,8 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 // injector
 @import 'account/login/login.scss';
 @import 'admin/admin.scss';
-@import 'computer/index.scss';
-@import 'computer/show.scss';
+@import 'computer/stylesheets/index.scss';
+@import 'computer/stylesheets/show.scss';
 @import 'main/main.scss';
 @import 'musescore/musescore.scss';
 @import 'review/review.scss';

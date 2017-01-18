@@ -7,9 +7,9 @@ var jwt = require('jsonwebtoken');
 var _ = require('lodash');
 
 var fs = require('fs');
-const output = fs.createWriteStream('./stdout.log');
-const errorOutput = fs.createWriteStream('./stderr.log');
-const myConsole = new console.Console(output, errorOutput);
+//const output = fs.createWriteStream('./stdout.log');
+//const errorOutput = fs.createWriteStream('./stderr.log');
+//const myConsole = new console.Console(output, errorOutput);
 
 var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
@@ -91,7 +91,7 @@ exports.email = function(req, res) {
 };*/
 
 exports.search = function(req, res) {
-  myConsole.log(req);
+  console.log(req.query);
 
   if(req.query.cardNumber) {
     Reward.find({cardNumber: req.query.cardNumber})
@@ -117,16 +117,21 @@ exports.search = function(req, res) {
  * Creates a new user
  */
 exports.create = function (req, res) {
-  var newUser = new User(req.body);
-  newUser.provider = 'local';
-  newUser.role = 'user';
+  var userObj = {
+    provider: 'local',
+    role: 'user'
+  };
 
-  newUser.save(function(err, user) {
+  var newUser = _.merge(userObj, req.body);
+
+  //var newUser = new User(req.body);
+  //newUser.provider = 'local';
+  //newUser.role = 'user';
+
+  User.create(newUser, function(err, user) {
     if (err) return validationError(res, err);
 
-    var newWishlist = new Wishlist({user: user._id});
-
-    newWishlist.save(function(err, wishlist) {
+    Wishlist.create({user: user.__id}, function(err, wishlist) {
       if(err) return res.status(500).send(err);
 
       var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
@@ -193,6 +198,14 @@ exports.changePassword = function(req, res) {
 **/
 
 exports.update = function(req, res) {
+  //if(req.body.password)
+  console.log(req.body);
+
+  /*Review.findOneAndUpdate(
+    {_id: req.params.id}, 
+    {$set: {rating: req.body.rating, summary: req.body.summary}, $addToSet: {upvotes: req.body.newUpvote}}, 
+    {new: true})*/
+
   User.findOneAndUpdate(
     {_id: req.params.id}, 
     {$set: req.body},
@@ -213,7 +226,7 @@ exports.me = function(req, res, next) {
   var userId = req.user._id;
   User.findOne({_id: userId})
   .select('-salt -hashedPassword')
-  .populate('reward wishlist')
+  .populate('reward wishlist paymentMethods')
   //query.populate('purchases reward wishlist shippingAddress billingAddress'); 
   .exec(function(err, user) { // don't ever give out the password or salt
     if (err) return next(err);

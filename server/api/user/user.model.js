@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var Address = require('../address/address.model').schema;
+var Address = require('../address/address.model');
 
 var crypto = require('crypto');
 var authTypes = ['github', 'twitter', 'facebook', 'google'];
@@ -17,8 +17,8 @@ var UserSchema = new Schema({
     maxlength: 30,
     required: 'You must provide a username.'
   },
-  email: { 
-    type: String, 
+  email: {
+    type: String,
     lowercase: true,
     match: [/[A-Za-z0-9]+@([A-Za-z])+(\.[A-Za-z]+)+/, "This email address is not in the correct format. Please enter an email address in the format, 'example@example.com'."],
     required: 'You must provide an email address.'
@@ -27,9 +27,9 @@ var UserSchema = new Schema({
     type: String,
     match: [/((1-)|1)?[0-9]{3}-?[0-9]{3}-?[0-9]{4}/, "This phone number is not in the correct format."]
   },
-  shippingAddresses: [Address], //primary shipping address is saved to cookie
+  shippingAddresses: [Address.schema], //primary shipping address is saved to cookie
   billingAddress: {
-    type: [Address],
+    type: [Address.schema],
     validate: {
       validator: function(arr) {
         return arr.length === 1 || arr.length === 0;
@@ -37,6 +37,14 @@ var UserSchema = new Schema({
       message: 'An user can only have one billing address.'
     }
   },
+  /*billingAddress: {
+    type: Schema.Types.ObjectId,
+    ref: 'Address'
+  },
+  shippingAddresses: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Address'
+  }],*/
   promotionalEmails: {
     type: Boolean,
     default: false
@@ -45,6 +53,11 @@ var UserSchema = new Schema({
     type: Number,
     default: 0     //in US dollars
   },
+  paymentMethods: [{
+    type: Schema.Types.ObjectId,
+    ref: 'PaymentMethod',
+    index: true
+  }],
   orders: [{
     type: Schema.Types.ObjectId,
     ref: 'Order',
@@ -195,6 +208,7 @@ UserSchema
 UserSchema.pre('remove', function(next) {
   mongoose.model('Wishlist').remove({user: this._id}).exec();
   mongoose.model('Reward').remove({user: this._id}).exec();
+  mongoose.model('PaymentMethod').remove({user: this._id}).exec();
 
   next();
 });

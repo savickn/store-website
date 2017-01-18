@@ -8,51 +8,44 @@
   h2 Account Details
   p Name: {{user.name}}
   p Email: {{user.email}}
+  p Phone Number: {{user.phoneNumber}}
+  p Receive Promotional Emails?: {{user.promotionalEmails | yesNo}}
 
-  .col-lg-6
+  .col-lg-4
     a.btn.btn-primary(href="/settings/account/password") Change Password
-  .col-lg-6
+  .col-lg-4
     a.btn.btn-primary(href="/settings/account/email") Change Email
+  .col-lg-4
+    a.btn.btn-primary(href="/settings/account/info") Change Info
 
-  //.view(ui-view="main")
+  //.view(ui-view="info")
 
 .row 
-  h2 Addresses
   .col-lg-6
     h3 Billing Address
-    .no-address(ng-show='!user.billingAddress') 
-      a.btn.btn-primary(href="/settings/account/billing") Add a billing address
-    .has-address(ng-show='user.billingAddress')
-      ul.list-group
-        li.list-group-item Street Address 
-        li.list-group-item City
-        li.list-group-item Province
-        li.list-group-item Postal Code
-      a.btn.btn-primary(href="/settings/account/billing") Edit your billing address
+    ul.list-group(ng-repeat='billing in user.billingAddress')
+      li.list-group-item Street Address: {{billing.street}}
+      li.list-group-item City: {{billing.city}}
+      li.list-group-item Postal Code: {{billing.postalCode}}
+      li.list-group-item Province: {{billing.province}}
+      li.list-group-item Country: {{billing.country}}
+    a.btn.btn-primary(href="/settings/account/billing") Edit your billing address
 
 
   .col-lg-6
     h3 Shipping Address
-    .no-address(ng-show='!user.shippingAddress') 
-      a.btn.btn-primary(href="/settings/account/shipping") Add a shipping address
-    .has-address(ng-show='user.shippingAddress')
-      ul.list-group(ng-repeat='shipping in user.shippingAddress')
-        li.list-group-item Street Address 
-        li.list-group-item City
-        li.list-group-item Province
-        li.list-group-item Postal Code
-        li.list-group-item
-          button.btn.btn-primary(ng-click='setAsPrimaryAddress(address)') Set this as your primary shipping address.
-      a.btn.btn-primary(href="/settings/account/shipping") Edit your billing address
+    ul.list-group(ng-repeat='shipping in user.shippingAddresses')
+      li.list-group-item NickName: {{shipping.nickname}}
+      li.list-group-item Street Address: {{shipping.street}}
+      li.list-group-item City: {{shipping.city}}
+      li.list-group-item Postal Code: {{shipping.postalCode}}
+      li.list-group-item Province: {{shipping.province}}
+      li.list-group-item Country: {{shipping.country}}
+      button.btn.btn-primary(ng-click='setAsPrimaryAddress(address)') Set this as your primary shipping address.
+    a.btn.btn-primary(href="/settings/account/shipping") Edit your billing address
 
   //.view(ui-view="address")
 
-.row
-  h2 Information
-  p Phone Number: {{user.phoneNumber}}
-  p Receive Promotional Emails?: {{user.promotionalEmails | yesNo}}
-  a.btn.btn-primary(href="/settings/account/info") Change Info
 
-  //.view(ui-view="info")
 
 

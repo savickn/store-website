@@ -3,18 +3,15 @@
 angular.module('passportApp')
   .factory('OrderService', function (Restangular) {
     
-    var restAngular = 
-      Restangular.withConfig(function(RestangularConfigurer) {
-        RestangularConfigurer.setFullResponse(true);
-        //.setBaseUrl('api');
-      }); 
-
     return {
       /*getorders: function(options) {
         //if(options.page) { console.log(options.page) }
         //if(options.perPage) { console.log(options.perPage) }
         return restAngular.all('orders').getList({page: options.page, perPage: options.perPage}); 
       },*/
+      getOrders: function() {
+        return {};
+      },
       getOrder: function(orderId) {
         return Restangular.one('orders', orderId).get(); 
       },

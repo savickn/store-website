@@ -36,7 +36,7 @@ var AddressSchema = new Schema({
 	},
 	postalCode: {
 		type: String,
-		//match: [/[a-zA-Z]{1}[0-9]{1}[a-zA-Z]{1}(\s|-)?[0-9]{1}[a-zA-Z]{1}[0-9]{1}/, 'Incorrect Format. The postal code should be provided in the format A1A1A1.'], 
+		match: [/[a-zA-Z]{1}[0-9]{1}[a-zA-Z]{1}(\s|-)?[0-9]{1}[a-zA-Z]{1}[0-9]{1}/, 'Incorrect Format. The postal code should be provided in the format A1A1A1.'], 
 		required: 'You must provide a postal code.'
 	},
 	city: {
@@ -53,9 +53,41 @@ var AddressSchema = new Schema({
 		//enum: countryList,
 		required: 'You must select a country.'
 	}
+	/*user: {
+		type: Schema.Types.ObjectId,
+		ref: 'User'
+	}*/
 });
 
 //validate that user does not have 2+ addresses with the same nickname
+
+//data consistency with user
+/*AddressSchema.pre("save", function(next) {
+  var self = this;
+
+  if(this.type === 'Billing') {
+  	mongoose.model('User').findOneAndUpdate(
+	    {_id: self.user},
+	    {$set: {billingAddress: self._id}},
+	    function(err, user) {
+	      if(err) {next(err);}
+	      next();
+	    }
+	  );
+  } else if(this.type === 'Shipping') {
+  	mongoose.model('User').findOneAndUpdate(
+	    {_id: self.user},
+	    {$push: {shippingAddresses: self._id}},
+	    function(err, product) {
+	      if(err) {next(err);}
+	      next();
+	    }
+	  );
+  } else {
+  	console.log('error');
+  	next();
+  }
+});*/
 
 
 AddressSchema

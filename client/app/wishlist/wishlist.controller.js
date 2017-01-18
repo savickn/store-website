@@ -2,7 +2,17 @@
 
 angular.module('passportApp')
   .controller('WishlistCtrl', function ($scope, $stateParams, WishlistService) {
-    $scope.wishlist = $stateParams.wishlist;
+    $scope.wishlist = {};
+    console.log($stateParams);
+
+    (function getWishlistProducts() {
+        var name = $stateParams.wishlist.name;
+        WishlistService.getWishlist($stateParams.wishlist._id).then(function(wishlist) {
+            $scope.wishlist = wishlist;
+            $scope.wishlist.name = name;
+            console.log($scope.wishlist);
+        })
+    }) ();
 
     $scope.removeFromWishlist = function(wishlistId, productId) {
     	WishlistService.removeFromWishlist(wishlistId, productId).then(function(success) {

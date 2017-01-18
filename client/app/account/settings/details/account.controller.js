@@ -1,22 +1,58 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('AccountCtrl', function ($scope, AlertService, UserService, Auth, $state) {
-    //$scope.user = Auth.getCurrentUser();
+  .controller('AccountCtrl', function ($scope, AlertService, UserService, Auth, DataService, $state) {
+    $scope.user = Auth.getCurrentUser();
     //console.log($scope.user);
     $scope.errors = {};
     $scope.userUpdates = {};
 
+    //console.log($scope.user.billingAddress);
 
     $scope.countries = [];
-    $scope.provinces = {};
-    $scope.cities = {};
+    $scope.provinces = [];
+    $scope.cities = [];
+
+    $scope.addressType = $state.params.type;
+    $scope.newAddress = {};
+
+    (function getCountries() {
+      DataService.getCountries().then(function(countries) {
+        $scope.countries = countries;
+        //console.log(countries);
+      })
+    }) ();
+
+    $scope.populateProvinces = function(country) {
+      var country = {country: country};
+      DataService.getProvinces(country).then(function(provinces) {
+        $scope.provinces = provinces;
+        console.log($scope.addressType);
+        //console.log(provinces);
+      })
+    }
+
+    $scope.populateCities = function(province) {
+      console.log(province);
+    }
 
 
-    $scope.setAsPrimaryAddress = function(primaryAddress) {
-      //add to cookies
+    $scope.updateAddresses = function(form, userId, newAddress) {
+      newAddress.type = $scope.addressType;
+      if(newAddress.type === 'Billing') {
+        $scope.userUpdates.billingAddress = [];
+        $scope.userUpdates.billingAddress.pushUnique(newAddress);
 
-    };
+        if(newAddress.saveAsShipping) {
+          $scope.userUpdates.shippingAddresses = $scope.user.shippingAddresses;
+          $scope.userUpdates.shippingAddresses.pushUnique(newAddress);
+        }
+      } else if(newAddress.type === 'Shipping') {
+        $scope.userUpdates.shippingAddresses = $scope.user.shippingAddresses;
+        $scope.userUpdates.shippingAddresses.pushUnique(newAddress);
+      }
+      $scope.updateUser(form, userId, $scope.userUpdates);
+    }
 
 		$scope.updateUser = function(form, userId, userUpdates) {
       $scope.submitted = true
@@ -58,6 +94,11 @@ angular.module('passportApp')
           $scope.message = '';
         });
       }
+    };
+
+    $scope.setAsPrimaryAddress = function(primaryAddress) {
+      //add to cookies
+
     };
   });
 

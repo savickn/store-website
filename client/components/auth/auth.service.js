@@ -10,7 +10,6 @@ angular.module('passportApp')
     }
 
     return {
-
       /**
        * Authenticate user and save token
        *
@@ -30,6 +29,7 @@ angular.module('passportApp')
           $cookieStore.put('token', data.token);
           UserService.getMe().then(function(me) {
             currentUser = me;
+            console.log(me);
           });
           deferred.resolve(data);
           return cb();
@@ -41,17 +41,6 @@ angular.module('passportApp')
         }.bind(this));
 
         return deferred.promise;
-      },
-
-      /*
-      ** used to update user info
-      */
-
-      refreshUser: function(user, cb) {
-        return UserService.getMe().then(function(me) {
-          currentUser = me;
-          return currentUser;
-        });
       },
 
       /**
@@ -118,13 +107,6 @@ angular.module('passportApp')
 
       },
 
-      /**
-      ** Used to update client-side wishlist after adding or removeing from wishlist
-      **/
-
-      updateWishlist: function(wishlist) {
-        currentUser.wishlist = wishlist;
-      },
 
       /**
       ** Setter for user saved in service
@@ -142,6 +124,46 @@ angular.module('passportApp')
        */
       getCurrentUser: function() {
         return currentUser;
+      },
+
+      /**
+      * Used to get user addresses
+      */
+
+      getShippingAddresses: function() {
+        console.log(currentUser);
+        console.log(currentUser.shippingAddresses);
+        return currentUser.shippingAddresses;
+      },
+
+      /**
+      *
+      * Consistent API for accessing currentUser's wishlist
+      *
+      **/
+
+      getUserWishlist: function() {
+        return {
+          _id: currentUser.wishlist.id,
+          name: currentUser.name,
+          products: currentUser.wishlist.products
+        };
+      },
+
+      /**
+      ** Used to update client-side wishlist after adding or removeing from wishlist
+      **/
+
+      updateWishlist: function(wishlist) {
+        currentUser.wishlist = wishlist;
+      },
+
+      /*
+      * Used to determine if a particular payment/order/etc belongs to currentUser
+      */
+
+      isOwner: function(id) {
+        return (id === currentUser._id) ? true : false;
       },
 
       /**
@@ -187,3 +209,16 @@ angular.module('passportApp')
       }
     };
   });
+
+
+
+            /*
+      ** used to update user info
+      */
+
+      /*refreshUser: function(user, cb) {
+        return UserService.getMe().then(function(me) {
+          currentUser = me;
+          return currentUser;
+        });
+      },*/

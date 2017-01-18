@@ -23,7 +23,7 @@ var ComputerSchema = Product.schema.extend({
 ComputerSchema
 	.virtual('searchableCategories')
 	.get(function() {
-		return ['CPU', 'GPU', 'Motherboard'];
+		return ['Brand', 'CPU', 'GPU', 'Motherboard'];
 	})
 
 

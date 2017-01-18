@@ -3,21 +3,22 @@
 
 angular.module('passportApp')
   .controller('ComputerCtrl', function ($scope, $stateParams, $timeout, ComputerService, FlashService, 
-      Auth, ngCart, ReviewService, AlertService, WishlistService) {
+      Auth, ngCart, ReviewService, AlertService, $state) {
     $scope.isAdmin = Auth.isAdmin();
     $scope.isLoggedIn = Auth.isLoggedIn();
-
-    $scope.$watch( function () { return AlertService.alert; }, function (alert) {
-      $scope.message = alert.message;
-      $scope.type = alert.type;
-    }, true);
+    $scope.viewState = 'Specs';
 
     $scope.currentProduct = {};
+    $scope.productId = $stateParams.id;
     $scope.previewImage = {};
     $scope.updateDisplayPic = false;
 
     ngCart.setTaxRate(7.5);
     ngCart.setShipping(2.99);
+
+    $scope.setViewState = function(s) {
+      $scope.viewState = s;
+    };
 
     ComputerService.getComputer($stateParams.id).then(function(computer) {
       $scope.currentProduct = computer;
@@ -41,6 +42,10 @@ angular.module('passportApp')
         }
       });*/
 
+    }).catch(function(err) {
+      console.log(err);
+
+      $state.go('/');
     });
 
     /*var getPublicProperties = function(obj) {

@@ -29,12 +29,12 @@ angular.module('passportApp')
         authenticate: true
       })
 
-      /*.state('newcomputer', {
+      .state('newcomputer', {
         url: '/products/computers/new',
         templateUrl: 'app/computer/new.html',
         controller: 'ComputerUploadCtrl',
         authenticate: true
-      })*/
+      })
 
       .state('showComputer', {
       	url: '/products/computers/:id',
