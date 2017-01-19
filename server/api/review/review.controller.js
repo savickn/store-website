@@ -33,50 +33,26 @@ exports.create = function(req, res) {
 
 // Updates an existing review in the DB.
 exports.update = function(req, res) {
-  function isDuplicateLike() {
-    req.body.upvotes.forEach(function(upvote) {
-      if(upvote.authorId === req.body.newUpvote.authorId) {
-        return true;
-      } 
-    });
-    return false;   
-  }
-
-  if(isDuplicateLike()) { return res.status(501).send('Duplicate Like') };
-
-  Review.findOneAndUpdate({_id: req.params.id}, {$set: {rating: req.body.rating, summary: req.body.summary}, $addToSet: {upvotes: req.body.newUpvote}}, {new: true})
+  Review.findOneAndUpdate({_id: req.params.id}, {$set: req.body}, {new: true})
     .populate('product author', '_id name')
-    //.populate('author', '_id name')
     .exec(function(err, review) {
       if (err) { return handleError(res, err); }
       return res.status(200).json(review);
     });
-
-
-  /*Review.findById(req.params.id, function (err, review) {
-    if (err) { return handleError(res, err); }
-    if(!review) { return res.status(404).send('Not Found'); }
-    
-    var updated = _.merge(review, req.body);
-    updated.upvotes = req.body.upvotes;
-    updated.save(function (err) {
-      if (err) { return handleError(res, err); }
-      return res.status(200).json(review);
-    });
-  });*/
 };
 
-/*used to upvote
+//used to upvote
 exports.upvote = function(req, res) {
-  if(req.body._id) { delete req.body._id; }
-  Review.update(
-    { _id: req.params.id}, 
-    { $addToSet: {upvotes: req.body.upvotes.last} }, 
-    function(err, data) {
+  Review.findOneAndUpdate(
+    {_id: req.params.id}, 
+    {$addToSet: {upvotes: req.body.upvote}},
+    {new: true}, 
+    function(err, review) {
       if (err) { return handleError(res, err); }
-      if(!review) { return res.status(404).send('Not Found'); }
+      //if(!review) { return res.status(404).send('Not Found'); }
+      return res.status(200).json(review)
     });
-}*/
+}
 
 // Deletes a review from the DB.
 exports.destroy = function(req, res) {
@@ -93,3 +69,35 @@ exports.destroy = function(req, res) {
 function handleError(res, err) {
   return res.status(500).send(err);
 }
+
+
+/*
+
+function isDuplicateLike() {
+    req.body.upvotes.forEach(function(upvote) {
+      if(upvote.authorId === req.body.newUpvote.authorId) {
+        return true;
+      } 
+    });
+    return false;   
+  }
+
+  if(isDuplicateLike()) { return res.status(501).send('Duplicate Like') };
+
+{$set: {rating: req.body.rating, summary: req.body.summary}, $addToSet: {upvotes: req.body.newUpvote}}
+
+
+  */
+
+
+  /*Review.findById(req.params.id, function (err, review) {
+    if (err) { return handleError(res, err); }
+    if(!review) { return res.status(404).send('Not Found'); }
+    
+    var updated = _.merge(review, req.body);
+    updated.upvotes = req.body.upvotes;
+    updated.save(function (err) {
+      if (err) { return handleError(res, err); }
+      return res.status(200).json(review);
+    });
+  });*/

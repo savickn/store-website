@@ -15,11 +15,11 @@ var cityList = {
 };
 
 var AddressSchema = new Schema({
-	type: {
+	/*type: {
 		type: String,
 		enum: ['Billing', 'Shipping'],
 		required: true
-	},
+	},*/
 	nickname: {
 		type: String,
 		required: 'You must provide a nickname for this address.'

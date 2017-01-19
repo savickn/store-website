@@ -7,6 +7,10 @@ angular.module('passportApp')
     $scope.errors = {};
     $scope.userUpdates = {};
 
+
+    //$scope.userUpdates.billingAddress = Auth.getBillingAddress() || {};
+    //$scope.userUpdates.shippingAddresses = Auth.getShippingAddresses() || [];
+
     //console.log($scope.user.billingAddress);
 
     $scope.countries = [];
@@ -44,6 +48,8 @@ angular.module('passportApp')
         $scope.userUpdates.billingAddress.pushUnique(newAddress);
 
         if(newAddress.saveAsShipping) {
+          newShippingAddress = newAddress;
+          newShippingAddress.type = 'Shipping';
           $scope.userUpdates.shippingAddresses = $scope.user.shippingAddresses;
           $scope.userUpdates.shippingAddresses.pushUnique(newAddress);
         }
@@ -53,6 +59,10 @@ angular.module('passportApp')
       }
       $scope.updateUser(form, userId, $scope.userUpdates);
     }
+
+
+
+
 
 		$scope.updateUser = function(form, userId, userUpdates) {
       $scope.submitted = true

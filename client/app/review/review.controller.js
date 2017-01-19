@@ -11,24 +11,26 @@ angular.module('passportApp')
     });
 
     function isDuplicateLike(review) {
+      var userId = Auth.getCurrentUser()._id;
       review.upvotes.forEach(function(upvote) {
-        if(upvote.authorId === Auth.getCurrentUser()._id) {
+        console.log(upvote.userId);
+        if(upvote.userId == userId) {
           return true;
-        } 
+        }
       });
       return false; 
     };
 
     $scope.upvoteReview = function(review) {
-      var author = Auth.getCurrentUser();
-      var newUpvote = {author: author.name, authorId: author._id, date: Date.now};
+      var user = Auth.getCurrentUser();
+      var newUpvote = {userName: user.name, userId: user._id, date: Date.now};
 
-      if(isDuplicateLike(review) === false) {
-        review.newUpvote = newUpvote;
-
-        ReviewService.updateReview(review).then(function(review) {
+      if(!isDuplicateLike(review)) {
+        ReviewService.upvoteReview(review._id, newUpvote).then(function(review) {
           $scope.currentReview = review;
           AlertService.setAlert("You liked this review!", "Success");
+        }).catch(function(err) {
+          AlertService.setAlert("This review could not be liked.", "Error");
         });
       } else {
         AlertService.setAlert("You have already liked this review once.", "Error");

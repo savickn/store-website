@@ -20,11 +20,10 @@ var WishlistSchema = new Schema({
 });
 
 WishlistSchema.pre('save', function(next) {
-	var self = this;
-
+	console.log(this);
 	mongoose.model('User').findOneAndUpdate(
-		{_id: self.user}, 
-		{$set: {wishlist: self._id}}, 
+		{_id: this.user}, 
+		{$set: {wishlist: this._id}}, 
 		function(err, user) {
 			if(err) {next(err);}
 			next();

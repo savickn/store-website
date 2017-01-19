@@ -123,6 +123,7 @@ angular.module('passportApp')
        * @return {Object} user
        */
       getCurrentUser: function() {
+        console.log(currentUser);
         return currentUser;
       },
 
@@ -131,9 +132,17 @@ angular.module('passportApp')
       */
 
       getShippingAddresses: function() {
-        console.log(currentUser);
         console.log(currentUser.shippingAddresses);
         return currentUser.shippingAddresses;
+      },
+
+      getBillingAddress: function() {
+        console.log(currentUser.billingAddress);
+        return currentUser.billingAddress;
+      },
+
+      getCurrentUserId: function() {
+        return currentUser._id;
       },
 
       /**
@@ -144,7 +153,7 @@ angular.module('passportApp')
 
       getUserWishlist: function() {
         return {
-          _id: currentUser.wishlist.id,
+          _id: currentUser.wishlist._id,
           name: currentUser.name,
           products: currentUser.wishlist.products
         };
@@ -162,8 +171,8 @@ angular.module('passportApp')
       * Used to determine if a particular payment/order/etc belongs to currentUser
       */
 
-      isOwner: function(id) {
-        return (id === currentUser._id) ? true : false;
+      isOwner: function(userId) {
+        return (userId === currentUser._id) ? true : false;
       },
 
       /**

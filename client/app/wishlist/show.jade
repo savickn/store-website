@@ -4,6 +4,8 @@ ul.list-group(ng-repeat="product in wishlist.products")
 	li.list-group-item 
 		a.pull-left(src="product.displayPicture")
 		p {{product.name}}
-		button.btn.btn-primary(ng-click="removeFromWishlist") Remove from Wishlist
-		button.btn.btn-primary(ng-click="purchaseFromWishlist()") Purchase for User 
+		toggle-item-wishlist(product-id="product._id" ng-if="isOwner")
+		button.btn.btn-primary(ng-click="purchaseFromWishlist()" ng-if="!isOwner") Purchase for User 
+
+		
 

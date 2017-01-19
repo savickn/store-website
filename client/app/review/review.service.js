@@ -16,6 +16,9 @@ angular.module('passportApp')
       updateReview: function(review) {
         return Restangular.one('reviews', review._id).customPUT(review);
       },
+      upvoteReview: function(reviewId, upvote) {
+        return Restangular.one('reviews', reviewId).customPUT({upvote: upvote}, 'upvote')
+      },
       removeReview: function(reviewId) {
         return Restangular.one('reviews', reviewId).remove();
       }

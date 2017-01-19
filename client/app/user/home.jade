@@ -3,7 +3,7 @@
 	.row
 		.col-lg-6
 			h2 Search for User
-			form.form(role="form" name="camForm" ng-submit="!formInactive && searchUsers(query)")
+			form.form(role="form" name="userSearchForm" ng-submit="searchUsers(query)")
 				p.help-text Use this form to search for user's. Not all fields must be filled out.
 				.form-group
 					label(for="name") Name

@@ -131,8 +131,9 @@ exports.create = function (req, res) {
   User.create(newUser, function(err, user) {
     if (err) return validationError(res, err);
 
-    Wishlist.create({user: user.__id}, function(err, wishlist) {
+    Wishlist.create({user: user._id}, function(err, wishlist) {
       if(err) return res.status(500).send(err);
+
 
       var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
       return res.json({ token: token });
@@ -198,7 +199,6 @@ exports.changePassword = function(req, res) {
 **/
 
 exports.update = function(req, res) {
-  //if(req.body.password)
   console.log(req.body);
 
   /*Review.findOneAndUpdate(
@@ -226,8 +226,7 @@ exports.me = function(req, res, next) {
   var userId = req.user._id;
   User.findOne({_id: userId})
   .select('-salt -hashedPassword')
-  .populate('reward wishlist paymentMethods')
-  //query.populate('purchases reward wishlist shippingAddress billingAddress'); 
+  .populate('reward wishlist billingAddress shippingAddresses paymentMethods')
   .exec(function(err, user) { // don't ever give out the password or salt
     if (err) return next(err);
     if (!user) return res.status(401).send('Unauthorized');

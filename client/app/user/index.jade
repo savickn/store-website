@@ -1,8 +1,42 @@
-.col-lg-4
-	ul.list-group
+
+
+.container
+	.row
+		.col-lg-6
+			h3 Search for User
+			form.form(role="form" name="userSearchForm" ng-submit="searchUsers(query)" novalidate)
+				p.help-text Use this form to search for user's. Not all fields must be filled out.
+				.form-group(ng-class='{ "has-success": userSearchForm.country.$valid && submitted, "has-error": userSearchForm.country.$invalid && submitted}')
+					label(for="name") Name
+					input.form-control(type="text" name="name" placeholder="Please enter a name." ng-model="userQuery.name")
+
+				.form-group(ng-class='{ "has-success": userSearchForm.country.$valid && submitted, "has-error": userSearchForm.country.$invalid && submitted}')
+					label(for="phoneNumber") Phone Number
+					input.form-control(type="tel" name="phoneNumber" placeholder="Please enter a phone number." ng-model="userQuery.phoneNumber" pattern='((1-)|1)?[0-9]{3}-?[0-9]{3}-?[0-9]{4}')
+					p.help-block(ng-show='userSearchForm.phoneNumber.$error.pattern && submitted')
+						| Please enter a valid phone number.
+
+				.form-group(ng-class='{ "has-success": userSearchForm.country.$valid && submitted, "has-error": userSearchForm.country.$invalid && submitted}')
+					label(for="email") Email
+					input.form-control(type="email" name="email" placeholder="Please enter an email." ng-model="userQuery.email" pattern="[A-Za-z0-9]+@([A-Za-z])+(\\.[A-Za-z]+)+")
+					p.help-block(ng-show='userSearchForm.email.$error.pattern && submitted')
+						| Please enter a valid email.						
+
+				.form-group(ng-class='{ "has-success": userSearchForm.country.$valid && submitted, "has-error": userSearchForm.country.$invalid && submitted}')
+					label(for="cardNumber") Reward Card Number
+					input.form-control(type="number" name="cardNumber" ng-model="query.cardNumber" pattern="[0-9]{8}" oninvalid="setCustomValidity('Please enter an 8 digit number.')")
+
+
+				button.btn.btn-primary(ng-disabled="formInactive" type="submit") Search
+	
+	.row(ng-show="(users.length < 1) && submitted")
+		p No users matched this query.
+	
+	.row
+		ul.list-group
 		li.list-group-item(ng-repeat='user in users')
 			a(href="/users/{{user._id}}")
 				span.glyphicon.glyphicon-link.pull-left
 			p {{user.name}}
-.col-lg-8
-	ui-view
+	.row
+		ui-view

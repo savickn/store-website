@@ -27,7 +27,7 @@ var UserSchema = new Schema({
     type: String,
     match: [/((1-)|1)?[0-9]{3}-?[0-9]{3}-?[0-9]{4}/, "This phone number is not in the correct format."]
   },
-  shippingAddresses: [Address.schema], //primary shipping address is saved to cookie
+  /*shippingAddresses: [Address.schema], //primary shipping address is saved to cookie
   billingAddress: {
     type: [Address.schema],
     validate: {
@@ -36,15 +36,16 @@ var UserSchema = new Schema({
       },
       message: 'An user can only have one billing address.'
     }
-  },
-  /*billingAddress: {
+  },*/
+  billingAddress: {
     type: Schema.Types.ObjectId,
     ref: 'Address'
   },
   shippingAddresses: [{
     type: Schema.Types.ObjectId,
-    ref: 'Address'
-  }],*/
+    ref: 'Address',
+    index: true
+  }],
   promotionalEmails: {
     type: Boolean,
     default: false
@@ -84,6 +85,8 @@ var UserSchema = new Schema({
 /**
  * Virtuals
  */
+
+
 UserSchema
   .virtual('numberOfPurchases')
   .get(function() {
@@ -94,13 +97,11 @@ UserSchema
   .virtual('amountSpent')
   .get(function() {
     //add up all orders
-
   })
 
-
-//strips dashes from phoneNumber
+//formats phoneNumber so that it looks nice
 UserSchema
-  .virtual('phone_number')
+  .virtual('formattedNumber')
   .get(function() {
     var phone_number = "";
     for(let char of this.phoneNumber)
@@ -141,9 +142,11 @@ UserSchema
     };
   });
 
+
 /**
  * Validations
  */
+
 
 // Validate empty email
 UserSchema
@@ -181,9 +184,12 @@ var validatePresenceOf = function(value) {
   return value && value.length;
 };
 
+
 /**
- * Pre-save hook
+ * PRE and POST Hooks
  */
+
+
 UserSchema
   .pre('save', function(next) {
     if (!this.isNew) return next();
@@ -194,17 +200,6 @@ UserSchema
       next();
   });
 
-/*UserSchema
-  .pre('save', function(next) {
-    if(!user.wishlist) {
-      mongoose.model('wishlist').create()
-    }
-  });*/
-
-/*
-* Pre-remove hooks
-*/
-
 UserSchema.pre('remove', function(next) {
   mongoose.model('Wishlist').remove({user: this._id}).exec();
   mongoose.model('Reward').remove({user: this._id}).exec();
@@ -213,9 +208,11 @@ UserSchema.pre('remove', function(next) {
   next();
 });
 
+
 /**
- * Methods
+ * Instance Methods
  */
+ 
 UserSchema.methods = {
   /**
    * Authenticate - check if the passwords are the same
@@ -254,21 +251,3 @@ UserSchema.methods = {
 
 module.exports = mongoose.model('User', UserSchema);
 
-
-
-/*    type: [Address],
-    validate: {
-      validator: function(arr) {
-        var primary = [];
-        arr.forEach(address) {
-          if(address.primary) {
-            primary.push(address);
-          }
-        };
-
-        return primary.length <= 1;
-      },
-      message: 'You can only have one primary shipping address.'
-    }
-
-    */

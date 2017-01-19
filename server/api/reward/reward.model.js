@@ -38,13 +38,10 @@ RewardSchema.pre('save', function(next) {
 })
 
 //data consistency
-
 RewardSchema.pre('save', function(next) {
-	var self = this;
-
 	mongoose.model('User').findOneAndUpdate(
-	    {_id: self.user},
-	    {$set: {reward: self._id}},
+	    {_id: this.user},
+	    {$set: {reward: this._id}},
 	    function(err, user) {
 	      if(err) {next(err);}
 	      next();

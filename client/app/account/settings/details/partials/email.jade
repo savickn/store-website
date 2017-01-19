@@ -3,7 +3,7 @@ h2 Change Email
 form.form(name='emailForm' ng-submit='updateUser(emailForm, user._id, userUpdates)' novalidate)
 	.form-group(ng-class='{ "has-success": emailForm.email.$valid && submitted, "has-error": emailForm.email.$invalid && submitted}')
 		label New Email
-		input.form-control(type='email' name='email' ng-model='userUpdates.email' pattern="[A-Za-z0-9]+@([A-Za-z])+(\\.[A-Za-z]+)+" mongoose-error='' required)
+		input.form-control(type='email' name='email' ng-model='userUpdates.email' pattern="[A-Za-z0-9]+@([A-Za-z])+(\\.[A-Za-z]+)+" required)
 		p.help-block(ng-show='emailForm.email.$error.required && submitted')
 			| Please enter an email address.
 		p.help-block(ng-show='emailForm.email.$error.pattern && submitted')

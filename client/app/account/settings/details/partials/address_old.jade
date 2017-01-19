@@ -1,0 +1,65 @@
+form.form(name='addressForm' role='form' ng-submit='updateAddresses(addressForm, user._id, newAddress)' novalidate)
+
+	.form-group(ng-class='{ "has-success": addressForm.country.$valid && submitted, "has-error": addressForm.country.$invalid && submitted}')
+		label(for="country") Country
+		select.form-control(name="country" ng-model="newAddress.country" ng-change="populateProvinces(newAddress.country)" required)
+			option(ng-repeat="country in countries" ng-value="country") {{country}}
+		p.help-block(ng-show='addressForm.country.$error.required && submitted')
+			| Please select a country.
+
+	.form-group(ng-class='{ "has-success": addressForm.province.$valid && submitted, "has-error": addressForm.province.$invalid && submitted}' ng-show="provinces.length > 0")
+		label(for="province") Province
+		select.form-control(name="province" ng-model="newAddress.province" ng-change="populateCities(newAddress.province)" required)
+			option(ng-repeat="province in provinces" ng-value="province") {{province}}
+		p.help-block(ng-show='addressForm.province.$error.required && submitted')
+			| Please select a province.
+
+	.form-group(ng-class='{ "has-success": addressForm.street.$valid && submitted, "has-error": addressForm.street.$invalid && submitted}')
+		label(for="street") Street Address
+		input.form-control(type="text" name="street" placeholder="Please enter a street address." ng-model="newAddress.street" required)
+		p.help-block(ng-show='addressForm.street.$error.required && submitted')
+			| Please enter a street address.
+		p.help-block(ng-show='addressForm.street.$error.mongoose')
+			| {{ errors.street }}	
+
+	.form-group(ng-class='{ "has-success": addressForm.city.$valid && submitted, "has-error": addressForm.city.$invalid && submitted}')
+		label(for="city") City
+		input.form-control(type="text" name="city" placeholder="Pleae enter a city." ng-model="newAddress.city" required)
+		p.help-block(ng-show='addressForm.city.$error.required && submitted')
+			| Please enter a city.
+		p.help-block(ng-show='addressForm.city.$error.mongoose')
+			| {{ errors.city }}	
+	
+	.form-group(ng-class='{ "has-success": addressForm.pobox.$valid && submitted, "has-error": addressForm.pobox.$invalid && submitted}')
+		label(for="pobox") PO Box (if applicable)
+		input.form-control(type="text" name="pobox" placeholder="Pleae enter a PO Box number if applicable." ng-model="newAddress.pobox")
+		p.help-block(ng-show='addressForm.pobox.$error.mongoose')
+			| {{ errors.pobox }}
+
+	.form-group(ng-class='{ "has-success": addressForm.aptNumber.$valid && submitted, "has-error": addressForm.aptNumber.$invalid && submitted}')
+		label(for="aptNumber") Apartment Number (if applicable)
+		input.form-control(type="text" name="aptNumber" placeholder="Pleae enter an apartment number if applicable." ng-model="newAddress.aptNumber")
+		p.help-block(ng-show='addressForm.aptNumber.$error.mongoose')
+			| {{ errors.aptNumber }}
+
+	.form-group(ng-class='{ "has-success": addressForm.postalCode.$valid && submitted, "has-error": addressForm.postalCode.$invalid && submitted}')
+		label(for="postalCode") Postal Code
+		input.form-control(type="text" name="postalCode" placeholder="Pleae enter a postal code." ng-model="newAddress.postalCode" pattern="[a-zA-Z]{1}[0-9]{1}[a-zA-Z]{1}(\s|-)?[0-9]{1}[a-zA-Z]{1}[0-9]{1}" mongoose-error='' required)
+		p.help-block(ng-show='addressForm.postalCode.$error.required && submitted')
+			| Please enter a postal code.
+		p.help-block(ng-show='addressForm.postalCode.$error.pattern && submitted')
+			| This postal code is not in the correct format. Please enter a postal code in the format 'A1A2B2'.
+		p.help-block(ng-show='addressForm.postalCode.$error.mongoose')
+			| {{ errors.postalCode }}
+
+	.form-group(ng-class='{ "has-success": addressForm.nickname.$valid && submitted, "has-error": addressForm.nickname.$invalid && submitted}')
+		label(for="nickname") Nickname
+		input.form-control(type="text" name="nickname" placeholder="Pleae enter a nickname for this address." ng-model="newAddress.nickname" required)
+		p.help-block(ng-show='addressForm.nickname.$error.required && submitted')
+			| Please enter a nickname to remember this address.
+
+	.form-group(ng-if="{true: addressType === 'Billing'}")
+		label(for="saveAsShipping") Would you like to use this address as a shipping address as well?
+		input.form-control(type="checkbox" name="saveAsShipping" ng-model="newAddress.saveAsShipping")
+
+	button.btn.btn-primary(type='submit') Save Changes

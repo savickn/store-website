@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    Upvotes = require('../upvote/upvote.model'),
+    Upvote = require('../upvote/upvote.model'),
     Schema = mongoose.Schema;
 
 var ReviewSchema = new Schema({
@@ -26,11 +26,15 @@ var ReviewSchema = new Schema({
   	minLength: 0,
     maxLength: 500
   },
-  upvotes: [Upvotes.schema]
+  upvotes: [Upvote.schema]
 });
 
+/*
+* Pre and POST Hooks
+*/
+
 //prevents duplicate likes
-ReviewSchema.pre("save", function(next) {
+/*ReviewSchema.pre("save", function(next) {
 
   function pushUnique(array, item) {
     if (array.indexOf(item) == -1) {
@@ -52,16 +56,14 @@ ReviewSchema.pre("save", function(next) {
   if(this.upvotes) {
     this.upvotes = checkForDuplicates();
   };*/
-  next();
-});
+/*  next();
+});*/
 
 //data consistency with product
 ReviewSchema.pre("save", function(next) {
-  var self = this;
-
   mongoose.model('Product').findOneAndUpdate(
-    {_id: self.product},
-    {$push: {reviews: self._id}},
+    {_id: this.product},
+    {$addToSet: {reviews: this._id}},
     function(err, product) {
       if(err) {next(err);}
       next();
@@ -71,17 +73,19 @@ ReviewSchema.pre("save", function(next) {
 
 //data consistency with product
 ReviewSchema.pre("remove", function(next) {
-  var self = this;
-  
   mongoose.model('Product').findOneAndUpdate(
-    {_id: self.product},
-    {$pull: {reviews: self._id}},
+    {_id: this.product},
+    {$pull: {reviews: this._id}},
     function(err, product) {
       if(err) {next(err);}
       next();
     }
   );
 }); 
+
+/*
+* Virtual Methods
+*/
 
 ReviewSchema.virtual('score').get(function() {
 	return this.upvotes.length;

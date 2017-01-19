@@ -57,7 +57,6 @@ angular.module('passportAppDirectives', [])
 	.directive('toggleItemWishlist', function(Auth, WishlistService) {
 		return {
 			restrict: 'E',
-			//template: "<button class='btn btn-primary' ng-click='addToWishlist(productId)'> Add to Wishlist </button>",
 			templateUrl : '../components/directives/views/toggleItemWishlist.html',
 			scope: {
 				productId: '@'
@@ -65,16 +64,9 @@ angular.module('passportAppDirectives', [])
 				//wishlist: '=',
 				//state: '@'
 			},
-			//controller: "WishlistController as ctrl",
-			/*compile: function(tElem, tAttrs) {
-				var wishlist = Auth.getCurrentUser().wishlist;
-			},*/
 			link: function(scope, elem, attrs) {
 				var wishlist = Auth.getCurrentUser().wishlist;
 				scope.state = wishlist.products.includes(scope.productId);
-				//console.log(scope.productId);
-				//console.log(wishlist);
-				//console.log(scope.state);
 
 				function updateWishlist() {
 					WishlistService.updateWishlist(wishlist._id, wishlist).then(function(wishlist) {
@@ -121,7 +113,7 @@ angular.module('passportAppDirectives', [])
 			}
 		};
 	})
-	.directive('nsNewAddress', function(DataService) {
+	.directive('nsAddress', function(DataService) {
 		return {
 			restrict: 'E',
 			templateUrl: '../components/directives/views/address.html',
@@ -133,8 +125,6 @@ angular.module('passportAppDirectives', [])
 				//check for favorite shipping address in Cookies
 				//create shipping address selector
 				//autofill billing address with user billing address
-
-				scope.address.type = scope.type;
 
 				scope.countries = [];
 			    scope.provinces = [];
@@ -154,6 +144,14 @@ angular.module('passportAppDirectives', [])
 			        //console.log(provinces);
 			      })
 			    }
+
+			    scope.populateCities = function(province) {
+			    	console.log(province);
+			    }
+
+
+
+
 			}
 		}
 	})

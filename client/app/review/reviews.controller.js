@@ -4,27 +4,22 @@ angular.module('passportApp')
   .controller('ReviewsCtrl', function ($scope, $stateParams, Auth, ReviewService, AlertService) {
 
     $scope.rating = 1;
-    //$scope.newReview = {};
+    $scope.newReview = {};
 
     $scope.setRating = function(rating) {
-      $scope.newRating = rating;
+      $scope.newReview.rating = rating;
     }
 
-    $scope.addReview = function() {
-      if (!Auth.isAdmin()) {
-        return;
-      }
-      var newReview = {summary: $scope.newSummary, rating: $scope.newRating, 
-        author: Auth.getCurrentUser()._id, product: $scope.currentProduct._id};
+    $scope.addReview = function(newReview) {
+      $scope.newReview.author = Auth.getCurrentUser()._id;
+      $scope.newReview.product = $scope.currentProduct._id;
 
       ReviewService.addReview(newReview).then(function(review) {
           $scope.$parent.currentProduct.reviews.push(review);
-          $scope.newRating = '';
-          $scope.newSummary = '';
+          $scope.newReview = {};
           $scope.rating = 1;
           AlertService.setAlert("Your review was successfully saved.", "Success");
-        }, function(err) {
-          console.log(err);
+        }).catch(function(err) {
           AlertService.setAlert("Review could not be saved. Please try again.", "Warning");
         });
     };

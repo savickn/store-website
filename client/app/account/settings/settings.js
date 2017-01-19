@@ -21,20 +21,26 @@ angular.module('passportApp')
         url: '/password',
         templateUrl: 'app/account/settings/details/partials/password.html'
       })
-      .state('settings.account.email', {
+      /*.state('settings.account.email', {
         url: '/email',
         templateUrl: 'app/account/settings/details/partials/email.html'
-        /*views: {
+        views: {
           'main@settings.account.email' : {
             templateURL: 'app/account/settings/details/partials/email.html'
           }
-        }*/
-      })
+        }
+      })*/
       .state('settings.account.info', {
         url: '/info',
         templateUrl: 'app/account/settings/details/partials/info.html'
       })
-      .state('settings.account.billing', {
+      .state('settings.account.address', {
+        url: '/address',
+        templateUrl: 'app/account/settings/details/partials/address.html'
+      })
+
+
+      /*.state('settings.account.billing', {
         url: '/billing',
         templateUrl: 'app/account/settings/details/partials/address.html',
         params: {
@@ -47,7 +53,7 @@ angular.module('passportApp')
         params: {
           type: 'Shipping'
         }
-      })
+      })*/
       
 
       .state('settings.paymentOptions', {

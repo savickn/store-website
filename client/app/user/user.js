@@ -6,7 +6,7 @@ angular.module('passportApp')
     $stateProvider
       .state('users', {
         url: '/users?page&pagecount',
-        templateUrl: 'app/user/home.html',
+        templateUrl: 'app/user/index.html',
         controller: 'UserCollectionCtrl',
         params: {
           page: {
@@ -19,26 +19,9 @@ angular.module('passportApp')
           }
         }
       })
-      .state('users.search', {
-        url: '/',
-        templateUrl: 'app/user/index.html'
-      })
       .state('users.show', {
         url: '/:id',
         templateUrl: 'app/user/show.html',
         controller: 'UserCtrl'
       });
   });
-
-/* nested route - must have <ui-view> in parent template, will embed the child within the parent template
-      .state('computers.show', {
-        url: '/:id',
-        templateUrl: 'app/computer/show.html',
-        controller: 'ComputerCtrl'
-      });*/
-
-//resolve: {
-        //  objId: function($stateParams) {
-        //    return {computerId: $stateParams.id}
-        //  }
-        //}
