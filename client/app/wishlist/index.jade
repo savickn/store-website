@@ -25,7 +25,7 @@
 				li.list-group-item 
 					p Name: {{wishlist.name}}
 					p Items: {{wishlist.products.length}}
-					a(ui-sref="wishlists.show({wishlist: wishlist})") Go to Wishlist
+					a(ui-sref="wishlists.show({wishlist: wishlist})" ng-if="wishlist.products.length > 0") Go to Wishlist
 
 
 

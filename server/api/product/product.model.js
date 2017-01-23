@@ -18,6 +18,9 @@ var ProductSchema = new Schema({
 		type: Number,
 		required: 'You must include a price for this product.'
 	},
+	discountPrice: {
+		type: Number
+	},
 	brand: {
 		type: String,
 		required: 'You must include a brand for this product.'
@@ -39,21 +42,12 @@ var ProductSchema = new Schema({
 	inventory: [Inventory],
 	availability: {
 		type: String,
-		enum: ['In Stock', '2-3 Weeks', 'On Re-Order', 'Unavailable'],
-		required: true
+		enum: ['In Stock', '2-3 Weeks', 'On Re-Order', 'Unavailable']
+		//required: true
 	},
 	UPC: {
-		type: String,
-		required: true
-	},
-	sale: {
-		type: [Sale],
-		validate: {
-			validator: function(arr) {
-				return arr.length === 1;
-			},
-			message: 'Only one sale can be active at a time.'
-		}
+		type: String
+		//required: true
 	},
 	onSale: {
 		type: Boolean,
@@ -75,6 +69,19 @@ ProductSchema.virtual('recommended').get(function() {
 
 
 });
+
+/*
+	sale: {
+		type: [Sale],
+		validate: {
+			validator: function(arr) {
+				return arr.length === 1;
+			},
+			message: 'Only one sale can be active at a time.'
+		}
+	},
+*/
+
 
 /*ProductSchema
   .virtual('searchableCategories')

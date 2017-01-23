@@ -5,62 +5,19 @@ angular.module('passportApp')
     $scope.user = Auth.getCurrentUser();
     //console.log($scope.user);
     $scope.errors = {};
-    $scope.userUpdates = {};
-
-
-    //$scope.userUpdates.billingAddress = Auth.getBillingAddress() || {};
-    //$scope.userUpdates.shippingAddresses = Auth.getShippingAddresses() || [];
+    $scope.userUpdates = {
+      email: $scope.user.email,
+      phoneNumber: $scope.user.phoneNumber,
+      promotionalEmails: $scope.user.promotionalEmails
+    };
 
     //console.log($scope.user.billingAddress);
-
-    $scope.countries = [];
-    $scope.provinces = [];
-    $scope.cities = [];
 
     $scope.addressType = $state.params.type;
     $scope.newAddress = {};
 
-    (function getCountries() {
-      DataService.getCountries().then(function(countries) {
-        $scope.countries = countries;
-        //console.log(countries);
-      })
-    }) ();
-
-    $scope.populateProvinces = function(country) {
-      var country = {country: country};
-      DataService.getProvinces(country).then(function(provinces) {
-        $scope.provinces = provinces;
-        console.log($scope.addressType);
-        //console.log(provinces);
-      })
-    }
-
-    $scope.populateCities = function(province) {
-      console.log(province);
-    }
-
-
-    $scope.updateAddresses = function(form, userId, newAddress) {
-      newAddress.type = $scope.addressType;
-      if(newAddress.type === 'Billing') {
-        $scope.userUpdates.billingAddress = [];
-        $scope.userUpdates.billingAddress.pushUnique(newAddress);
-
-        if(newAddress.saveAsShipping) {
-          newShippingAddress = newAddress;
-          newShippingAddress.type = 'Shipping';
-          $scope.userUpdates.shippingAddresses = $scope.user.shippingAddresses;
-          $scope.userUpdates.shippingAddresses.pushUnique(newAddress);
-        }
-      } else if(newAddress.type === 'Shipping') {
-        $scope.userUpdates.shippingAddresses = $scope.user.shippingAddresses;
-        $scope.userUpdates.shippingAddresses.pushUnique(newAddress);
-      }
-      $scope.updateUser(form, userId, $scope.userUpdates);
-    }
-
-
+    //$scope.userUpdates.billingAddress = Auth.getBillingAddress() || {};
+    //$scope.userUpdates.shippingAddresses = Auth.getShippingAddresses() || [];
 
 
 
@@ -114,14 +71,49 @@ angular.module('passportApp')
 
 
 
+/*$scope.countries = [];
+    $scope.provinces = [];
+    $scope.cities = [];
 
-      /*$scope.user.shippingAddress = $scope.user.shippingAddress.map(function(address) {
-        if(address._id === primaryAddress._id) {
-          return address.primary = true;
-        } else {
-          return address;
-        }
+    (function getCountries() {
+      DataService.getCountries().then(function(countries) {
+        $scope.countries = countries;
+        //console.log(countries);
       })
-      console.log($scope.user.shippingAddress);
+    }) ();
 
-      $scope.updateUser($scope.user);*/
+    $scope.populateProvinces = function(country) {
+      var country = {country: country};
+      DataService.getProvinces(country).then(function(provinces) {
+        $scope.provinces = provinces;
+        console.log($scope.addressType);
+        //console.log(provinces);
+      })
+    }
+
+    $scope.populateCities = function(province) {
+      console.log(province);
+    }
+
+
+    $scope.updateAddresses = function(form, userId, newAddress) {
+      newAddress.type = $scope.addressType;
+      if(newAddress.type === 'Billing') {
+        $scope.userUpdates.billingAddress = [];
+        $scope.userUpdates.billingAddress.pushUnique(newAddress);
+
+        if(newAddress.saveAsShipping) {
+          newShippingAddress = newAddress;
+          newShippingAddress.type = 'Shipping';
+          $scope.userUpdates.shippingAddresses = $scope.user.shippingAddresses;
+          $scope.userUpdates.shippingAddresses.pushUnique(newAddress);
+        }
+      } else if(newAddress.type === 'Shipping') {
+        $scope.userUpdates.shippingAddresses = $scope.user.shippingAddresses;
+        $scope.userUpdates.shippingAddresses.pushUnique(newAddress);
+      }
+      $scope.updateUser(form, userId, $scope.userUpdates);
+    }*/
+
+
+

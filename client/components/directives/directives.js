@@ -41,18 +41,18 @@ angular.module('passportAppDirectives', [])
 		};
 	})
 	.directive('toggleClass', function() {
-    return {
-      restrict: 'A',
-      link: function(scope, element, attrs) {
-        element.bind('click', function() {
-          if(element.attr("class") !== attrs.toggleClass) {
-            element.addClass(attrs.toggleClass);
-          } else {
-            element.removeClass(attrs.toggleClass);
-          }
-        });
-      }
-    };
+	    return {
+	      restrict: 'A',
+	      link: function(scope, element, attrs) {
+	        element.bind('click', function() {
+	          if(element.attr("class") !== attrs.toggleClass) {
+	            element.addClass(attrs.toggleClass);
+	          } else {
+	            element.removeClass(attrs.toggleClass);
+	          }
+	        });
+	      }
+	    };
 	})
 	.directive('toggleItemWishlist', function(Auth, WishlistService) {
 		return {
@@ -68,8 +68,12 @@ angular.module('passportAppDirectives', [])
 				var wishlist = Auth.getCurrentUser().wishlist;
 				scope.state = wishlist.products.includes(scope.productId);
 
+				//console.log(scope.productId);
+				//console.log(wishlist);
+				//console.log(scope.state);
+
 				function updateWishlist() {
-					WishlistService.updateWishlist(wishlist._id, wishlist).then(function(wishlist) {
+					WishlistService.updateWishlist(wishlist._id, wishlist).then(function(wl) {
 		      			Auth.updateWishlist(wishlist);
 		      			scope.state = !scope.state;
 		        	}).catch(function(err) {
@@ -91,13 +95,14 @@ angular.module('passportAppDirectives', [])
 			}
 		};
 	})
+	//should be passed OUTPUT_VAR (e.g. address) and ADDRESS_LIST (e.g. addresses) which is used to set OUTPUT_VAR
 	.directive('nsSelectAddress', function(Auth) {
 		return {
 			restrict: 'E',
 			templateUrl: '../components/directives/views/selectAddress.html',
 			scope: {
 				address: '=',
-				addresses: '@',
+				addresses: '=',
 				type: '@'
 			},
 			link: function(scope, elem, attrs) {
@@ -113,13 +118,28 @@ angular.module('passportAppDirectives', [])
 			}
 		};
 	})
-	.directive('nsAddress', function(DataService) {
+	//simply displays the ADDRESS passed to it
+	.directive('nsShowAddress', function() {
 		return {
 			restrict: 'E',
-			templateUrl: '../components/directives/views/address.html',
+			templateUrl: '../components/directives/views/showAddress.html',
+			scope: {
+				address: '='
+			},
+			link: function(scope, elem, attrs) {
+				console.log(scope.address);
+			}
+		}
+	})
+	//used to add or update a particular ADDRESS that is passed to it
+	.directive('nsAddAddress', function(DataService, AddressService, Auth) {
+		return {
+			restrict: 'E',
+			templateUrl: '../components/directives/views/newAddress.html',
 			scope: {
 				address: '=',
-				type: '@'
+				type: '@',
+				state: '@' //can be 'update' 'add' 'return'
 			},
 			link: function(scope, elem, attrs) {
 				//check for favorite shipping address in Cookies
@@ -127,30 +147,69 @@ angular.module('passportAppDirectives', [])
 				//autofill billing address with user billing address
 
 				scope.countries = [];
-			    scope.provinces = [];
-			    scope.cities = [];
+		    scope.provinces = [];
+		    scope.cities = [];
 
-			    (function getCountries() {
-			      DataService.getCountries().then(function(countries) {
-			        scope.countries = countries;
-			        //console.log(countries);
+		    scope.populateCountries = function() {
+	    		DataService.ajaxCountries().then(function(countries) {
+		        scope.countries = countries;
+		      });
+		    }
+
+		    scope.populateProvinces = function(country) {
+	      	DataService.ajaxProvinces({country: country}).then(function(provinces) {
+		      	scope.provinces = provinces;
+		      });
+		    }
+
+		    scope.populateCities = function(province) {
+		    	console.log(province);
+		    }
+
+		    scope.addAddress = function(form, address) {
+		      scope.submitted = true;
+		      scope.address.type = scope.type;
+		      scope.address.user = Auth.getCurrentUser()._id;
+		      
+		      if(form.$valid){
+		      	AddressService.addAddress(address)
+			      .then(function(address) {
+			      	scope.submitted = false;
+			      	Auth.setBillingAddress(address);
+			      	scope.address = {};
+			        //push to current User
+			        console.log(address);
 			      })
-			    }) ();
+			      .catch(function(err) {
+			        err = err.data;
+			        scope.errors = {};
 
-			    scope.populateProvinces = function(country) {
-			      DataService.getProvinces({country: country}).then(function(provinces) {
-			        scope.provinces = provinces;
-			        //console.log($scope.addressType);
-			        //console.log(provinces);
-			      })
-			    }
+			        angular.forEach(err.errors, function(error, field) {
+			          form[field].$setValidity('mongoose', false);
+			          scope.errors[field] = error.message;
+			        });
+			      });
+		      }
+		    };
 
-			    scope.populateCities = function(province) {
-			    	console.log(province);
-			    }
+		    /*$scope.updateAddress = function(address) {
+		      var addressId = address._id; //used to update currentUser
+		      AddressService.updateAddress(address)
+		      .then(function(address) {
+		        //update currentUser
+		        AlertService.setAlert('Address Removed!', 'Success');
+		      })
+		      .catch(function(err) {
+		        console.log(err);
+		      })
+		    };*/
 
-
-
+		    (function init() {
+		      scope.populateCountries();
+		      if(scope.address.country) {
+		      	scope.populateProvinces(scope.address.country);
+		      };
+		    }) ();
 
 			}
 		}
@@ -171,6 +230,31 @@ angular.module('passportAppDirectives', [])
 			}
 		};
 	})
+
+/*
+
+		    scope.populateCountries = function() {
+		    	if(DataService.getCountries().length > 0) {
+		    		scope.countries = DataService.getCountries;
+		    	} else {
+		    		DataService.ajaxCountries().then(function(countries) {
+			        scope.countries = countries;
+			        DataService.setCountries(countries);
+			      });
+		    	}
+		    }
+
+		    scope.populateProvinces = function(country) {
+		      if(DataService.getSelectedCountry() === country) {
+		      	scope.provinces = DataService.getProvinces(country);
+		      } else {
+		      	DataService.ajaxProvinces({country: country}).then(function(provinces) {
+			      	scope.provinces = provinces;
+			      	DataService.setProvinces(country, provinces);
+			      });
+		      }
+		    }
+*/
 
 
 

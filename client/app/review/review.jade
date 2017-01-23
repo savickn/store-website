@@ -11,10 +11,10 @@
 			li Author: {{currentReview.author.name}}
 
 	.row
-		a(href='#', ng-click='upvoteReview(currentReview)' ng-if='isDuplicateLike === false') Mark as Helpful?
-		a(href='#', ng-click='removeUpvote(currentReview)' ng-if='isDuplicateLike === true') Unhelpful? 
+		a(href='#', ng-click='upvoteReview(currentReview)' ng-show='!isDuplicateLike') Mark as Helpful?
+		a(href='#', ng-click='removeUpvote(currentReview)' ng-show='isDuplicateLike') Unhelpful? 
 		ul.nav.nav-tabs.nav-stacked(ng-repeat='upvote in currentReview.upvotes')
-			li {{upvote.author}}
+			li {{upvote.userName}}
 
 
 

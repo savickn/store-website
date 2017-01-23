@@ -36,7 +36,8 @@ angular.module('passportApp')
       })
       .state('settings.account.address', {
         url: '/address',
-        templateUrl: 'app/account/settings/details/partials/address.html'
+        templateUrl: 'app/account/settings/details/partials/address.html',
+        controller: 'AddressCtrl'
       })
 
 

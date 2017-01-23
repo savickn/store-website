@@ -99,59 +99,64 @@ angular.module('passportApp')
         });
       },
 
-      /**
-      ** Reset Password
-      **/ 
-
       resetPassword: function(newPassword, confirmPassword, callback) {
 
       },
 
 
       /**
-      ** Setter for user saved in service
+      ** for handling the authenticated user
       **/
 
+      getCurrentUser: function() {
+        return currentUser;
+      },
+
       setCurrentUser: function(user) {
-        console.log('current user set');
         currentUser = user;
       },
 
       /**
-       * Gets all available info on authenticated user
-       *
-       * @return {Object} user
-       */
-      getCurrentUser: function() {
-        console.log(currentUser);
-        return currentUser;
-      },
-
-      /**
-      * Used to get user addresses
+      * for handling Shipping Addresses
       */
 
       getShippingAddresses: function() {
+        console.log('get shipping')
         console.log(currentUser.shippingAddresses);
         return currentUser.shippingAddresses;
       },
 
+      addShippingAddress: function(address) {
+        console.log('add billing')
+        console.log(address);
+        currentUser.shippingAddresses.pushUnique(address);
+      },
+
+      removeShippingAddress: function(address) {
+        currentUser.shippingAddresses.remove(address);
+      },
+
+      /*
+      * for handling Billing Address
+      */
+
       getBillingAddress: function() {
+        console.log('get billing')
         console.log(currentUser.billingAddress);
         return currentUser.billingAddress;
       },
 
-      getCurrentUserId: function() {
-        return currentUser._id;
+      setBillingAddress: function(address) {
+        console.log('set billing');
+        console.log(address);
+        currentUser.billingAddress = address;
       },
 
-      /**
-      *
-      * Consistent API for accessing currentUser's wishlist
-      *
-      **/
+      /*
+      * for handling auth user's wishlist
+      */
 
-      getUserWishlist: function() {
+      getWishlist: function() {
         return {
           _id: currentUser.wishlist._id,
           name: currentUser.name,
@@ -159,34 +164,27 @@ angular.module('passportApp')
         };
       },
 
-      /**
-      ** Used to update client-side wishlist after adding or removeing from wishlist
-      **/
-
       updateWishlist: function(wishlist) {
         currentUser.wishlist = wishlist;
       },
 
       /*
-      * Used to determine if a particular payment/order/etc belongs to currentUser
-      */
+       * for checking if auth user fulfills a specific role
+       */
+
+      isAdmin: function() {
+        return currentUser.role === 'admin';
+      },
 
       isOwner: function(userId) {
         return (userId === currentUser._id) ? true : false;
       },
 
-      /**
-       * Check if a user is logged in
-       *
-       * @return {Boolean}
-       */
       isLoggedIn: function() {
         return currentUser.hasOwnProperty('role');
       },
 
-      /**
-       * Waits for currentUser to resolve before checking if user is logged in
-       */
+      //Waits for currentUser to resolve before checking if user is logged in
       isLoggedInAsync: function(cb) {
         if(currentUser.hasOwnProperty('$promise')) {
           currentUser.$promise.then(function() {
@@ -199,15 +197,6 @@ angular.module('passportApp')
         } else {
           cb(false);
         }
-      },
-
-      /**
-       * Check if a user is an admin
-       *
-       * @return {Boolean}
-       */
-      isAdmin: function() {
-        return currentUser.role === 'admin';
       },
 
       /**

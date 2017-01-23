@@ -9,7 +9,8 @@ title Secure Checkout
             h3 Shipping Address
             ns-select-address(address="newOrder.shippingAddress" addresses="shippingAddresses" type="Shipping")
             //button.btn.btn-primary(ng-click="newaddress = true") 
-            ns-new-address(address="newOrder.shippingAddress" type="Shipping")
+            
+            ns-address(address="billingAddress" type="Billing" state="return" ng-if="billingAddress")
             
             input(type="submit" wz-next value="Continue")
 

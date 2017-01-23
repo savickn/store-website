@@ -1,4 +1,63 @@
-form.form(name='addressForm' role='form' ng-submit='updateAddresses(addressForm, user._id, newAddress)' novalidate)
+
+
+
+.row 
+	.col-lg-6
+		h3 Billing Address
+		ns-show-address(address="billingAddress" ng-if="billingAddress" ng-show="billingState === 'Default'")
+		ns-add-address(address="billingAddress" type="Billing" state="update" ng-if="billingAddress" ng-show="billingState === 'Edit'")
+		ns-add-address(address="newAddress" type="Billing" state="new" ng-if="!billingAddress" ng-show="billingState === 'New'")
+
+		button.btn.btn-primary(ng-if="billingAddress" ng-show="billingState !== 'Edit'" ng-click="setBillingState('Edit')") Edit your billing address?
+		button.btn.btn-primary(ng-if="!billingAddress" ng-click="setBillingState('New')") Add a billing address?
+		button.btn.btn-primary(ng-show="billingState !== 'Default'" ng-click="setBillingState('Default')") Back
+
+		h3 Shipping Addresses
+		ul.nav.nav-tabs.nav-stacked.col-md-6.col-lg-6.col-sm-6(ng-if="shippingAddresses.length > 0")
+			li(ng-repeat="address in shippingAddresses")
+				ns-add-address(address="address" type="Shipping" state="update" ng-show="shippingState === 'Edit'")
+				ns-show-address(address="address" ng-show="shippingState === 'Default'")
+
+		ns-add-address(address="newAddress" type="Shipping" state="new" ng-if="shippingAddresses.length < 6" ng-show="shippingState === 'New'")
+
+		button.btn.btn-primary(ng-if="shippingAddresses.length > 0" ng-show="shippingState === 'Default'" ng-click="setShippingState('Edit')") Edit your shipping address?
+		button.btn.btn-primary(ng-if="shippingAddresses.length < 6" ng-show="shippingState === 'Default'" ng-click="setShippingState('New')") Add a shipping address?
+		button.btn.btn-primary(ng-show="shippingState !== 'Default'" ng-click="setShippingState('Default')") Back
+
+
+
+
+
+
+
+//button.btn.btn-primary(ng-click="addAddress(addressForm, newAddress)") Add Address
+
+//.show-billing(ng-show="billingState === 'show'")
+	ul.list-group(ng-repeat='billing in user.billingAddress')
+		li.list-group-item Street Address: {{billing.street}}
+		li.list-group-item City: {{billing.city}}
+		li.list-group-item Postal Code: {{billing.postalCode}}
+		li.list-group-item Province: {{billing.province}}
+		li.list-group-item Country: {{billing.country}}
+	button.btn.btn-primary(ng-click="") Edit Billing Address
+
+//.no-billing(ng-show="billingState === 'no'")
+	p You do not have any billing addresses associated with your account.
+	button.btn.btn-primary(ng-click="") Add Billing Address
+
+//.col-lg-6
+	h3 Shipping Address
+		ul.list-group(ng-repeat='shipping in user.shippingAddresses')
+			li.list-group-item NickName: {{shipping.nickname}}
+			li.list-group-item Street Address: {{shipping.street}}
+			li.list-group-item City: {{shipping.city}}
+			li.list-group-item Postal Code: {{shipping.postalCode}}
+			li.list-group-item Province: {{shipping.province}}
+			li.list-group-item Country: {{shipping.country}}
+		button.btn.btn-primary(ng-click='setAsPrimaryAddress(address)') Set this as your primary shipping address.
+		a.btn.btn-primary(href="/settings/account/shipping") Edit your shipping address
+
+//form.form(name='addressForm' role='form' ng-submit='updateAddresses(addressForm, user._id, newAddress)' novalidate)
 
 	.form-group(ng-class='{ "has-success": addressForm.country.$valid && submitted, "has-error": addressForm.country.$invalid && submitted}')
 		label(for="country") Country

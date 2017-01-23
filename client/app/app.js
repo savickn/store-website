@@ -53,7 +53,7 @@ angular.module('passportApp', [
     };
   })
 
-  .run(function ($rootScope, $location, Auth) {
+  .run(function ($rootScope, $location, Auth, AlertService) {
     // Redirect to login if route requires auth and you're not logged in
     $rootScope.$on('$stateChangeStart', function (event, next) {
       Auth.isLoggedInAsync(function(loggedIn) {
@@ -62,6 +62,11 @@ angular.module('passportApp', [
           $location.path('/login');
         }
       });
+    });
+
+    //clears alert on route change
+    $rootScope.$on('$stateChangeSuccess', function (event, next) {
+      AlertService.clearAlert();
     });
 
     Array.prototype.pushUnique = function(item) {

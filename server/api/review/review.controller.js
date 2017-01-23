@@ -56,7 +56,7 @@ exports.upvote = function(req, res) {
 
 // Deletes a review from the DB.
 exports.destroy = function(req, res) {
-  Review.findById(req.params.id, function (err, review) {
+  Review.findByIdAndRemove(req.params.id, function (err, review) {
     if(err) { return handleError(res, err); }
     if(!review) { return res.status(404).send('Not Found'); }
     review.remove(function(err) {

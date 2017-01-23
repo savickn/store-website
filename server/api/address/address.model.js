@@ -15,11 +15,11 @@ var cityList = {
 };
 
 var AddressSchema = new Schema({
-	/*type: {
+	type: {
 		type: String,
 		enum: ['Billing', 'Shipping'],
 		required: true
-	},*/
+	},
 	nickname: {
 		type: String,
 		required: 'You must provide a nickname for this address.'
@@ -52,43 +52,60 @@ var AddressSchema = new Schema({
 		type: String,
 		//enum: countryList,
 		required: 'You must select a country.'
-	}
-	/*user: {
+	},
+	user: {
 		type: Schema.Types.ObjectId,
 		ref: 'User'
-	}*/
+	}
 });
 
-//validate that user does not have 2+ addresses with the same nickname
+/*
+* Pre and Post Hooks
+*/
 
-//data consistency with user
-/*AddressSchema.pre("save", function(next) {
-  var self = this;
-
+AddressSchema.pre("save", function(next) {
+	console.log(this);
   if(this.type === 'Billing') {
+  	console.log('billing');
   	mongoose.model('User').findOneAndUpdate(
-	    {_id: self.user},
-	    {$set: {billingAddress: self._id}},
+	    {_id: this.user},
+	    {$set: {billingAddress: this._id}},
 	    function(err, user) {
 	      if(err) {next(err);}
+	      console.log('next');
 	      next();
 	    }
 	  );
   } else if(this.type === 'Shipping') {
   	mongoose.model('User').findOneAndUpdate(
-	    {_id: self.user},
-	    {$push: {shippingAddresses: self._id}},
+	    {_id: this.user},
+	    {$addToSet: {shippingAddresses: this._id}},
 	    function(err, product) {
 	      if(err) {next(err);}
 	      next();
 	    }
 	  );
-  } else {
-  	console.log('error');
-  	next();
   }
-});*/
+});
 
+
+/*
+* Validations
+*/
+
+//validate that user does not have 2+ addresses with the same nickname
+
+
+// Validate the postal code, use api to compare postal code to province and country
+AddressSchema
+  .path('postalCode')
+  .validate(function(postalCode) {
+
+  }, 'The postal code you specified does not match your address.');
+
+/*
+* Virtuals
+*/
 
 AddressSchema
   .virtual('formatAddress')
@@ -97,18 +114,6 @@ AddressSchema
 
     return str;
   })
-
-
-// Validate the postal code
-/*AddressSchema
-  .path('postalCode')
-  .validate(function(postalCode) {
-
-  }, 'The postal code you specified does not match your address.');
-*/
-  //use api to compare postal code to province and country
-
-
 
 AddressSchema.set('toJSON', {virtuals: true});
 

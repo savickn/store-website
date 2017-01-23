@@ -30,34 +30,14 @@ var ReviewSchema = new Schema({
 });
 
 /*
-* Pre and POST Hooks
+* Validations 
 */
 
-//prevents duplicate likes
-/*ReviewSchema.pre("save", function(next) {
 
-  function pushUnique(array, item) {
-    if (array.indexOf(item) == -1) {
-      array.push(item);
-    }
-    return false;
-  }
 
-  /*function checkForDuplicates() {
-    var newUpvotes = [];
-    this.upvotes.forEach((upvote) => {
-      if(!pushUnique(newUpvotes, upvote)) {
-        this.invalidate("author", "You have already liked this post!");
-        done();
-      }
-    })
-    return newUpvotes;
-  }
-  if(this.upvotes) {
-    this.upvotes = checkForDuplicates();
-  };*/
-/*  next();
-});*/
+/*
+* Pre and POST Hooks
+*/
 
 //data consistency with product
 ReviewSchema.pre("save", function(next) {
@@ -94,6 +74,38 @@ ReviewSchema.virtual('score').get(function() {
 ReviewSchema.set('toJSON', {virtuals: true});
 
 module.exports = mongoose.model('Review', ReviewSchema);
+
+
+
+
+
+
+/*prevents duplicate likes
+ReviewSchema.pre("save", function(next) {
+
+  function pushUnique(array, item) {
+    if (array.indexOf(item) == -1) {
+      array.push(item);
+    }
+    return false;
+  }
+});
+
+  /*function checkForDuplicates() {
+    var newUpvotes = [];
+    this.upvotes.forEach((upvote) => {
+      if(!pushUnique(newUpvotes, upvote)) {
+        this.invalidate("author", "You have already liked this post!");
+        done();
+      }
+    })
+    return newUpvotes;
+  }
+  if(this.upvotes) {
+    this.upvotes = checkForDuplicates();
+  };*/
+/*  next();
+});*/
 
 
 

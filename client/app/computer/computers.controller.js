@@ -8,21 +8,9 @@ angular.module('passportApp')
 
     $scope.isAdmin = Auth.isAdmin();
 
-    $scope.errorMessages = "";
-    $scope.validationErrors = {};
-
     $scope.availableComputers = [];
 
     $scope.searchableCategories = [];
-
-    /*$scope.searchableCategories = [{
-        name: 'hello',
-        list: ['aaa', 'bbb', 'ccc']
-      }, {
-        name: 'world',
-        list: ['ddd', 'eee', 'fff']
-      }
-    ];*/
 
     //////////////////////////// PAGINATION /////////////////////////////////////
     
@@ -55,9 +43,12 @@ angular.module('passportApp')
     }
 
     function getProductInfo(products) {
+      $scope.searchableCategories = [];
       products[0].searchableCategories.forEach(function(category) {
         category = category.toLowerCase();
-        $scope.filterExpr[category] = []; //used to dynamically add fields to the filterExpr
+        if(!$scope.filterExpr[category]) {
+          $scope.filterExpr[category] = []; //used to dynamically add fields to the filterExpr
+        }
 
         var obj = {};
         obj.name = category;
@@ -71,11 +62,11 @@ angular.module('passportApp')
       });
     };
 
+    //used to update the search filter using the dynamic search navbar
     $scope.updateFilter = function(state, category, value) {
       console.log(state);
       console.log(category);
       console.log(value);
-      //category = category.toLowerCase();
       if(state === true) {
         $scope.filterExpr[category].pushUnique(value);
       } else {
@@ -136,6 +127,26 @@ angular.module('passportApp')
   });
 
 
+
+    //this is what searchableCategories should look like
+    /*$scope.searchableCategories = [{
+        name: 'hello',
+        list: ['aaa', 'bbb', 'ccc']
+      }, {
+        name: 'world',
+        list: ['ddd', 'eee', 'fff']
+      }
+    ];*/
+
+    /*function checkForCategory(category) {
+      var state = false;
+      $scope.searchableCategories.forEach(function(searchable) {
+        if(searchable.name === category) {
+          state = true;
+        }
+      }) 
+      return state;
+    }*/
 
 
 /*

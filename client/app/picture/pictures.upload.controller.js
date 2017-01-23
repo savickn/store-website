@@ -22,7 +22,7 @@ angular.module('passportApp')
           }).then(function (response) {
             $timeout(function () {
               $scope.status = "success";
-              $scope.$parent.currentProduct.pictures.push(response);
+              $scope.$parent.currentProduct.pictures.push(response.data);
             });
           }, function (err) {
             if (err.status > 0)

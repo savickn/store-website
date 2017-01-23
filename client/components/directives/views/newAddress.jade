@@ -56,3 +56,8 @@ form.form(name='addressForm' role='form' novalidate)
 		input.form-control(type="text" name="nickname" placeholder="Pleae enter a nickname for this address." ng-model="address.nickname" required)
 		p.help-block(ng-show='addressForm.nickname.$error.required && submitted')
 			| Please enter a nickname to remember this address.
+
+	button.btn.btn-primary(ng-click="addAddress(addressForm, address)" ng-if="state === 'new'") Add Address
+	button.btn.btn-primary(ng-click="updateAddress(addressForm, address)" ng-if="state === 'update'") Save Changes
+	button.btn.btn-primary(ng-click="addAddress(addressForm, address)" ng-if="state === 'return'") Next
+

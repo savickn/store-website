@@ -6,18 +6,15 @@ angular.module('passportApp')
 
     $scope.products = ngCart.getItems();
 
-    $scope.shippingAddresses = Auth.getShippingAddresses() || [];
-    $scope.billingAddress = Auth.getCurrentUser().billingAddress || '';
+    $scope.billingAddress = Auth.getBillingAddress() || undefined;
+    $scope.shippingAddresses = Auth.getShippingAddresses();
+
+    $scope.newAddress = {};
 
     $scope.newOrder = {
       shippingAddress: {},
       billingAddress: {}
     };
-
-    $scope.showValues = function() {
-      console.log($scope.newOrder);
-    }
-    
 
     //Add Orders
     $scope.addOrder = function() {

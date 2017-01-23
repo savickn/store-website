@@ -158,11 +158,11 @@
     
 
 
-    .alert.alert-success(href="#" ng-if="successMessages") {{successMessages}}
-      span.edit-message-close.glyphicon.glyphicon-remove(ng-click="successMessages = ''")
-    .alert.alert-warning(href="#" ng-if="failureMessages") {{failureMessages}}
-      span.edit-message-close.glyphicon.glyphicon-remove(ng-click="failureMessages = ''")
-    .alert.alert-warning(href="#" ng-if="updateDisplayPic") Display picture set. Please click 'Save Changes' via the 'Edit' button to save these changes to the database.
+      .alert.alert-success(href="#" ng-if="successMessages") {{successMessages}}
+        span.edit-message-close.glyphicon.glyphicon-remove(ng-click="successMessages = ''")
+      .alert.alert-warning(href="#" ng-if="failureMessages") {{failureMessages}}
+        span.edit-message-close.glyphicon.glyphicon-remove(ng-click="failureMessages = ''")
+      .alert.alert-warning(href="#" ng-if="updateDisplayPic") Display picture set. Please click 'Save Changes' via the 'Edit' button to save these changes to the database.
 
 
   //.alert(ng-if="message" ng-class="{'alert-success': type === 'Success', 'alert-danger': type === 'Error', 'alert-warning': type === 'Warning'}") {{message}}

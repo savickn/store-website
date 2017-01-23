@@ -1,6 +1,7 @@
 h3 {{wishlist.name}}'s Wishlist
 
-ul.list-group(ng-repeat="product in wishlist.products")
+p(ng-if="wishlist.products.length < 1") Your wishlist in empty.
+ul.list-group(ng-repeat="product in wishlist.products" ng-if="wishlist.products.length > 0")
 	li.list-group-item 
 		a.pull-left(src="product.displayPicture")
 		p {{product.name}}

@@ -1,20 +1,37 @@
-h2 Change Info and Preferences
 
-form.form(name='infoForm' role='form' ng-submit='infoForm.$valid && updateUser(infoForm, user._id, userUpdates)' no-validate)
-	.form-group(ng-class='{ "has-success": infoForm.phoneNumber.$valid && submitted, "has-error": infoForm.phoneNumber.$invalid && submitted}')
-		label Phone Number
-		input.form-control(type='tel' name='phoneNumber' ng-model='userUpdates.phoneNumber' pattern='((1-)|1)?[0-9]{3}-?[0-9]{3}-?[0-9]{4}' required)
-		p.help-block(ng-show='infoForm.phoneNumber.$error.required && submitted')
-			| Please enter a phone number.
-		p.help-block(ng-show='infoForm.phoneNumber.$error.pattern && submitted')
-			| The phone number you entered is not in the correct format.
-		p.help-block(ng-show='infoForm.phoneNumber.$error.mongoose')
-			| {{ errors.other }}
+.col-lg-12
+	p Name: {{user.name}}
+	p Email: {{user.email}}
+	p Phone Number: {{user.phoneNumber}}
+	p Receive Promotional Emails?: {{user.promotionalEmails | yesNo}}
 
-	.form-group(ng-class='{ "has-success": infoForm.promos.$valid && submitted, "has-error": infoForm.promos.$invalid && submitted}')
-		label Receive Promotional Emails?
-		input.form-control(type='checkbox' name='promos' ng-model='userUpdates.promotionalEmails')
-		p.help-block(ng-show='infoForm.promos.$error.mongoose')
-			| {{ errors.other }}
+	form.form(name='emailForm' ng-submit='updateUser(emailForm, user._id, userUpdates)' novalidate)
+		.form-group(ng-class='{ "has-success": emailForm.email.$valid && submitted, "has-error": emailForm.email.$invalid && submitted}')
+			label Email
+			input.form-control(type='email' name='email' placeholder="Please enter your new email." ng-model='userUpdates.email' pattern="[A-Za-z0-9]+@([A-Za-z])+(\\.[A-Za-z]+)+" required)
+			p.help-block(ng-show='emailForm.email.$error.required && submitted')
+				| Please enter an email address.
+			p.help-block(ng-show='emailForm.email.$error.pattern && submitted')
+				| This email address is not in the correct format. Please enter an email address in the format 'example@example.com'.
+			p.help-block(ng-show='emailForm.email.$error.mongoose')
+				| {{ errors.other }}
+
+	form.form(name='phoneForm' role='form' ng-submit='phoneForm.$valid && updateUser(phoneForm, user._id, userUpdates)' no-validate)
+		.form-group(ng-class='{ "has-success": phoneForm.phoneNumber.$valid && submitted, "has-error": phoneForm.phoneNumber.$invalid && submitted}')
+			label Phone Number
+			input.form-control(type='tel' name='phoneNumber' ng-model='userUpdates.phoneNumber' pattern='((1-)|1)?[0-9]{3}-?[0-9]{3}-?[0-9]{4}' required)
+			p.help-block(ng-show='phoneForm.phoneNumber.$error.required && submitted')
+				| Please enter a phone number.
+			p.help-block(ng-show='phoneForm.phoneNumber.$error.pattern && submitted')
+				| The phone number you entered is not in the correct format.
+			p.help-block(ng-show='phoneForm.phoneNumber.$error.mongoose')
+				| {{ errors.other }}
+
+	form.form(name="preferencesForm")
+		.form-group(ng-class='{ "has-success": preferencesForm.promos.$valid && submitted, "has-error": preferencesForm.promos.$invalid && submitted}')
+			label Receive Promotional Emails?
+			input.form-control(type='checkbox' name='promos' ng-model='userUpdates.promotionalEmails')
+			p.help-block(ng-show='preferencesForm.promos.$error.mongoose')
+				| {{ errors.other }}
 
 	button.btn.btn-lg.btn-primary(type='submit') Save changes

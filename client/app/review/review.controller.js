@@ -2,23 +2,23 @@
 
 angular.module('passportApp')
   .controller('ReviewCtrl', function ($scope, $stateParams, Auth, ReviewService, AlertService) {
-    
+
     ReviewService.getReview($stateParams.id).then(function(review) {
       $scope.currentReview = review;
       $scope.rating = review.rating;
-
       $scope.isDuplicateLike = isDuplicateLike(review);
     });
 
     function isDuplicateLike(review) {
       var userId = Auth.getCurrentUser()._id;
+      var state = false;
+
       review.upvotes.forEach(function(upvote) {
-        console.log(upvote.userId);
-        if(upvote.userId == userId) {
-          return true;
+        if(upvote.userId === userId) {
+          state = true;
         }
       });
-      return false; 
+      return state;
     };
 
     $scope.upvoteReview = function(review) {
@@ -28,6 +28,7 @@ angular.module('passportApp')
       if(!isDuplicateLike(review)) {
         ReviewService.upvoteReview(review._id, newUpvote).then(function(review) {
           $scope.currentReview = review;
+          $scope.isDuplicateLike = isDuplicateLike(review);
           AlertService.setAlert("You liked this review!", "Success");
         }).catch(function(err) {
           AlertService.setAlert("This review could not be liked.", "Error");
@@ -41,24 +42,22 @@ angular.module('passportApp')
       var idx = -1;
 
       review.upvotes.forEach(function(upvote, index) {
-        if(upvote.authorId === Auth.getCurrentUser()._id) {
+        if(upvote.userId === Auth.getCurrentUser()._id) {
           idx = index;
         }
       });
 
       if(idx >= 0) {
+        console.log('hello');
         review.upvotes.splice(idx, 1);
-        ReviewService.updateReview(review).then(function(updatedReview) {
-          $scope.currentReview = updatedReview;
-          //$scope.reviewError = "Upvote Removed.";
-        });
+        $scope.updateReview(review);
       }
     };
 
-    $scope.updateReview = function() {
-      var updatedReview = $scope.currentReview;
-      ReviewService.updateReview(updatedReview).then(function(review) {
+    $scope.updateReview = function(review) {
+      ReviewService.updateReview(review).then(function(updatedReview) {
         $scope.currentReview = review;
+        $scope.isDuplicateLike = isDuplicateLike(updatedReview);
       });
     };
   });

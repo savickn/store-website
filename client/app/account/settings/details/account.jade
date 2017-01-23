@@ -3,82 +3,22 @@
 
 .row
   nav.navbar.navbar-default
-  ul.nav.navbar-nav
-    li
-      a(href="/settings/account/info") Account Info
-    li
-      a(href="/settings/account/password") Password
-    li
-      a(href="/settings/account/address") Addresses
+    ul.nav.navbar-nav
+      li
+        a(href="/settings/account/info") Account Info
+      li
+        a(href="/settings/account/password") Password
+      li
+        a(href="/settings/account/address") Addresses
+
+.row
+  ui-view
 
 
     //li(ng-if="isAdmin")
       a(href="#" ng-click="setViewState('Edit')") Edit
     //li(ng-if="isAdmin")
       a(href="#" ng-click="setViewState('Picture')") Add Pictures
-
-
-.row
-  h2 Account Details
-  p Name: {{user.name}}
-  p Email: {{user.email}}
-  p Phone Number: {{user.phoneNumber}}
-  p Receive Promotional Emails?: {{user.promotionalEmails | yesNo}}
-
-  .col-lg-4
-    a.btn.btn-primary(href="/settings/account/password") Change Password
-  .col-lg-4
-    a.btn.btn-primary(href="/settings/account/email") Change Email
-  .col-lg-4
-    a.btn.btn-primary(href="/settings/account/info") Change Info
-
-  //.view(ui-view="info")
-
-.row 
-  .col-lg-6
-    h3 Billing Address
-    .show-billing(ng-show="billingState === 'show'")
-
-    .edit-billing(ng-show="billingState === 'edit'")
-
-
-    .no-billing(ng-show="billingState === 'no'")
-      p You dod not have any billing addresses associated with your account.
-
-
-      a.btn.btn-primary(href="/settings/account/billing") Add Billing Address
-
-ui-view(id="updateForm")
-
-
-
-    .has-billing-address(ng-show="user.billingAddressg")
-      ul.list-group(ng-repeat='billing in user.billingAddress')
-        li.list-group-item Street Address: {{billing.street}}
-        li.list-group-item City: {{billing.city}}
-        li.list-group-item Postal Code: {{billing.postalCode}}
-        li.list-group-item Province: {{billing.province}}
-        li.list-group-item Country: {{billing.country}}
-      a.btn.btn-primary(href="/settings/account/billing") Edit Billing Address
-    .no-billing-address(ng-show="!user.billingAddress")
-      a.btn.btn-primary(href="/settings/account/billing") Add Billing Address
-
-  .col-lg-6
-    h3 Shipping Address
-    ul.list-group(ng-repeat='shipping in user.shippingAddresses')
-      li.list-group-item NickName: {{shipping.nickname}}
-      li.list-group-item Street Address: {{shipping.street}}
-      li.list-group-item City: {{shipping.city}}
-      li.list-group-item Postal Code: {{shipping.postalCode}}
-      li.list-group-item Province: {{shipping.province}}
-      li.list-group-item Country: {{shipping.country}}
-      //button.btn.btn-primary(ng-click='setAsPrimaryAddress(address)') Set this as your primary shipping address.
-    a.btn.btn-primary(href="/settings/account/shipping") Edit your shipping address
-
-
-
-
-
 
 
   //.col-lg-6

@@ -2,12 +2,44 @@
 
 angular.module('passportApp')
 .factory("DataService", function(Restangular) {
+  var countries = [];
+  var selectedCountry = '';
+
+  var provinces = [];
+  var selectedProvince = '';
+
+  var cities = [];
+
   return {
-    getCountries: function() {
+  	/*getCountries: function() {
+  		return countries;
+  	},
+  	getSelectedCountry: function() {
+  		return selectedCountry;
+  	},
+  	getProvinces: function() {
+  		return provinces;
+  	},
+  	setCountries: function(countries) {
+  		countries = countries;
+  	},
+  	setProvinces: function(country, provinces) {
+  		selectedCountry = country;
+  		provinces = provinces;
+  	},*/
+    ajaxCountries: function() {
     	return Restangular.all('data').get('countries');
     },
-    getProvinces: function(country) {
+    ajaxProvinces: function(country) {
     	return Restangular.all('data').customGET('provinces', country);
     }
   };
 });
+
+
+    /*getCountries: function() {
+    	return Restangular.all('data').get('countries');
+    },
+    getProvinces: function(country) {
+    	return Restangular.all('data').customGET('provinces', country);
+    }*/
