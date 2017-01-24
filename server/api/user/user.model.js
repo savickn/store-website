@@ -27,7 +27,7 @@ var UserSchema = new Schema({
     type: String,
     match: [/((1-)|1)?[0-9]{3}-?[0-9]{3}-?[0-9]{4}/, "This phone number is not in the correct format."]
   },
-  /*shippingAddresses: [Address.schema], //primary shipping address is saved to cookie
+  shippingAddresses: [Address.schema], //primary shipping address is saved to cookie
   billingAddress: {
     type: [Address.schema],
     validate: {
@@ -36,8 +36,8 @@ var UserSchema = new Schema({
       },
       message: 'An user can only have one billing address.'
     }
-  },*/
-  billingAddress: {
+  },
+  /*billingAddress: {
     type: Schema.Types.ObjectId,
     ref: 'Address'
   },
@@ -45,7 +45,7 @@ var UserSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Address',
     index: true
-  }],
+  }],*/
   promotionalEmails: {
     type: Boolean,
     default: false

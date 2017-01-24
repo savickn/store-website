@@ -142,8 +142,8 @@ angular.module('passportApp')
 
       getBillingAddress: function() {
         console.log('get billing')
-        console.log(currentUser.billingAddress);
-        return currentUser.billingAddress;
+        console.log(currentUser.billingAddress || {});
+        return currentUser.billingAddress || {};
       },
 
       setBillingAddress: function(address) {

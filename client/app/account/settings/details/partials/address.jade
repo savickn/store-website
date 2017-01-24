@@ -4,12 +4,14 @@
 .row 
 	.col-lg-6
 		h3 Billing Address
-		ns-show-address(address="billingAddress" ng-if="billingAddress" ng-show="billingState === 'Default'")
-		ns-add-address(address="billingAddress" type="Billing" state="update" ng-if="billingAddress" ng-show="billingState === 'Edit'")
-		ns-add-address(address="newAddress" type="Billing" state="new" ng-if="!billingAddress" ng-show="billingState === 'New'")
+		ns-show-address(address="billingAddress" ng-if="billingAddress | isNotEmpty" ng-show="billingState === 'Default'")
+		ns-add-address(address="billingAddress" ng-show="billingState === 'Edit'")
 
-		button.btn.btn-primary(ng-if="billingAddress" ng-show="billingState !== 'Edit'" ng-click="setBillingState('Edit')") Edit your billing address?
-		button.btn.btn-primary(ng-if="!billingAddress" ng-click="setBillingState('New')") Add a billing address?
+		//ns-add-address(address="billingAddress" type="Billing" state="update" ng-if="billingAddress" ng-show="billingState === 'Edit'")
+		//ns-add-address(address="newAddress" type="Billing" state="new" ng-if="!billingAddress" ng-show="billingState === 'New'")
+
+		button.btn.btn-primary(ng-if="billingAddress | isNotEmpty" ng-show="billingState === 'Default'" ng-click="setBillingState('Edit')") Edit your billing address?
+		button.btn.btn-primary(ng-if="!(billingAddress | isNotEmpty)" ng-show="billingState === 'Default'" ng-click="setBillingState('Edit')") Add a billing address?
 		button.btn.btn-primary(ng-show="billingState !== 'Default'" ng-click="setBillingState('Default')") Back
 
 		h3 Shipping Addresses

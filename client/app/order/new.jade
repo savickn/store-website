@@ -3,24 +3,41 @@ title Secure Checkout
 .container
   .row
     .col-lg-12
-      form(name="orderForm" ng-submit="checkout()")
+      form(name="orderForm" ng-submit="checkout(orderForm, newOrder)")
         wizard(on-finish="finishedWizard()") 
           wz-step(wz-title="Shipping" wz-disabled="{{disabled}}")
             h3 Shipping Address
-            ns-select-address(address="newOrder.shippingAddress" addresses="shippingAddresses" type="Shipping")
-            //button.btn.btn-primary(ng-click="newaddress = true") 
+            p Please select one of your saved addresses or add a new address.
             
-            ns-address(address="billingAddress" type="Billing" state="return" ng-if="billingAddress")
+            //ns-show-address(address="newOrder.shippingAddress" ng-hide="newOrder.shippingAddress | isEmpty")
+            ns-select-address(address="newOrder.shippingAddress" addresses="shippingAddresses" type="Shipping" ng-if="shippingState === 'Select'")
+            ns-add-address(address="newOrder.shippingAddress" type="Shipping" state="return" ng-if="shippingState === 'New'")
+            
+            button.btn.btn-primary(ng-click="setShippingState('New')" ng-show="shippingState === 'Default'") Add a New Address 
+            button.btn.btn-primary(ng-click="setShippingState('Select')" ng-show="shippingState === 'Default'") Use an Existing Address 
+            button.btn.btn-primary(ng-click="setShippingState('Default')" ng-show="shippingState !== 'Default'") Back
             
             input(type="submit" wz-next value="Continue")
 
           wz-step(wz-title="Payment")
             h3 Choose a Payment Method
+
+
+
+
             input(type="submit" wz-next value="Continue")
 
           wz-step(wz-title="Billing")
             h3 Billing Address
-            ns-new-address(address="newOrder.billingAddress" type="Billing")
+            
+            //ns-show-address(address="newOrder.billingAddress")
+            //ns-select-address(address="newOrder.billingAddress" addresses="shippingAddresses" type="Shipping")
+            ns-add-address(address="newOrder.billingAddress" type="Billing" state="return")
+            
+            button.btn.btn-primary(ng-click="setBillingState('New')" ng-show="billingState === 'Default'") Add a New Address 
+            button.btn.btn-primary(ng-click="setBillingState('Select')" ng-show="billingState === 'Default'") Use an Existing Address 
+            button.btn.btn-primary(ng-click="setBillingState('Default')" ng-show="billingState !== 'Default'") Back
+
             input(type="submit" wz-next value="Continue")          
 
           wz-step(wz-title="Review")    

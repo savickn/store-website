@@ -1,7 +1,8 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+    Schema = mongoose.Schema,
+    _ = require('lodash');
 
 
 var countryList = ['Canada', 'USA'];
@@ -15,11 +16,11 @@ var cityList = {
 };
 
 var AddressSchema = new Schema({
-	type: {
+	/*type: {
 		type: String,
 		enum: ['Billing', 'Shipping'],
 		required: true
-	},
+	},*/
 	nickname: {
 		type: String,
 		required: 'You must provide a nickname for this address.'
@@ -62,17 +63,14 @@ var AddressSchema = new Schema({
 /*
 * Pre and Post Hooks
 */
-
+/*
 AddressSchema.pre("save", function(next) {
-	console.log(this);
   if(this.type === 'Billing') {
-  	console.log('billing');
   	mongoose.model('User').findOneAndUpdate(
 	    {_id: this.user},
 	    {$set: {billingAddress: this._id}},
 	    function(err, user) {
 	      if(err) {next(err);}
-	      console.log('next');
 	      next();
 	    }
 	  );
@@ -88,13 +86,50 @@ AddressSchema.pre("save", function(next) {
   }
 });
 
-
+AddressSchema.pre('remove', function(next) {
+	if(this.type === 'Billing') {
+		mongoose.model('User').findOneAndUpdate(
+			{_id: this.user},
+			{$set: {billingAddress: {}}},
+			function(err, user) {
+				if(err) {next(err);}
+	      next();
+			}
+		);
+	} else if(this.type === 'Shipping') {
+		mongoose.model('User').findOneAndUpdate(
+			{_id: this.user},
+			{$pull: {shippingAddresses: this._id}},
+			function(err, user) {
+				if(err) {next(err);}
+	      next();
+			}
+		);
+	}
+})
+*/
 /*
 * Validations
 */
 
-//validate that user does not have 2+ addresses with the same nickname
-
+//validate that user does not have 2+ addresses with the same nickname, not working currently
+AddressSchema
+	.path('nickname')
+	.validate(function(nickname) {
+		var state = true;
+		mongoose.model('User').findOne({_id: this.user}, function(err, user) {
+			var addresses = user.shippingAddresses
+			if(user.billingAddress) {
+				addresses.push(user.billingAddress);
+			}
+			addresses.forEach(function(address) {
+				if(address.nickname === nickname) {
+					return false;
+				}
+			})
+			return state;
+		});
+	}, 'The nickname you provided is already associated with another address.')
 
 // Validate the postal code, use api to compare postal code to province and country
 AddressSchema

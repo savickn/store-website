@@ -3,7 +3,7 @@
 angular.module('passportApp')
   .controller('AccountCtrl', function ($scope, AlertService, UserService, Auth, DataService, $state) {
     $scope.user = Auth.getCurrentUser();
-    //console.log($scope.user);
+
     $scope.errors = {};
     $scope.userUpdates = {
       email: $scope.user.email,
@@ -11,38 +11,27 @@ angular.module('passportApp')
       promotionalEmails: $scope.user.promotionalEmails
     };
 
-    //console.log($scope.user.billingAddress);
-
-    $scope.addressType = $state.params.type;
-    $scope.newAddress = {};
-
-    //$scope.userUpdates.billingAddress = Auth.getBillingAddress() || {};
-    //$scope.userUpdates.shippingAddresses = Auth.getShippingAddresses() || [];
-
-
+    //$scope.addressType = $state.params.type;
 
 		$scope.updateUser = function(form, userId, userUpdates) {
       $scope.submitted = true
 
-      if(form.$valid) {
+      if(form.$valid && form.$dirty) {
         UserService.updateUser(userId, userUpdates).then(function(user) {
           $scope.user = user;
-          $scope.userUpdates = {};
-
+          //$scope.userUpdates = {};
           Auth.setCurrentUser(user);
           $scope.submitted = false;
           AlertService.setAlert("Your account was successfully updated.", "Success");
-          $state.go('settings.account');
+          //$state.go('settings.account');
         }, function(err) {
           err = err.data;
           $scope.errors = {};
 
-          // Update validity of form fields that match the mongoose errors
           angular.forEach(err.errors, function(error, field) {
             form[field].$setValidity('mongoose', false);
             $scope.errors[field] = error.message;
           });
-
           AlertService.setAlert("Your account could not be updated. Please try again.", "Error");
         });
       }

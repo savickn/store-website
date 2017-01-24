@@ -96,7 +96,7 @@ angular.module('passportAppDirectives', [])
 		};
 	})
 	//should be passed OUTPUT_VAR (e.g. address) and ADDRESS_LIST (e.g. addresses) which is used to set OUTPUT_VAR
-	.directive('nsSelectAddress', function(Auth) {
+	.directive('nsSelectAddress', function() {
 		return {
 			restrict: 'E',
 			templateUrl: '../components/directives/views/selectAddress.html',
@@ -110,7 +110,6 @@ angular.module('passportAppDirectives', [])
 				//console.log(scope.addresses);
 				//console.log(scope.type);
 
-				//scope.addresses = Auth.getCurrentUser().shippingAddresses
 				scope.setAddress = function(adr) {
 					scope.address = adr;
 					scope.address.type = scope.type;
@@ -139,7 +138,8 @@ angular.module('passportAppDirectives', [])
 			scope: {
 				address: '=',
 				type: '@',
-				state: '@' //can be 'update' 'add' 'return'
+				state: '@' //can be 'update' 'add' 'return',
+				//cbFunc: '&'
 			},
 			link: function(scope, elem, attrs) {
 				//check for favorite shipping address in Cookies
@@ -172,15 +172,13 @@ angular.module('passportAppDirectives', [])
 		      scope.address.user = Auth.getCurrentUser()._id;
 		      
 		      if(form.$valid){
-		      	AddressService.addAddress(address)
-			      .then(function(address) {
+		      	AddressService.addAddress(address).then(function(address) {
 			      	scope.submitted = false;
 			      	Auth.setBillingAddress(address);
 			      	scope.address = {};
 			        //push to current User
 			        console.log(address);
-			      })
-			      .catch(function(err) {
+			      }).catch(function(err) {
 			        err = err.data;
 			        scope.errors = {};
 
@@ -192,7 +190,7 @@ angular.module('passportAppDirectives', [])
 		      }
 		    };
 
-		    /*$scope.updateAddress = function(address) {
+		    scope.updateAddress = function(form, address) {
 		      var addressId = address._id; //used to update currentUser
 		      AddressService.updateAddress(address)
 		      .then(function(address) {
@@ -202,7 +200,7 @@ angular.module('passportAppDirectives', [])
 		      .catch(function(err) {
 		        console.log(err);
 		      })
-		    };*/
+		    };
 
 		    (function init() {
 		      scope.populateCountries();

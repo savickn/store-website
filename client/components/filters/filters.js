@@ -79,7 +79,18 @@ angular.module('passportAppFilters', [])
 	    return function(s) {
 	      return (angular.isString(s) && s.length > 0) ? s[0].toUpperCase() + s.substr(1).toLowerCase() : s;
 	    }
-	});
+	})
+	.filter('isNotEmpty', function () {
+        var bar;
+        return function (obj) {
+            for (bar in obj) {
+                if (obj.hasOwnProperty(bar)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+    });
 
 
 

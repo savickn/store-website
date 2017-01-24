@@ -1,6 +1,6 @@
 
-ul.list-group
-	li.list-group-item(ng-repeat="adr in addresses" ng-click="setAddress(adr)" ng-class="{selected: address === adr}") {{adr.nickname}}
+.select-address.col-lg-4.col-md-4(ng-repeat="adr in addresses" ng-click="setAddress(adr)" ng-class='{"highlightOption": address === adr}')
+	ns-show-address(address="adr")
 
 
 

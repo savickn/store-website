@@ -6,19 +6,29 @@ angular.module('passportApp')
 
     $scope.products = ngCart.getItems();
 
-    $scope.billingAddress = Auth.getBillingAddress() || undefined;
+    $scope.billingAddress = Auth.getBillingAddress() || {};
     $scope.shippingAddresses = Auth.getShippingAddresses();
-
-    $scope.newAddress = {};
 
     $scope.newOrder = {
       shippingAddress: {},
       billingAddress: {}
     };
+    
+    $scope.billingState = 'Default';
+    $scope.shippingState = 'Default';
+
+    $scope.setBillingState = function(state) {
+      $scope.billingState = state;
+    }
+
+    $scope.setShippingState = function(state) {
+      $scope.shippingState = state;
+    }
+
 
     //Add Orders
-    $scope.addOrder = function() {
-      if($scope.orderForm.$valid) {
+    $scope.checkout = function(form, order) {
+      if(form.$valid) {
         
       }
     };
