@@ -24,14 +24,12 @@ angular.module('passportAppDirectives', [])
 		   			});
 		  		}
 			 	};
-			 
 		 		scope.toggle = function(index) {
 		  		scope.ratingValue = index + 1;
 		  		scope.onRatingSelected({
 		   			rating : index + 1
 		  		});
 		 		};
-		 
 			 	scope.$watch('ratingValue', function(oldVal, newVal) {
 		   		if (newVal) {
 		    		updateStars();
@@ -74,11 +72,11 @@ angular.module('passportAppDirectives', [])
 
 				function updateWishlist() {
 					WishlistService.updateWishlist(wishlist._id, wishlist).then(function(wl) {
-		      			Auth.updateWishlist(wishlist);
-		      			scope.state = !scope.state;
-		        	}).catch(function(err) {
-		        		console.log(err);
-		        	});					
+      			Auth.updateWishlist(wishlist);
+      			scope.state = !scope.state;
+        	}).catch(function(err) {
+        		console.log(err);
+        	});
 				};
 
 				scope.addToWishlist = function(productId) {
@@ -138,8 +136,10 @@ angular.module('passportAppDirectives', [])
 			scope: {
 				address: '=',
 				type: '@',
-				state: '@' //can be 'update' 'add' 'return',
-				//cbFunc: '&'
+				state: '@'/*,
+				formErrors: '=',
+				cbFunc: '&',
+				stateFunc: '&'*/
 			},
 			link: function(scope, elem, attrs) {
 				//check for favorite shipping address in Cookies
@@ -154,31 +154,39 @@ angular.module('passportAppDirectives', [])
 	    		DataService.ajaxCountries().then(function(countries) {
 		        scope.countries = countries;
 		      });
-		    }
+		    };
 
 		    scope.populateProvinces = function(country) {
 	      	DataService.ajaxProvinces({country: country}).then(function(provinces) {
 		      	scope.provinces = provinces;
 		      });
-		    }
+		    };
 
 		    scope.populateCities = function(province) {
 		    	console.log(province);
-		    }
+		    };
+
+		    /*scope.handleAddress = function(form, address) {
+		    	scope.submitted = true;
+
+		    	//scope.stateFunc({billingState: 'Default'});
+		    	scope.cbFunc({form: form, address: address});
+		    };*/
 
 		    scope.addAddress = function(form, address) {
 		      scope.submitted = true;
 		      scope.address.type = scope.type;
 		      scope.address.user = Auth.getCurrentUser()._id;
-		      
+
 		      if(form.$valid){
 		      	AddressService.addAddress(address).then(function(address) {
 			      	scope.submitted = false;
-			      	Auth.setBillingAddress(address);
-			      	scope.address = {};
-			        //push to current User
-			        console.log(address);
-			      }).catch(function(err) {
+			      	if(scope.type === 'Billing') {
+								Auth.setBillingAddress(address);
+							} else if(scope.type === 'Shipping') {
+								Auth.addShippingAddress(address);
+							}
+						}).catch(function(err) {
 			        err = err.data;
 			        scope.errors = {};
 
@@ -192,12 +200,13 @@ angular.module('passportAppDirectives', [])
 
 		    scope.updateAddress = function(form, address) {
 		      var addressId = address._id; //used to update currentUser
-		      AddressService.updateAddress(address)
-		      .then(function(address) {
-		        //update currentUser
-		        AlertService.setAlert('Address Removed!', 'Success');
-		      })
-		      .catch(function(err) {
+		      AddressService.updateAddress(address).then(function(address) {
+						scope.submitted = false;
+						if(scope.type === 'Billing') {
+							Auth.setBillingAddress(address);
+						}
+
+		      }).catch(function(err) {
 		        console.log(err);
 		      })
 		    };
@@ -208,7 +217,63 @@ angular.module('passportAppDirectives', [])
 		      	scope.populateProvinces(scope.address.country);
 		      };
 		    }) ();
+			}
+		}
+	})
+	.directive('nsSelectPayment', function() {
+		return {
+			restrict: 'E',
+			templateUrl: '../components/directives/views/selectPayment.html',
+			scope: {
+				payment: '=',
+				payments: '='
+			},
+			link: function(scope, elem, attrs) {
+				scope.setPayment = function(pay) {
+					scope.payment = pay;
+				};
+			}
+		}
+	})
+	.directive('nsShowPayment', function() {
+		return {
+			restrict: 'E',
+			templateUrl: '../components/directives/views/showPayment.html',
+			scope: {
+				payment: '='
+			},
+			link: function(scope, elem, attrs) {
+				console.log(scope.payment);
+			}
+		}
+	})
+	.directive('nsAddPayment', function(Auth) {
+		return {
+			restrict: 'E',
+			templateUrl: '../components/directives/views/newPayment.html',
+			scope: {
+				payment: '='
+			},
+			link: function(scope, elem, attrs) {
+				scope.paymentTypes = ['MasterCard', 'Visa', 'American Express'];
+		  	scope.expiryMonths = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+		  	scope.expiryYears = ['2017', '2018', '2019', '2020', '2021'];
 
+				scope.addPaymentMethod = function(form, payment) {
+					scope.submitted = true;
+		  		if(form.$valid) {
+		  			payment.expiryDate = new Date(payment.expiryYear, payment.expiryMonth);
+		  			payment.user = Auth.getCurrentUser()._id;
+
+		  			/*PaymentService.addMethod(payment).then(function(payment) {
+			  			scope.submitted = false;
+			  			scope.paymentMethods.pushUnique(payment);
+			  			scope.payment = {};
+			  		}).catch(function(err) {
+			  			console.log(err);
+			  		})*/
+		  		}
+		  	}
 			}
 		}
 	})
@@ -216,10 +281,7 @@ angular.module('passportAppDirectives', [])
 		return {
 			restrict: 'E',
 			templateUrl : '../components/directives/views/alert.html',
-			scope : {
-				//message : '@',
-				//type: '@'
-			},
+			scope : {},
 			link: function(scope, elem, attrs) {
 				scope.$watch( function () { return AlertService.alert; }, function (alert) {
 				    scope.message = alert.message;
@@ -270,6 +332,3 @@ angular.module('passportAppDirectives', [])
 			}
 		};
 	});*/
-
-
-

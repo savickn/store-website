@@ -5,12 +5,12 @@ var mongoose = require('mongoose'),
 
 var RewardSchema = new Schema({
 	cardNumber: {
-		type: String, 
+		type: String,
 		required: true,
 		match: /^\d{8}$/
 	},
 	points: {
-		type: Number, 
+		type: Number,
 		validate: function(number) {
 			return number >= 0;
 		},
@@ -22,11 +22,13 @@ var RewardSchema = new Schema({
 	}
 });
 
-//prevents multiple rewards entries
+/*
+* Pre and Post Hooks
+*/
 
+//prevents multiple rewards entries
 RewardSchema.pre('save', function(next) {
 	var self = this;
-
 	mongoose.model('User').findOne({_id: self.user}, function(err, user) {
 		if(err) {next(err);}
 		if(user.reward) {
@@ -37,7 +39,6 @@ RewardSchema.pre('save', function(next) {
 	});
 })
 
-//data consistency
 RewardSchema.pre('save', function(next) {
 	mongoose.model('User').findOneAndUpdate(
 	    {_id: this.user},
@@ -48,6 +49,28 @@ RewardSchema.pre('save', function(next) {
     	}
   	);
 })
+
+/*
+* Class methods
+*/
+
+RewardSchema.statics = {
+    getCount: function() {
+
+    }
+}
+
+/*
+* Instance methods
+*/
+
+RewardSchema.methods = {
+
+}
+
+/*
+* Virtuals
+*/
 
 RewardSchema.set('toJSON', {virtuals: true});
 

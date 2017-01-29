@@ -1,17 +1,17 @@
 
 
 
-.row 
+.row
 	.col-lg-6
 		h3 Billing Address
 		ns-show-address(address="billingAddress" ng-if="billingAddress | isNotEmpty" ng-show="billingState === 'Default'")
-		ns-add-address(address="billingAddress" ng-show="billingState === 'Edit'")
+		ns-add-address(address="billingAddress" type="Billing" state="update" ng-if="billingAddress" ng-show="billingState === 'Edit'")
+		ns-add-address(address="newAddress" type="Billing" state="new" ng-if="!billingAddress" ng-show="billingState === 'New'")
 
-		//ns-add-address(address="billingAddress" type="Billing" state="update" ng-if="billingAddress" ng-show="billingState === 'Edit'")
-		//ns-add-address(address="newAddress" type="Billing" state="new" ng-if="!billingAddress" ng-show="billingState === 'New'")
+		//ns-add-address(address="billingAddress" type="Billing" cb-func="updateBilling(form, address)" state-func="setBillingState(billingState)" ng-show="billingState === 'New'")
 
 		button.btn.btn-primary(ng-if="billingAddress | isNotEmpty" ng-show="billingState === 'Default'" ng-click="setBillingState('Edit')") Edit your billing address?
-		button.btn.btn-primary(ng-if="!(billingAddress | isNotEmpty)" ng-show="billingState === 'Default'" ng-click="setBillingState('Edit')") Add a billing address?
+		button.btn.btn-primary(ng-if="!(billingAddress | isNotEmpty)" ng-show="billingState === 'Default'" ng-click="setBillingState('New')") Add a billing address?
 		button.btn.btn-primary(ng-show="billingState !== 'Default'" ng-click="setBillingState('Default')") Back
 
 		h3 Shipping Addresses
@@ -81,7 +81,7 @@
 		p.help-block(ng-show='addressForm.street.$error.required && submitted')
 			| Please enter a street address.
 		p.help-block(ng-show='addressForm.street.$error.mongoose')
-			| {{ errors.street }}	
+			| {{ errors.street }}
 
 	.form-group(ng-class='{ "has-success": addressForm.city.$valid && submitted, "has-error": addressForm.city.$invalid && submitted}')
 		label(for="city") City
@@ -89,8 +89,8 @@
 		p.help-block(ng-show='addressForm.city.$error.required && submitted')
 			| Please enter a city.
 		p.help-block(ng-show='addressForm.city.$error.mongoose')
-			| {{ errors.city }}	
-	
+			| {{ errors.city }}
+
 	.form-group(ng-class='{ "has-success": addressForm.pobox.$valid && submitted, "has-error": addressForm.pobox.$invalid && submitted}')
 		label(for="pobox") PO Box (if applicable)
 		input.form-control(type="text" name="pobox" placeholder="Pleae enter a PO Box number if applicable." ng-model="newAddress.pobox")

@@ -16,9 +16,25 @@ exports.checkout = function(req, res) {
 
 // Search orders
 exports.search = function(req, res) {
-  Order.find(req.query, function (err, orders) {
+  var searchObj = req.query.search;
+  var pageObj = req.query.pagination;
+
+  /*var orderCount = 0;
+  Order.count(searchObj, function(err, count) {
     if(err) { return handleError(res, err); }
-    return res.status(200).json(orders);
+    orderCount = count;
+  });*/
+
+  var query = Order.find(searchObj).populate('customer', '-salt -hashedPassword').populate('products');
+
+  if(pageObj.page && pageObj.perPage) {
+    query = query.skip((pageObj.page-1) * pageObj.perPage)
+                 .limit(pageObj.perPage);
+  }
+
+  Order.find(searchObj, function (err, orders) {
+    if(err) { return handleError(res, err); }
+    return res.status(200).header('total-orders', orders.length).json(orders);
   });
 };
 
@@ -38,11 +54,31 @@ exports.show = function(req, res) {
   });
 };
 
-// Creates a new order in the DB.
+function addLeadingZeroes(number) {
+  var num = number.toString();
+  while(num.length < 8) {
+    num = "0" + num;
+  };
+  return num;
+};
+
+// Creates a new order in the DB. Req must provide tax/shipping cost/subtotal
 exports.create = function(req, res) {
-  Order.create(req.body, function(err, Order) {
-    if(err) { return handleError(res, err); }
-    return res.status(201).json(order);
+  var defaultObj = {
+    status: 'Awaiting Pre-Auth',
+    orderDate: Date.now()
+  };
+
+  Order.count({}, function(err, count) {
+    var number = count + 1;
+    defaultObj.orderNumber = addLeadingZeroes(number);
+
+    var order = _.merge(defaultObj, req.body);
+    console.log(order);
+    Order.create(order, function(err, Order) {
+      if(err) { return handleError(res, err); }
+      return res.status(201).json(order);
+    });
   });
 };
 
@@ -76,5 +112,9 @@ function handleError(res, err) {
   return res.status(500).send(err);
 };
 
-
-
+/*aync function generateOrderNumber() {
+  Order.count({}, function(err, count) {
+    var number = count + 1;
+    return addLeadingZeroes(number);
+  })
+}*/

@@ -16,17 +16,17 @@ var cityList = {
 };
 
 var AddressSchema = new Schema({
-	/*type: {
+	type: {
 		type: String,
 		enum: ['Billing', 'Shipping'],
 		required: true
-	},*/
+	},
 	nickname: {
 		type: String,
 		required: 'You must provide a nickname for this address.'
 	},
 	street: {
-		type: String, 
+		type: String,
 		required: 'You must provide a street address.'
 	},
 	poBox: {
@@ -37,7 +37,7 @@ var AddressSchema = new Schema({
 	},
 	postalCode: {
 		type: String,
-		match: [/[a-zA-Z]{1}[0-9]{1}[a-zA-Z]{1}(\s|-)?[0-9]{1}[a-zA-Z]{1}[0-9]{1}/, 'Incorrect Format. The postal code should be provided in the format A1A1A1.'], 
+		match: [/[a-zA-Z]{1}[0-9]{1}[a-zA-Z]{1}(\s|-)?[0-9]{1}[a-zA-Z]{1}[0-9]{1}/, 'Incorrect Format. The postal code should be provided in the format A1A1A1.'],
 		required: 'You must provide a postal code.'
 	},
 	city: {
@@ -48,7 +48,7 @@ var AddressSchema = new Schema({
 		type: String,
 		//enum: ['Alberta', 'British Columbia', 'Saskachewan', 'Manitoba', 'Ontario'],
 		required: 'You must select a province.'
-	}, 
+	},
 	country: {
 		type: String,
 		//enum: countryList,
@@ -63,7 +63,7 @@ var AddressSchema = new Schema({
 /*
 * Pre and Post Hooks
 */
-/*
+
 AddressSchema.pre("save", function(next) {
   if(this.type === 'Billing') {
   	mongoose.model('User').findOneAndUpdate(
@@ -107,7 +107,7 @@ AddressSchema.pre('remove', function(next) {
 		);
 	}
 })
-*/
+
 /*
 * Validations
 */

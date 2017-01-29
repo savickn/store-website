@@ -21,7 +21,8 @@ var OrderSchema = new Schema({
 		required: true
 	},
 	orderNumber: {
-		type: Number
+		type: Number,
+    required: true
 	},
 	orderDate: {
 		type: Date,
@@ -37,7 +38,7 @@ var OrderSchema = new Schema({
 	},
 	tax: {
 		type: Number,
-		required: true	
+		required: true
 	}, //based on province/country
 	shippingCost: {
 		type: Number,
@@ -62,7 +63,7 @@ var OrderSchema = new Schema({
 			message: 'An order can only have one billing address.'
 		}
 	},
-	payment: {
+	paymentMethod: {
 		type: [PaymentMethod],
 		validate: {
 			validator: function(arr) {
@@ -73,20 +74,26 @@ var OrderSchema = new Schema({
 	},
 });
 
-
-// Validate the phone number
-/*UserSchema
-  .path('postalCode')
-  .validate(function(postalCode) {
-    if (authTypes.indexOf(this.provider) !== -1) return true;
-    return email.length;
-  }, 'Email cannot be blank');
+/*
+* Validations
 */
 
 
 
+
 /*
-* Used for diagnostic purposes
+* Pre and Post Hooks
+*/
+
+OrderSchema.pre('save', function(next) {
+  mongoose.model('User').findByIdAndUpdate(this.customer, {$addToSet: {orders: this._id}}, function(err, user) {
+    if(err) {next(err)};
+    next();
+  })
+})
+
+/*
+* Class Methods used for diagnostic purposes
 */
 
 OrderSchema.statics = {
@@ -97,13 +104,13 @@ OrderSchema.statics = {
 }
 
 /*
-* Used for managing a particular Order
+* Instance Methods used for managing a particular Order
 */
 
 OrderSchema.methods = {
 	cancel: function() {
 
-	}, 
+	},
 	attemptPreAuth: function() {
 
 	},
@@ -112,10 +119,13 @@ OrderSchema.methods = {
 	},
 	markAsDelivered: function() {
 
-	} 
+	}
 
 };
 
+/*
+* Virtuals
+*/
 
 
 

@@ -1,0 +1,22 @@
+form.form(role="form" name="paymentForm" ng-submit="addPaymentMethod(paymentForm, payment)" novalidate)
+	.form-group
+		label(for="cardType") Card Type
+		select.form-control(name="cardType" ng-model="payment.cardType" required)
+			option(ng-repeat="type in paymentTypes" name="cardType" ng-value="type") {{type}}
+
+	.form-group
+		label(for="userName") Cardholder's Name
+		input.form-control(type="text" name="userName" placeholder="Please enter the name on your payment card." ng-model="payment.userName" required)
+
+	.form-group
+		label(for="cardNumber") Card Number
+		input.form-control(type="text" name="cardNumber" placeholder="Please enter your payment card number." ng-model="payment.cardNumber" pattern="^[0-9]{16}" required)
+
+	.form-group
+		label(for="expiryMonth") Card Expiry Date
+		select.form-control(name="expiryMonth" placeholder="Month" ng-model="payment.expiryMonth" required)
+			option(ng-repeat="month in expiryMonths" name="expiryMonth" ng-value="month") {{month}}
+		select.form-control(name="expiryYear" placeholder="Year" ng-model="payment.expiryYear" required)
+			option(ng-repeat="year in expiryYears" name="expiryYear" ng-value="year") {{year}}
+
+	button.btn.btn-primary(type="submit") Add Payment Method

@@ -27,7 +27,15 @@ var UserSchema = new Schema({
     type: String,
     match: [/((1-)|1)?[0-9]{3}-?[0-9]{3}-?[0-9]{4}/, "This phone number is not in the correct format."]
   },
-  shippingAddresses: [Address.schema], //primary shipping address is saved to cookie
+  /*shippingAddresses: {
+    type: [Address.schema], //primary shipping address is saved to cookie
+    validate: {
+      validator: function(arr) {
+        return arr.length <= 5;
+      },
+      message: 'You can only save up to 5 shipping addresses.'
+    }
+  },
   billingAddress: {
     type: [Address.schema],
     validate: {
@@ -36,8 +44,8 @@ var UserSchema = new Schema({
       },
       message: 'An user can only have one billing address.'
     }
-  },
-  /*billingAddress: {
+  },*/
+  billingAddress: {
     type: Schema.Types.ObjectId,
     ref: 'Address'
   },
@@ -45,7 +53,7 @@ var UserSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Address',
     index: true
-  }],*/
+  }],
   promotionalEmails: {
     type: Boolean,
     default: false
@@ -71,7 +79,7 @@ var UserSchema = new Schema({
   reward: {
     type: Schema.Types.ObjectId,
     ref: 'Reward'
-  }, 
+  },
   hashedPassword: String,
   provider: String,
   salt: String,
@@ -204,6 +212,7 @@ UserSchema.pre('remove', function(next) {
   mongoose.model('Wishlist').remove({user: this._id}).exec();
   mongoose.model('Reward').remove({user: this._id}).exec();
   mongoose.model('PaymentMethod').remove({user: this._id}).exec();
+  mongoose.model('Address').remove({user: this._id}).exec();
 
   next();
 });
@@ -212,7 +221,7 @@ UserSchema.pre('remove', function(next) {
 /**
  * Instance Methods
  */
- 
+
 UserSchema.methods = {
   /**
    * Authenticate - check if the passwords are the same
@@ -250,4 +259,3 @@ UserSchema.methods = {
 };
 
 module.exports = mongoose.model('User', UserSchema);
-

@@ -19,13 +19,13 @@ angular.module('passportApp')
           }
         }
       })
-      .state('orders.show', {
-        url: '/:id',
+      .state('showOrder', {
+        url: '/showOrder/:id',
         templateUrl: 'app/order/show.html',
         controller: 'OrderCtrl'
       })
-      .state('new_order', {
-        url: '/new_order',
+      .state('newOrder', {
+        url: '/newOrder',
         templateUrl: 'app/order/new.html',
         controller: 'OrderUploadCtrl',
         authenticate: true

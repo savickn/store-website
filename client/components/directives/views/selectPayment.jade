@@ -1,0 +1,2 @@
+.select-payment.col-lg-4.col-md-4(ng-repeat="pay in payments" ng-click="setPayment(pay)" ng-class='{"highlightOption": payment === pay}')
+	ns-show-payment(payment="pay")

@@ -103,7 +103,6 @@ angular.module('passportApp')
 
       },
 
-
       /**
       ** for handling the authenticated user
       **/
@@ -117,18 +116,14 @@ angular.module('passportApp')
       },
 
       /**
-      * for handling Shipping Addresses
+      * for handling user's Shipping Addresses
       */
 
       getShippingAddresses: function() {
-        console.log('get shipping')
-        console.log(currentUser.shippingAddresses);
         return currentUser.shippingAddresses;
       },
 
       addShippingAddress: function(address) {
-        console.log('add billing')
-        console.log(address);
         currentUser.shippingAddresses.pushUnique(address);
       },
 
@@ -137,23 +132,35 @@ angular.module('passportApp')
       },
 
       /*
-      * for handling Billing Address
+      * for handling user's Billing Address
       */
 
       getBillingAddress: function() {
-        console.log('get billing')
-        console.log(currentUser.billingAddress || {});
         return currentUser.billingAddress || {};
       },
 
       setBillingAddress: function(address) {
-        console.log('set billing');
-        console.log(address);
         currentUser.billingAddress = address;
       },
 
       /*
-      * for handling auth user's wishlist
+      * for handling user's paymentMethods
+      */
+
+      getPaymentMethods: function() {
+        return currentUser.paymentMethods;
+      },
+
+      addPaymentMethod: function(payment) {
+        currentUser.paymentMethods.pushUnique(payment);
+      },
+
+      removePaymentMethod: function(payment) {
+        currentUser.paymentMethods.remove(payment);
+      },
+
+      /*
+      * for handling user's wishlist
       */
 
       getWishlist: function() {

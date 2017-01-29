@@ -32,6 +32,9 @@ angular.module('passportApp')
     },
     ajaxProvinces: function(country) {
     	return Restangular.all('data').customGET('provinces', country);
+    },
+    ajaxTaxes: function(province) {
+      return Restangular.all('data').customGET('taxes', {province: province});
     }
   };
 });

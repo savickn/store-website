@@ -3,53 +3,83 @@ title Secure Checkout
 .container
   .row
     .col-lg-12
-      form(name="orderForm" ng-submit="checkout(orderForm, newOrder)")
-        wizard(on-finish="finishedWizard()") 
-          wz-step(wz-title="Shipping" wz-disabled="{{disabled}}")
+      form(name="orderForm" novalidate)
+        wizard(on-finish="finishedWizard()")
+          wz-step(wz-title="Shipping")
             h3 Shipping Address
-            p Please select one of your saved addresses or add a new address.
-            
-            //ns-show-address(address="newOrder.shippingAddress" ng-hide="newOrder.shippingAddress | isEmpty")
+            p Please select one of your saved addresses or specify a new address.
+
+            ns-show-address(address="newOrder.shippingAddress" ng-if="(shippingState === 'Default') && (shippingState | isNotEmpty)")
             ns-select-address(address="newOrder.shippingAddress" addresses="shippingAddresses" type="Shipping" ng-if="shippingState === 'Select'")
             ns-add-address(address="newOrder.shippingAddress" type="Shipping" state="return" ng-if="shippingState === 'New'")
-            
-            button.btn.btn-primary(ng-click="setShippingState('New')" ng-show="shippingState === 'Default'") Add a New Address 
-            button.btn.btn-primary(ng-click="setShippingState('Select')" ng-show="shippingState === 'Default'") Use an Existing Address 
+
+            button.btn.btn-primary(ng-click="setShippingState('New')" ng-show="shippingState === 'Default'") Add a New Address
+            button.btn.btn-primary(ng-click="setShippingState('Select')" ng-show="shippingState === 'Default'") Use an Existing Address
             button.btn.btn-primary(ng-click="setShippingState('Default')" ng-show="shippingState !== 'Default'") Back
-            
-            input(type="submit" wz-next value="Continue")
+
+            input.btn.btn-primary(type="submit" wz-next value="Continue" ng-if="newOrder.shippingAddress | isNotEmpty")
 
           wz-step(wz-title="Payment")
             h3 Choose a Payment Method
+            p Please select one of your saved payment methods or specify a new method.
 
+            ns-select-payment(payment="newOrder.paymentMethod" payments="paymentMethods" ng-if="paymentState === 'Select'")
+            ns-add-payment(payment="newOrder.paymentMethod" ng-if="paymentState === 'New'")
 
+            button.btn.btn-primary(ng-click="setPaymentState('New')" ng-show="paymentState === 'Default'") Add a New Payment Method
+            button.btn.btn-primary(ng-click="setPaymentState('Select')" ng-show="paymentState === 'Default'") Use an Existing Payment Method
+            button.btn.btn-primary(ng-click="setPaymentState('Default')" ng-show="paymentState !== 'Default'") Back
 
-
-            input(type="submit" wz-next value="Continue")
+            input.btn.btn-primary(type="submit" wz-next value="Continue" ng-if="newOrder.paymentMethod | isNotEmpty")
 
           wz-step(wz-title="Billing")
             h3 Billing Address
-            
-            //ns-show-address(address="newOrder.billingAddress")
-            //ns-select-address(address="newOrder.billingAddress" addresses="shippingAddresses" type="Shipping")
-            ns-add-address(address="newOrder.billingAddress" type="Billing" state="return")
-            
-            button.btn.btn-primary(ng-click="setBillingState('New')" ng-show="billingState === 'Default'") Add a New Address 
-            button.btn.btn-primary(ng-click="setBillingState('Select')" ng-show="billingState === 'Default'") Use an Existing Address 
+
+            .form-group
+              label(for="sameAsShipping") Same as Shipping Address?
+              input.form-control(type="checkbox" name="sameAsShipping" ng-model="sameAsShipping" ng-change="setBillingAsShipping(sameAsShipping)")
+
+            ns-add-address(address="newOrder.billingAddress" type="Billing" state="return" ng-if="billingState === 'New'")
+
+            button.btn.btn-primary(ng-click="setBillingState('New')" ng-show="(billingState === 'Default') && !sameAsShipping") Add a New Address
             button.btn.btn-primary(ng-click="setBillingState('Default')" ng-show="billingState !== 'Default'") Back
 
-            input(type="submit" wz-next value="Continue")          
+            input.btn.btn-primary(type="submit" wz-next value="Continue" ng-if="newOrder.billingAddress | isNotEmpty" ng-click="getOrderInfo(newOrder)")
 
-          wz-step(wz-title="Review")    
+          wz-step(wz-title="Review")
             p Please review all information before finalizing this order
-            button.btn.btn-primary(type='submit') Process Order
 
-          span.err(ng-show="errorMsg") {{errorMsg}}
+            h4 Product Info
+            ul.list-group
+              li.list-group-item(ng-repeat="product in newOrder.products")
+                p Product: {{product._name}}
+                p Price: {{product._price}}
+
+            h4 Payment Method
+            ns-show-payment(payment="newOrder.paymentMethod")
+
+            h4 Shipping Address
+            ns-show-address(address="newOrder.shippingAddress")
+
+            h4 Billing Address
+            ns-show-address(address="newOrder.billingAddress")
+
+            h4 Order Info
+            p Subtotal: {{newOrder.subtotal}}
+            p Tax: {{newOrder.tax}}
+            p Shipping Costs: {{newOrder.shippingCost}}
+            p Total: {{newOrder.total}}
+
+            button.btn.btn-primary(ng-click="checkout(orderForm, newOrder)") Process Order
 
 
 
 
 
+            //ns-show-address(address="newOrder.shippingAddress" ng-hide="newOrder.shippingAddress | isEmpty")
+
+            //ns-show-address(address="newOrder.billingAddress")
+            //ns-select-address(address="newOrder.billingAddress" addresses="shippingAddresses" type="Shipping")
 
 
             //
@@ -82,7 +112,7 @@ title Secure Checkout
                   | Please enter a city.
                 p.help-block(ng-show='orderForm.city.$error.mongoose')
                   | {{ errors.city }}
-              
+
               .form-group(ng-class='{ "has-success": orderForm.pobox.$valid && submitted, "has-error": orderForm.pobox.$invalid && submitted}')
                 label(for="pobox") PO Box (if applicable)
                 input.form-control(type="text" name="pobox" placeholder="Pleae enter a PO Box number if applicable." ng-model="neworder.shipping.pobox")

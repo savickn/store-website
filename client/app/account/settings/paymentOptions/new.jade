@@ -14,10 +14,10 @@ form.form(role="form" name="paymentForm" ng-submit="addPaymentMethod(paymentForm
 		input.form-control(type="text" name="cardNumber" placeholder="Please enter your payment card number." ng-model="newPayment.cardNumber" pattern="^[0-9]{16}" required)
 
 	.form-group
-		label(for="expiryMonth") Card Expiry Date 
+		label(for="expiryMonth") Card Expiry Date
 		select.form-control(name="expiryMonth" placeholder="Month" ng-model="newPayment.expiryMonth" required)
 			option(ng-repeat="month in expiryMonths" name="expiryMonth" ng-value="month") {{month}}
 		select.form-control(name="expiryYear" placeholder="Year" ng-model="newPayment.expiryYear" required)
 			option(ng-repeat="year in expiryYears" name="expiryYear" ng-value="year") {{year}}
 
-	button.btn.btn-primary(type="sumbit") Add Payment Method
+	button.btn.btn-primary(type="submit") Add Payment Method

@@ -42,7 +42,7 @@ var sendWelcomeEmail = function(req, res) {
       to: 'nsavickas988@hotmail.com',
       //to: req.body.email, // list of receivers
       subject: 'Welcome',
-      text: result.text, 
+      text: result.text,
       html: result.html
     };
 
@@ -98,7 +98,7 @@ exports.search = function(req, res) {
     .populate('user', '-salt -hashedPassword')
     .exec(function(err, reward) {
       if(err) return res.status(500).send(err);
-      return res.status(200).json(reward.user);  
+      return res.status(200).json(reward.user);
     })
   }
 
@@ -137,7 +137,7 @@ exports.create = function (req, res) {
 
       var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
       return res.json({ token: token });
-      
+
       /*sendWelcomeEmail(req, res, function(err, data) {
         if(err) return res.status(500).send(err);
         //res.header('debug3', data);
@@ -202,12 +202,12 @@ exports.update = function(req, res) {
   console.log(req.body);
 
   /*Review.findOneAndUpdate(
-    {_id: req.params.id}, 
-    {$set: {rating: req.body.rating, summary: req.body.summary}, $addToSet: {upvotes: req.body.newUpvote}}, 
+    {_id: req.params.id},
+    {$set: {rating: req.body.rating, summary: req.body.summary}, $addToSet: {upvotes: req.body.newUpvote}},
     {new: true})*/
 
   User.findOneAndUpdate(
-    {_id: req.params.id}, 
+    {_id: req.params.id},
     {$set: req.body},
     {new: true}
   )
@@ -226,7 +226,7 @@ exports.me = function(req, res, next) {
   var userId = req.user._id;
   User.findOne({_id: userId})
   .select('-salt -hashedPassword')
-  .populate('reward wishlist billingAddress shippingAddresses paymentMethods')
+  .populate('reward orders wishlist billingAddress shippingAddresses paymentMethods')
   .exec(function(err, user) { // don't ever give out the password or salt
     if (err) return next(err);
     if (!user) return res.status(401).send('Unauthorized');
@@ -262,7 +262,7 @@ exports.changeEmail = function(req, res) {
   var email = req.user.email.toLowerCase();
 
   User.findOne({email: email}, function(err, user) {
-    if(user) { return validationError('This email is already in use.'); } 
+    if(user) { return validationError('This email is already in use.'); }
 
     User.findByIdAndUpdate(req.params.id, {$set: {email: email}}, function(err, user) {
       if (err){ return validationError(res, err); }

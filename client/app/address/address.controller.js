@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('AddressCtrl', function ($scope, Auth, AddressService, AlertService) {
+  .controller('AddressCtrl', function ($scope, Auth, UserService, AddressService, AlertService) {
     $scope.isAdmin = Auth.isAdmin();
+    $scope.errors = {};
 
     $scope.billingAddress = Auth.getBillingAddress();
     $scope.shippingAddresses = Auth.getShippingAddresses();
-
     $scope.newAddress = {};
 
     $scope.billingState = 'Default';
@@ -20,11 +20,40 @@ angular.module('passportApp')
       $scope.shippingState = state;
     }
 
-    $scope.addAddress = function(form, address) {
+    /*$scope.updateBilling = function(form, address) {
+      console.log(form);
+      console.log(address);
+
+      if(form.$valid) {
+        var user = Auth.getCurrentUser()
+        user.billingAddress = address;
+
+        UserService.updateUser(user._id, user).then(function(user) {
+          console.log(user);
+          Auth.setCurrentUser(user);
+          $scope.billingAddress = Auth.getBillingAddress();
+          $scope.billingState = 'Default';
+        }).catch(function(err) {
+          err = err.data;
+          $scope.errors = {};
+
+          angular.forEach(err.errors, function(error, field) {
+            form[field].$setValidity('mongoose', false);
+            $scope.errors[field] = error.message;
+          });
+        })
+      }
+    }
+
+    $scope.updateShipping = function(form, address) {
+
+    }*/
+
+    /*$scope.addAddress = function(form, address) {
       scope.submitted = true;
       scope.address.type = scope.type;
       scope.address.user = Auth.getCurrentUser()._id;
-      
+
       if(form.$valid){
         AddressService.addAddress(address)
         .then(function(address) {
@@ -44,7 +73,7 @@ angular.module('passportApp')
           });
         });
       }
-    };
+    };*/
 
     $scope.removeAddress = function(addressId) {
       AddressService.removeAddress(addressId).then(function() {
@@ -63,7 +92,7 @@ angular.module('passportApp')
 
 $scope.addAddress = function(form, address) {
       $scope.options.submitted = true;
-      
+
       AddressService.addAddress(address)
       .then(function(address) {
         //push to current User
