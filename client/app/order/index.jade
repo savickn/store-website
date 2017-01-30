@@ -1,2 +1,27 @@
+.container
+  .row
+    h3 Orders
+    form.form(name="orderSearchForm" ng-submit="searchOrders(orderSearchForm, orderQuery)" novalidate)
+      .form-group(ng-class='{ "has-success": orderSearchForm.email.$valid && submitted, "has-error": orderSearchForm.email.$invalid && submitted }')
+        label(for="email") Customer's Email Address
+        input.form-control(type="text" name="email" ng-model="orderQuery.email" placeholder="Enter the customer's email address." pattern="[A-Za-z0-9]+@([A-Za-z])+(\\.[A-Za-z]+)+")
+        p.help-block(ng-show='orderSearchForm.email.$error.pattern && submitted')
+          | Incorrect format. Please enter an email address in the format of "example@example.com"
+        p.help-block(ng-show='orderSearchForm.email.$error.mongoose')
+          | {{ errors.email }}
 
-h3 Orders
+      .form-group(ng-class='{ "has-success": orderSearchForm.orderNumber.$valid && submitted, "has-error": orderSearchForm.orderNumber.$invalid && submitted }')
+        label(for="orderNumber") Order Number
+        input.form-control(type="text" name="orderNumber" ng-model="orderQuery.orderNumber" placeholder="Enter the order number." pattern="^([0-9]{8})$")
+        p.help-block(ng-show='orderSearchForm.orderNumber.$error.pattern && submitted')
+          | Please enter a valid order number.
+        p.help-block(ng-show='orderSearchForm.orderNumber.$error.mongoose')
+          | {{ errors.orderNumber }}
+
+      button.btn.btn-primary(type="submit") Search
+
+    ul.list-group
+      li.list-group-item(ng-repeat="order in orders")
+        p Order Number: {{order.orderNumber}}
+          span
+            a.glyphicon.glyphicon-link(ui-sref="showOrder({id: order._id})")

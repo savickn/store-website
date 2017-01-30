@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('SignupCtrl', function ($scope, $location, $window, Auth, FlashService) {
+  .controller('SignupController', function ($scope, $location, $window, Auth, FlashService) {
     $scope.user = {};
     $scope.errors = {};
 
@@ -14,7 +14,6 @@ angular.module('passportApp')
           email: $scope.user.email,
           password: $scope.user.password
         }).then(function(user) {
-          // Account created, redirect to home
           FlashService.setMessage('You have successfully created an account.', 'Success');
           $location.path('/');
         }).catch(function(err) {

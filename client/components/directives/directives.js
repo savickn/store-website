@@ -52,23 +52,42 @@ angular.module('passportAppDirectives', [])
 	      }
 	    };
 	})
+	.directive('alertMessage', function(AlertService) {
+		return {
+			restrict: 'E',
+			templateUrl : '../components/directives/views/alert.html',
+			scope : {},
+			link: function(scope, elem, attrs) {
+				scope.$watch( function () { return AlertService.getAlert(); }, function (alert) {
+			    scope.message = alert.message;
+			    scope.type = alert.type;
+		  	}, true);
+			}
+		};
+	})
+	.directive('flashMessage', function(FlashService) {
+		return {
+			restrict: 'E',
+			templateUrl: '../components/directives/views/alert.html',
+			scope: {},
+			link: function(scope, elem, attrs) {
+				scope.$watch( function () { return FlashService.getMessage(); }, function (flash) {
+			    scope.message = flash.message;
+					scope.type = flash.type
+		  	}, true);
+			}
+		}
+	})
 	.directive('toggleItemWishlist', function(Auth, WishlistService) {
 		return {
 			restrict: 'E',
 			templateUrl : '../components/directives/views/toggleItemWishlist.html',
 			scope: {
 				productId: '@'
-				//wishlistId: '@',
-				//wishlist: '=',
-				//state: '@'
 			},
 			link: function(scope, elem, attrs) {
 				var wishlist = Auth.getCurrentUser().wishlist;
 				scope.state = wishlist.products.includes(scope.productId);
-
-				//console.log(scope.productId);
-				//console.log(wishlist);
-				//console.log(scope.state);
 
 				function updateWishlist() {
 					WishlistService.updateWishlist(wishlist._id, wishlist).then(function(wl) {
@@ -93,6 +112,40 @@ angular.module('passportAppDirectives', [])
 			}
 		};
 	})
+	.directive('nsEmail', function() {
+		return {
+			restrict: 'E',
+			templateUrl: '../components/directives/views/email.html',
+			scope: {
+				form: '=',
+				errs: '=',
+				submitted: '@'
+			},
+			link: function(scope, elem, attrs) {
+				
+			}
+		}
+	})
+	/*.directive('nsErrors', function() {
+		return {
+			restrict: 'E',
+			templateUrl: '../components/directives/views/errors.html',
+			scope: {
+				form: '=',
+				errs: '=',
+				submitted: '@'
+			},
+			link: function(scope, elem, attrs) {
+				scope.errors = {};
+				angular.forEach(errs, function(error, field) {
+					form[field].$setValidity('mongoose', false);
+					scope.errors[field] = error.message;
+				});
+			}
+		}
+	})*/
+
+
 	//should be passed OUTPUT_VAR (e.g. address) and ADDRESS_LIST (e.g. addresses) which is used to set OUTPUT_VAR
 	.directive('nsSelectAddress', function() {
 		return {
@@ -276,20 +329,7 @@ angular.module('passportAppDirectives', [])
 		  	}
 			}
 		}
-	})
-	.directive('alertMessage', function(AlertService) {
-		return {
-			restrict: 'E',
-			templateUrl : '../components/directives/views/alert.html',
-			scope : {},
-			link: function(scope, elem, attrs) {
-				scope.$watch( function () { return AlertService.alert; }, function (alert) {
-				    scope.message = alert.message;
-				    scope.type = alert.type;
-			  	}, true);
-			}
-		};
-	})
+	});
 
 /*
 

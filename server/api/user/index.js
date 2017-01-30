@@ -7,16 +7,16 @@ var auth = require('../../auth/auth.service');
 
 var router = express.Router();
 
-router.get('/email', auth.hasRole('admin'), controller.email);
-
+//router.get('/email', auth.hasRole('admin'), controller.email); //used to test email functionality
 //router.get('/', auth.hasRole('admin'), controller.index);
-router.get('/search', auth.hasRole('admin'), controller.search)
-router.delete('/:id', auth.hasRole('admin'), controller.destroy);
+
+router.get('/:id/reset', auth.isAuthenticated(), controller.resetPassword);
+router.get('/search', auth.hasRole('admin'), controller.search);
 router.get('/me', auth.isAuthenticated(), controller.me);
 router.put('/:id', auth.isAuthenticated(), controller.update);
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
 router.get('/:id', auth.isAuthenticated(), controller.show);
 router.post('/', controller.create);
+router.delete('/:id', auth.hasRole('admin'), controller.destroy);
 
 module.exports = router;
-

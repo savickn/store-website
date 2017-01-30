@@ -12,8 +12,8 @@ exports.search = function(req, res) {
 
   if(req.body.name) { searchObj.name = new RegExp(req.body.name, "i"); }
   //if(req.body.minPrice && req.body.maxPrice) { searchObj.price = {$gt: req.body.minPrice, $lt: req.body
-    //.maxPrice}; } 
-  if(req.body.minPrice >= 0) { searchObj.price['$gt'] = req.body.minPrice; } 
+    //.maxPrice}; }
+  if(req.body.minPrice >= 0) { searchObj.price['$gt'] = req.body.minPrice; }
   if(req.body.maxPrice >= 0) { searchObj.price['$lt'] = req.body.maxPrice; }
 
   if(req.body.brand.length > 0) { searchObj.brand = {$in: req.body.brand}; }
@@ -27,7 +27,7 @@ exports.search = function(req, res) {
 
   res.header('debug', searchObj);
 
-  var query = Computer.find(searchObj).populate('displayPicture', '_id contentType path'); 
+  var query = Computer.find(searchObj).populate('displayPicture', '_id contentType path');
 
   query.exec(function (err, computers) {
     if(err) {return handleError(res, err);}
@@ -41,23 +41,20 @@ exports.index = function(req, res) {
     __t: 'Computer'
   };
 
-  var computerCount = 0;
   Computer.count(searchObj, function(err, count) {
     if(err) { return handleError(res, err); }
-    computerCount = count;
-  });
+    var computerCount = count;
 
-  var query = Computer.find(searchObj).populate('displayPicture', '_id contentType path');
-
-  if(req.query.page && req.query.perPage) {
-    query = query.skip((req.query.page-1) * req.query.perPage)
-                 .limit(req.query.perPage);
-  } 
+    var query = Computer.find(searchObj).populate('displayPicture', '_id contentType path');
   
-  query.exec(function (err, computers) {
-      if(err) { return handleError(res, err); }
-      //response.computers = computers;
-      return res.status(200).header('total-Computers', computerCount).json(computers);
+    if(req.query.page && req.query.perPage) {
+      query = query.skip((req.query.page-1) * req.query.perPage)
+                   .limit(req.query.perPage);
+    }
+    query.exec(function (err, computers) {
+        if(err) { return handleError(res, err); }
+        return res.status(200).header('total-Computers', computerCount).json(computers);
+    });
   });
 };
 
@@ -81,7 +78,7 @@ exports.create = function(req, res) {
 // Updates an existing computer in the DB.
 exports.update = function(req, res) {
   Computer.findOneAndUpdate(
-      {_id: req.params.id}, 
+      {_id: req.params.id},
       {$set: req.body},
       {new: true}
     )

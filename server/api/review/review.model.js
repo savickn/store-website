@@ -5,32 +5,35 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var ReviewSchema = new Schema({
-  author: 	{ 	
-    type: Schema.Types.ObjectId, 
+  author: 	{
+    type: Schema.Types.ObjectId,
     ref: 'User'
   },
-  product: 	{	
-    type: Schema.Types.ObjectId, 
+  product: 	{
+    type: Schema.Types.ObjectId,
   	ref: 'Product'
   },
-  rating: 	{	
-    type: Number, 
+  rating: 	{
+    type: Number,
   	required: true,
   	min: 0,
-  	max: 10, 
-  	trim: true
+  	max: 10
   },
-  summary: 	{	
-    type: String, 
+  summary: 	{
+    type: String,
   	required: true,
   	minLength: 0,
     maxLength: 500
+  },
+  verified: {
+    type: Boolean,
+    default: false
   },
   upvotes: [Upvote.schema]
 });
 
 /*
-* Validations 
+* Validations
 */
 
 
@@ -61,7 +64,7 @@ ReviewSchema.pre("remove", function(next) {
       next();
     }
   );
-}); 
+});
 
 /*
 * Virtual Methods
@@ -119,7 +122,7 @@ mongoose.model(self.productType).findOne({_id: self.product}, function(err, prod
     } else {
       next(err);
     }
-  }); 
+  });
 
 */
 

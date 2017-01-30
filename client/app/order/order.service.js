@@ -4,11 +4,6 @@ angular.module('passportApp')
   .factory('OrderService', function (Restangular) {
 
     return {
-      /*getorders: function(options) {
-        //if(options.page) { console.log(options.page) }
-        //if(options.perPage) { console.log(options.perPage) }
-        return restAngular.all('orders').getList({page: options.page, perPage: options.perPage});
-      },*/
       searchOrders: function(searchObj, pageObj) {
         return Restangular.all('orders').customGET('search', {search: searchObj, pagination: pageObj});
       },

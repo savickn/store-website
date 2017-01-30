@@ -1,23 +1,44 @@
 
 form.form(role="form" name="paymentForm" ng-submit="addPaymentMethod(paymentForm, newPayment)" novalidate)
-	.form-group
+	.form-group(ng-class='{ "has-success": paymentForm.cardType.$valid && submitted, "has-error": paymentForm.cardType.$invalid && submitted }')
 		label(for="cardType") Card Type
 		select.form-control(name="cardType" ng-model="newPayment.cardType" required)
 			option(ng-repeat="type in paymentTypes" name="cardType" ng-value="type") {{type}}
+		p.help-block(ng-show='paymentForm.cardType.$error.required && submitted')
+			| Please select a card type.
+		p.help-block(ng-show='paymentForm.cardType.$error.mongoose')
+			| {{errors.cardType}}
 
-	.form-group
+	.form-group(ng-class='{ "has-success": paymentForm.userName.$valid && submitted, "has-error": paymentForm.userName.$invalid && submitted }')
 		label(for="userName") Cardholder's Name
-		input.form-control(type="text" name="userName" placeholder="Please enter the name on your payment card." ng-model="newPayment.userName" required)
+		input.form-control(type="text" name="userName" placeholder="Please enter the cardholder's name." ng-model="newPayment.userName" required)
+		p.help-block(ng-show='paymentForm.userName.$error.required && submitted')
+			| Please enter the cardholder's name.
+		p.help-block(ng-show='paymentForm.userName.$error.mongoose')
+			| {{errors.userName}}
 
-	.form-group
+	.form-group(ng-class='{ "has-success": paymentForm.cardNumber.$valid && submitted, "has-error": paymentForm.cardNumber.$invalid && submitted }')
 		label(for="cardNumber") Card Number
 		input.form-control(type="text" name="cardNumber" placeholder="Please enter your payment card number." ng-model="newPayment.cardNumber" pattern="^[0-9]{16}" required)
+		p.help-block(ng-show='paymentForm.cardNumber.$error.required && submitted')
+			| Please enter the card number.
+		p.help-block(ng-show='paymentForm.cardNumber.$error.pattern && submitted')
+			| The card number should be 16 digits.
+		p.help-block(ng-show='paymentForm.cardNumber.$error.mongoose')
+			| {{errors.cardNumber}}
 
-	.form-group
-		label(for="expiryMonth") Card Expiry Date
-		select.form-control(name="expiryMonth" placeholder="Month" ng-model="newPayment.expiryMonth" required)
+	.form-group(ng-class='{ "has-success": paymentForm.expiryMonth.$valid && submitted, "has-error": paymentForm.expiryMonth.$invalid && submitted }')
+		label(for="expiryMonth") Expiry Month
+		select.form-control(name="expiryMonth" ng-model="newPayment.expiryMonth" required)
 			option(ng-repeat="month in expiryMonths" name="expiryMonth" ng-value="month") {{month}}
-		select.form-control(name="expiryYear" placeholder="Year" ng-model="newPayment.expiryYear" required)
+		p.help-block(ng-show='paymentForm.expiryMonth.$error.required && submitted')
+			| Please enter the expiry month of your payment card.
+
+	.form-group(ng-class='{ "has-success": paymentForm.expiryYear.$valid && submitted, "has-error": paymentForm.expiryYear.$invalid && submitted }')
+		label(for="expiryYear") Expiry Year
+		select.form-control(name="expiryYear" ng-model="newPayment.expiryYear" required)
 			option(ng-repeat="year in expiryYears" name="expiryYear" ng-value="year") {{year}}
+		p.help-block(ng-show='paymentForm.expiryYear.$error.required && submitted')
+			| Please enter the expiry year of your payment card.
 
 	button.btn.btn-primary(type="submit") Add Payment Method

@@ -13,13 +13,13 @@ angular.module('passportApp')
     $scope.searchableCategories = [];
 
     //////////////////////////// PAGINATION /////////////////////////////////////
-    
+
     $scope.paginationOptions = [1, 10, 25, 50];
     $scope.currentPage = 1;
-    $scope.totalComputers = 0;
     $scope.pageSize = 10;
+    $scope.totalComputers = 0;
     getResultsPage($scope.currentPage, $scope.pageSize);
-    
+
     $scope.pageChanged = function(newPage) {
       getResultsPage(newPage, $scope.pageSize);
     }
@@ -36,8 +36,10 @@ angular.module('passportApp')
         perPage: pageSize
       };
       ComputerService.getComputers(options).then(function(response) {
-        $scope.availableComputers = response.data;   
+        console.log(response);
+        $scope.availableComputers = response.data;
         $scope.totalComputers = response.headers('total-Computers');
+        console.log($scope.totalComputers);
         getProductInfo(response.data);
       });
     }
@@ -94,7 +96,7 @@ angular.module('passportApp')
     };
 
     ///////////////////// PRICE SLIDER ////////////////////////////////////
- 
+
     $scope.slider = {
       options: {
         floor: 1,
@@ -114,7 +116,7 @@ angular.module('passportApp')
 
     $scope.deleteComputer = function(computer) {
       var idx = $scope.availableComputers.indexOf(computer);
-      
+
       ComputerService.removeComputer(computer._id).then(function() {
         $scope.availableComputers.splice(idx, 1);
       });
@@ -144,7 +146,7 @@ angular.module('passportApp')
         if(searchable.name === category) {
           state = true;
         }
-      }) 
+      })
       return state;
     }*/
 
@@ -194,9 +196,9 @@ angular.module('passportApp')
     $scope.addComputer = function() {
       !$scope.newComputer.gpu ? 'Not Specified' : $scope.newComputer.gpu;
       !$scope.newComputer.cpu ? 'Not Specified' : $scope.newComputer.cpu;
-      !$scope.newComputer.motherboard ? 'Not Specified' : $scope.newComputer.motherboard; 
+      !$scope.newComputer.motherboard ? 'Not Specified' : $scope.newComputer.motherboard;
 
-      $scope.newComputer.publicFields = ['name', 'description', 'price', 'brand', 'onSale', 
+      $scope.newComputer.publicFields = ['name', 'description', 'price', 'brand', 'onSale',
         'onlineOnly', 'featured', 'cpu', 'gpu', 'motherboard'];
 
       if($scope.computerform.$valid && Auth.isAdmin()) {
@@ -208,8 +210,8 @@ angular.module('passportApp')
             Upload.upload({
               url: '/api/pictures',
               method: 'POST',
-              data: {file: pic, filename: pic.name, contentType: pic.type, size: pic.size,  
-                displayPicture: pic.displayPicture, productType: computer.__t, product: computer._id} 
+              data: {file: pic, filename: pic.name, contentType: pic.type, size: pic.size,
+                displayPicture: pic.displayPicture, productType: computer.__t, product: computer._id}
             }).then(function (response) {
               $timeout(function () {
                 $scope.status = "success";
@@ -221,7 +223,7 @@ angular.module('passportApp')
 
                 newComputer.pictures.push({path: response.path});
                 numberOfPictures -= 1;
-                
+
                 if(numberOfPictures === 0) {
                   //console.log('success');
                   $scope.availableComputers.push(newComputer);
@@ -280,4 +282,3 @@ angular.module('passportApp')
     $scope.computerGPUs = [];
     $scope.computerMotherboards = [];
 */
-

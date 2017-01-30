@@ -20,6 +20,11 @@ angular.module('passportApp')
       $scope.shippingState = state;
     }
 
+    $scope.setAsPrimaryAddress = function(primaryAddress) {
+      //add to cookies
+
+    };
+
     /*$scope.updateBilling = function(form, address) {
       console.log(form);
       console.log(address);

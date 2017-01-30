@@ -6,14 +6,13 @@ angular.module('passportApp')
     $scope.isAdmin = Auth.isAdmin();
     $scope.isLoggedIn = Auth.isLoggedIn();
 
+    $scope.currentOrder = {};
+
     //ngCart.setTaxRate(7.5);
     //ngCart.setShipping(2.99);
 
-    OrderService.getOrder($stateParams.id).then(function(Order) {
-      $scope.currentProduct = Order;
-      $scope.previewImage = Order.displayPicture;
-
-
+    OrderService.getOrder($stateParams.id).then(function(order) {
+      $scope.currentOrder = order;
     });
 
     $scope.releaseOrder = function() {

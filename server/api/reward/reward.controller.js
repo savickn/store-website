@@ -8,19 +8,19 @@
 var _ = require('lodash');
 var Reward = require('./reward.model');
 
+function addLeadingZeroes(number) {
+  var num = number.toString();
+  while(num.length < 8) {
+    num = "0" + num;
+  };
+  return num;
+};
+
 // Creates a new product in the DB.
 exports.create = function(req, res) {
-  function addleadingzeroes(number) {
-    var num = number.toString();
-    while(num.length < 8) {
-      num = "0" + num;
-    };
-    return num;
-  };
-
   Reward.count({}, function(err, count) {
-    var number = count + 1; 
-    var cardNumber = addleadingzeroes(number);
+    var number = count + 1;
+    var cardNumber = addLeadingZeroes(number);
 
     var reward = {
       cardNumber: cardNumber,
@@ -28,7 +28,6 @@ exports.create = function(req, res) {
     };
 
     Reward.create(reward, function(err, reward) {
-      res.header('dubug', cardNumber);
       if(err) { return handleError(res, err); }
       return res.status(201).json(reward);
     });

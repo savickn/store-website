@@ -1,24 +1,21 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('LoginCtrl', function ($scope, Auth, $location, $window, FlashService) {
+  .controller('LoginController', function ($scope, $state, Auth, $location, $window, FlashService, AlertService) {
     $scope.user = {};
     $scope.errors = {};
 
-    $scope.login = function(form) {
+    $scope.login = function(form, user) {
       $scope.submitted = true;
 
       if(form.$valid) {
         Auth.login({
-          email: $scope.user.email,
-          password: $scope.user.password
-        })
-        .then( function() {
-          // Logged in, redirect to home
+          email: user.email,
+          password: user.password
+        }).then( function() {
           FlashService.setMessage('You have successfully logged into your account.', 'Success');
-          $location.path('/');
-        })
-        .catch( function(err) {
+          $state.go('main');
+        }).catch( function(err) {
           err = err.data;
           $scope.errors = {};
 

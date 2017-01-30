@@ -1,7 +1,6 @@
 h2 Rewards
 
-.alert(ng-if="message" ng-class="{'alert-success': type === 'Success', 'alert-danger': type === 'Error', 'alert-warning': type === 'Warning'}") {{message}}
-	//span.glyphicon.glyphicon-remove(ng-click="$parent.alertService.clearAlert()")
+alert-message
 
 .rewards(ng-if="user.reward")
 	p Card Number: {{user.reward.cardNumber}}

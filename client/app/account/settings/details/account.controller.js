@@ -2,8 +2,6 @@
 
 angular.module('passportApp')
   .controller('AccountCtrl', function ($scope, AlertService, UserService, Auth, DataService, $state) {
-    $scope.user = Auth.getCurrentUser();
-
     $scope.errors = {};
     $scope.userUpdates = {
       email: $scope.user.email,
@@ -11,16 +9,12 @@ angular.module('passportApp')
       promotionalEmails: $scope.user.promotionalEmails
     };
 
-    //$scope.addressType = $state.params.type;
-
 		$scope.updateUser = function(form, userId, userUpdates) {
       $scope.submitted = true
 
       if(form.$valid && form.$dirty) {
         UserService.updateUser(userId, userUpdates).then(function(user) {
           $scope.user = user;
-          //$scope.userUpdates = {};
-          Auth.setCurrentUser(user);
           $scope.submitted = false;
           AlertService.setAlert("Your account was successfully updated.", "Success");
           //$state.go('settings.account');
@@ -50,11 +44,6 @@ angular.module('passportApp')
           $scope.message = '';
         });
       }
-    };
-
-    $scope.setAsPrimaryAddress = function(primaryAddress) {
-      //add to cookies
-
     };
   });
 
@@ -103,6 +92,3 @@ angular.module('passportApp')
       }
       $scope.updateUser(form, userId, $scope.userUpdates);
     }*/
-
-
-

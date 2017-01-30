@@ -100,6 +100,15 @@ angular.module('passportApp')
       },
 
       resetPassword: function(newPassword, confirmPassword, callback) {
+        return UserService.requestReset(currentUser._id, {
+          oldPassword: oldPassword,
+          newPassword: newPassword
+        }).then(function(user) {
+          return cb(user);
+        }).catch(function(err) {
+          return cb(err);
+        });
+
 
       },
 
@@ -173,6 +182,14 @@ angular.module('passportApp')
 
       updateWishlist: function(wishlist) {
         currentUser.wishlist = wishlist;
+      },
+
+      /*
+      * for handling user's order history
+      */
+
+      getOrders: function() {
+        return currentUser.orders;
       },
 
       /*

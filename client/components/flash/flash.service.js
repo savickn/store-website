@@ -1,20 +1,30 @@
 'use strict';
 
 angular.module('passportApp')
-.factory("FlashService", function($rootScope) {
+.factory("FlashService", function($rootScope, $timeout) {
   var queue = [];
-  var currentMessage = "";
+  var currentMessage = {};
 
   $rootScope.$on("$routeChangeSuccess", function() {
-    currentMessage = queue.shift() || "";
+    currentMessage = queue.shift() || {};
+    $timeout(() => {
+      currentMessage = {};
+    }, 10000)
   });
 
   return {
-    setMessage: function(message) {
-      queue.push(message);
-    },
     getMessage: function() {
       return currentMessage;
+    },
+    setMessage: function(message, type) {
+      var msg = {
+        message: message,
+        type: type
+      };
+      queue.push(msg);
+    },
+    clearMessage: function() {
+      currentMessage = {};
     }
   };
 });

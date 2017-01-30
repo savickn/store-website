@@ -2,35 +2,36 @@
 .container
   .row
     .col-sm-12
-      h1 Login
+      h2 Login
 
     .col-sm-12
-      form.form(name='loginForm' ng-submit='login(loginForm)' novalidate)
+      form.form(name='loginForm' ng-submit='login(loginForm, user)' novalidate)
         .form-group(ng-class='{ "has-success": loginForm.email.$valid && submitted, "has-error": loginForm.email.$invalid && submitted }')
-          label Email
-          input.form-control(type='email' name='email' ng-model='user.email' mongoose-error='' required)
+          label(for="email") Email
+          input.form-control(type='email' name='email' ng-model='user.email' pattern="[A-Za-z0-9]+@([A-Za-z])+(\\.[A-Za-z]+)+" required)
           p.help-block(ng-show='loginForm.email.$error.required && submitted')
-            | Please enter an email address.          
-          p.help-block(ng-show='loginForm.email.$error.email && submitted')
+            | Please enter an email address.
+          p.help-block(ng-show='loginForm.email.$error.pattern && submitted')
             | This email address is not in the correct format. Please enter an email address in the format 'example@example.com'.
           p.help-block(ng-show='loginForm.email.$error.mongoose')
             | {{ errors.email }}
-        
+
         .form-group(ng-class='{ "has-success": loginForm.password.$valid && submitted, "has-error": loginForm.password.$invalid && submitted }')
-          label Password
+          label(for="password") Password
           input.form-control(type='password' name='password' ng-model='user.password' ng-minlength='3' mongoose-error='' required)
-          p.help-block(ng-show='(loginForm.password.$error.minlength || signupForm.password.$error.required) && submitted')
+          p.help-block(ng-show='loginForm.password.$error.minlength && submitted')
             | Password must be at least 3 characters.
           p.help-block(ng-show='loginForm.password.$error.mongoose')
             | {{ errors.password }}
-
 
         div
           button.btn.btn-inverse.btn-lg.btn-login(type='submit')
             | Login
           = ' '
-          a.btn.btn-default.btn-lg.btn-register(href='/signup')
+          a.btn.btn-default.btn-lg.btn-register(ui-sref='signup')
             | Register
+          a(ui-sref="forgotPassword")
+            | Forgot your password?
 
         hr
 
@@ -46,4 +47,3 @@
           a.btn.btn-twitter(href='' ng-click='loginOauth("twitter")')
             i.fa.fa-twitter
             |  Connect with Twitter
-  hr

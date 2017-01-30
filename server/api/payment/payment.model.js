@@ -4,8 +4,8 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var PaymentSchema = new Schema({
-  user: 	{ 	
-    type: Schema.Types.ObjectId, 
+  user: 	{
+    type: Schema.Types.ObjectId,
     ref: 'User'
   },
   cardType: {
@@ -24,7 +24,7 @@ var PaymentSchema = new Schema({
   expiryDate: {
     type: Date,
     required: "You must provide your credit card's expiry date"
-  } //should expire at the end of the provided month
+  }
 });
 
 /*
@@ -34,21 +34,27 @@ var PaymentSchema = new Schema({
 PaymentSchema
   .path('cardNumber')
   .validate(function(cardNumber) {
-    /*switch(this.cardType) {
+    var cardValidation = {
+      'MasterCard': 5,
+      'Visa': 4,
+      'American Express': 3
+    };
+    switch(this.cardType) {
       case 'MasterCard':
-        cardNumber.toString().match('//');
-        //should start with 5 and be 16 digits
+        return cardNumber.toString().match(/^5([0-9]{15})$/);
 
       case 'Visa':
-        //should start with 4 and be 16 digits
+        return cardNumber.toString().match(/^4([0-9]{15})$/);
 
       case 'American Express':
-        //should start with 3 and be 16 digits
+        return cardNumber.toString().match(/^3([0-9]{15})$/);
 
       default:
+        return false;
+    }
+  }, "The card number you provided is incorrect.")
 
-    }*/
-  }, 'The card number you provided does not match the type of card you selected.')
+//"The card number you provided is incorrect. ${payment.cardType} numbers start with ${cardValidation[this.cardType]}"
 
 PaymentSchema
   .path('cardNumber')
@@ -59,7 +65,7 @@ PaymentSchema
 PaymentSchema
   .path('expiryDate')
   .validate(function(expiryDate) {
-    //check that the card is not expired
+    return expiryDate > Date.now() ? true : false;
   }, 'The card number you provided is already expired.')
 
 /*
@@ -67,7 +73,6 @@ PaymentSchema
 */
 
 PaymentSchema.pre('save', function(next) {
-  //console.log(this);
   mongoose.model('User').findByIdAndUpdate(this.user, {$addToSet: {paymentMethods: this._id}}, function(err, user) {
     if(err) next(err);
     next();
@@ -75,7 +80,6 @@ PaymentSchema.pre('save', function(next) {
 })
 
 PaymentSchema.pre('remove', function(next) {
-  //console.log(this);
   mongoose.model('User').findByIdAndUpdate(this.user, {$pull: {paymentMethods: this._id}}, function(err, user) {
     if(err) next(err);
     next();
@@ -116,10 +120,6 @@ PaymentSchema
     return this.expiryDate.getYear();
   })
 
-
-
-
-
 PaymentSchema.set('toJSON', {virtuals: true});
 
 module.exports = mongoose.model('PaymentMethod', PaymentSchema);
@@ -136,7 +136,7 @@ mongoose.model(self.productType).findOne({_id: self.product}, function(err, prod
     } else {
       next(err);
     }
-  }); 
+  });
 
 */
 

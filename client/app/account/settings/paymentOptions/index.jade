@@ -4,8 +4,8 @@ ul.list-group
 	li.list-group-item(ng-repeat="payment in paymentMethods")
 		p {{payment.cardType}}
 		p {{payment.cardNumber}}
-		button.btn.btn-primary(ng-click="removePaymentMethod(payment._id)" ng-if="isOwner(payment.user)") Remove
+		button.btn.btn-primary(ng-click="removePaymentMethod(payment)" ng-if="isOwner(payment.user)") Remove
 
-a(ui-sref="settings.paymentOptions.new") Add a new payment method
+a.btn.btn-primary(ui-sref="settings.paymentOptions.new") Add a new payment method
 
 ui-view

@@ -8,12 +8,23 @@ var mongoose = require('mongoose'),
 var OrderSchema = new Schema({
 	customer: {
 		type: Schema.Types.ObjectId,
-		ref: 'User'
+		ref: 'User',
+    required: true
 	},
+  giftee: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  }
 	products: [{
 		type: Schema.Types.ObjectId,
 		ref: 'Product',
-		index: true
+		index: true,
+    validate: {
+			validator: function(arr) {
+				return arr.length >= 1;
+			},
+			message: 'An order must contain at least one product.'
+		}
 	}],
 	status: {
 		type: String,
@@ -118,7 +129,7 @@ OrderSchema.methods = {
 
 	},
 	markAsDelivered: function() {
-
+    //should remove item from giftee's wishlist at this point
 	}
 
 };

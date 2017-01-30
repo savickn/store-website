@@ -19,22 +19,20 @@ exports.search = function(req, res) {
   var searchObj = req.query.search;
   var pageObj = req.query.pagination;
 
-  /*var orderCount = 0;
   Order.count(searchObj, function(err, count) {
     if(err) { return handleError(res, err); }
-    orderCount = count;
-  });*/
+    var orderCount = count;
 
-  var query = Order.find(searchObj).populate('customer', '-salt -hashedPassword').populate('products');
+    var query = Order.find(searchObj).populate('customer', '-salt -hashedPassword').populate('products');
 
-  if(pageObj.page && pageObj.perPage) {
-    query = query.skip((pageObj.page-1) * pageObj.perPage)
-                 .limit(pageObj.perPage);
-  }
-
-  Order.find(searchObj, function (err, orders) {
-    if(err) { return handleError(res, err); }
-    return res.status(200).header('total-orders', orders.length).json(orders);
+    if(pageObj.page && pageObj.perPage) {
+      query = query.skip((pageObj.page-1) * pageObj.perPage)
+                   .limit(pageObj.perPage);
+    }
+    Order.find(searchObj, function (err, orders) {
+      if(err) { return handleError(res, err); }
+      return res.status(200).header('total-orders', orderCount).json(orders);
+    });
   });
 };
 
@@ -48,7 +46,7 @@ exports.index = function(req, res) {
 
 // Get a single order
 exports.show = function(req, res) {
-  Order.findById(req.params.id, function (err, Order) {
+  Order.findById(req.params.id, function (err, order) {
     if(err) { return handleError(res, err); }
     return res.json(order);
   });
@@ -68,14 +66,13 @@ exports.create = function(req, res) {
     status: 'Awaiting Pre-Auth',
     orderDate: Date.now()
   };
-
   Order.count({}, function(err, count) {
     var number = count + 1;
     defaultObj.orderNumber = addLeadingZeroes(number);
 
     var order = _.merge(defaultObj, req.body);
     console.log(order);
-    Order.create(order, function(err, Order) {
+    Order.create(order, function(err, order) {
       if(err) { return handleError(res, err); }
       return res.status(201).json(order);
     });
@@ -88,7 +85,7 @@ exports.update = function(req, res) {
   Order.findById(req.params.id, function (err, order) {
     if (err) { return handleError(res, err); }
     if(!order) { return res.status(404).send('Not Found'); }
-    var updated = _.merge(Order, req.body);
+    var updated = _.merge(order, req.body);
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
       return res.status(200).json(order);

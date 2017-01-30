@@ -55,7 +55,7 @@ angular.module('passportApp')
           type: 'Shipping'
         }
       })*/
-      
+
 
       .state('settings.paymentOptions', {
         url: '/paymentOptions',
@@ -81,8 +81,8 @@ angular.module('passportApp')
         authenticate: true
       })
       .state('settings.orderHistory', {
-        url: '/orders',
-        templateUrl: 'app/account/settings/orders/index.html',
+        url: '/orderHistory',
+        templateUrl: 'app/account/settings/orders/history.html',
         controller: 'HistoryCtrl',
         authenticate: true
       })

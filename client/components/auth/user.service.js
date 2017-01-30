@@ -2,22 +2,22 @@
 
 angular.module('passportApp')
   .factory('UserService', function (Restangular) {
-    
-    var restAngular = 
+
+    var restAngular =
       Restangular.withConfig(function(RestangularConfigurer) {
         RestangularConfigurer.setFullResponse(true);
         //.setBaseUrl('api');
-      }); 
+      });
 
     return {
       searchUsers: function(query) {
         return Restangular.all('users').customGET('search', query);
       },
       getUsers: function() {
-        return Restangular.all('users').getList(); 
+        return Restangular.all('users').getList();
       },
       getUser: function(userId) {
-        return Restangular.one('users', userId).get(); 
+        return Restangular.one('users', userId).get();
       },
       addUser: function(user) {
         return Restangular.all('users').post(user);
@@ -29,19 +29,16 @@ angular.module('passportApp')
         return Restangular.one('users', userId).remove();
       },
 
-
-
       getMe: function() {
         return Restangular.one('users', 'me').get();
       },
       changePassword: function(userId, newPass) {
         return Restangular.one('users', userId).customPUT(newPass, 'password');
       },
-
-
-      send: function() {
-        return Restangular.all('users').get('email');
+      requestReset: function(userId) {
+        return Restangular.one('users', userId).customGET('reset');
       },
+      
       sendEmail: function(data) {
         return Restangular.all('users').customGET('email', data);
       }

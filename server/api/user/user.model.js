@@ -89,11 +89,9 @@ var UserSchema = new Schema({
   github: {}
 });
 
-
 /**
  * Virtuals
  */
-
 
 UserSchema
   .virtual('numberOfPurchases')
