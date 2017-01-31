@@ -102,7 +102,11 @@ UserSchema
 UserSchema
   .virtual('amountSpent')
   .get(function() {
-    //add up all orders
+    var amountSpent = 0;
+    this.products.forEach(function(product) {
+      amountSpent += product.price;
+    })
+    return amountSpent;
   })
 
 //formats phoneNumber so that it looks nice
@@ -110,10 +114,11 @@ UserSchema
   .virtual('formattedNumber')
   .get(function() {
     var phone_number = "";
-    for(let char of this.phoneNumber)
+    for(let char of this.phoneNumber) {
       if(/[0-9]/.test(char)) {
         phone_number.concat(char);
       }
+    }
     return phone_number;
   })
 

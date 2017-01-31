@@ -4,9 +4,9 @@
 angular.module('passportApp')
   .config(function ($stateProvider) {
     $stateProvider
-      .state('keyboards', {
+      .state('products.keyboards', {
         url: '/keyboards',
         templateUrl: 'app/keyboard/index.html',
-        controller: 'KeyboardCtrl'
-      });
+        controller: 'KeyboardCollectionCtrl'
+      })
   });

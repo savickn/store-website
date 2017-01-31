@@ -18,7 +18,8 @@ var fs = require('fs');
 var path = require('path');
 
 var sendWelcomeEmail = function(req, res, cb) {
-  var transporter = nodemailer.createTransport('smtps://${env.HOME_EMAIL}:${env.PASSWORD}@smtp.gmail.com');
+  var smtpString = 'smtps://' + env.HOME_EMAIL + ':' + env.PASSWORD + '@smtp.gmail.com';
+  var transporter = nodemailer.createTransport(smtpString);
 
   var templateDir = path.join(__dirname, '..', '..', 'templates', 'welcome-email');
   var welcomeEmail = new EmailTemplate(templateDir);
@@ -27,8 +28,8 @@ var sendWelcomeEmail = function(req, res, cb) {
   welcomeEmail.render(data, function (err, result) {
     if(err) cb(err);
     var mailOptions = {
-      from: '${env.HOME_EMAIL}',
-      to: '${env.RECEIVER_EMAIL}',
+      from: env.HOME_EMAIL,
+      to: env.RECEIVER_EMAIL,
       //to: req.body.email,
       subject: 'Welcome',
       text: result.text,
@@ -85,7 +86,7 @@ exports.create = function (req, res) {
     Wishlist.create({user: user._id}, function(err, wishlist) {
       if(err) return res.status(500).send(err);
 
-      sendWelcomeEmail(req, res, function(err) {
+      sendWelcomeEmail(req, res, function(err, info) {
         if(err) return res.status(500).send(err);
         var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
         return res.json({ token: token });

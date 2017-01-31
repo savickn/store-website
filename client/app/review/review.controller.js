@@ -48,7 +48,6 @@ angular.module('passportApp')
       });
 
       if(idx >= 0) {
-        console.log('hello');
         review.upvotes.splice(idx, 1);
         $scope.updateReview(review);
       }
@@ -68,6 +67,6 @@ review.upvotes.forEach(function(upvote) {
           if(upvote.authorId === Auth.getCurrentUser()._id) {
             return true;
             //$scope.reviewError = "You cannot upvote a review more than once";
-          } 
+          }
         });
 */

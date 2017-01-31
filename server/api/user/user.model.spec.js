@@ -3,17 +3,19 @@
 var should = require('should');
 var app = require('../../app');
 var User = require('./user.model');
+var UserFactory = require('./user.factory.js');
 
 var user = new User({
   provider: 'local',
   name: 'Fake User',
+  phoneNumber: '4365675433',
   email: 'test@test.com',
   password: 'password'
 });
 
 describe('User Model', function() {
+  //clears users from db
   before(function(done) {
-    // Clear users before testing
     User.remove().exec().then(function() {
       done();
     });
@@ -49,6 +51,34 @@ describe('User Model', function() {
       done();
     });
   });
+
+  it('should fail if the email is improperly formatted', function(done) {
+    user.email = 'test';
+    user.save(function(err) {
+      should.exist(err);
+      done();
+    })
+  })
+
+  it('should fail if the phone number is improperly formatted', function(done) {
+    user.phoneNumber = '1235';
+    user.save(function(err) {
+      should.exist(err);
+      done();
+    })
+  })
+
+  it('should should have virtual property NumberOfPurchases', function(done) {
+    user.save(function(err, user) {
+      should.exist(user.numberOfPurchases);
+      done();
+    })
+  })
+
+
+
+
+
 
   it("should authenticate user if password is valid", function() {
     return user.authenticate('password').should.be.true;

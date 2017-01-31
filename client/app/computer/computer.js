@@ -19,7 +19,7 @@ angular.module('passportApp')
           }
         }
       })
-      .state('newProduct.computer', {
+      /*.state('newProduct.computer', {
         url: '/computer',
         templateUrl: 'app/computer/new.html',
         controller: 'ComputerUploadCtrl',
@@ -27,7 +27,7 @@ angular.module('passportApp')
           type: 'Computer'
         },
         authenticate: true
-      })
+      })*/
 
       .state('newcomputer', {
         url: '/products/computers/new',

@@ -6,5 +6,7 @@ module.exports = {
   // MongoDB connection options
   mongo: {
     uri: 'mongodb://localhost/passport-test'
-  }
+  },
+
+  seedDB: false
 };
