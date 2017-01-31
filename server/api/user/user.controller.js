@@ -4,6 +4,7 @@ var User = require('./user.model');
 var Wishlist = require('../wishlist/wishlist.model');
 var Reward = require('../reward/reward.model');
 var config = require('../../config/environment');
+var env = require('../../config/local.env.js');
 
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
@@ -16,9 +17,8 @@ var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
 
-//working
 var sendWelcomeEmail = function(req, res, cb) {
-  var transporter = nodemailer.createTransport('smtps://kingn3gu5%40gmail.com:YaNeCk7799@smtp.gmail.com');
+  var transporter = nodemailer.createTransport('smtps://${env.HOME_EMAIL}:${env.PASSWORD}@smtp.gmail.com');
 
   var templateDir = path.join(__dirname, '..', '..', 'templates', 'welcome-email');
   var welcomeEmail = new EmailTemplate(templateDir);
@@ -27,8 +27,8 @@ var sendWelcomeEmail = function(req, res, cb) {
   welcomeEmail.render(data, function (err, result) {
     if(err) cb(err);
     var mailOptions = {
-      from: 'kingn3gu5@gmail.com',
-      to: 'nsavickas988@hotmail.com',
+      from: '${env.HOME_EMAIL}',
+      to: '${env.RECEIVER_EMAIL}',
       //to: req.body.email,
       subject: 'Welcome',
       text: result.text,
@@ -200,14 +200,14 @@ exports.email = function(req, res) {
   var transporter = nodemailer.createTransport(smtpTransport({
       service: 'gmail',
       auth: {
-          user: 'kingn3gu5@gmail.com', // Your email id
-          pass: 'YaNeCk7799' // Your password
+          user: '${env.HOME_EMAIL}', // Your email id
+          pass: '${env.PASSWORD}' // Your password
       }
   }));
 
   var mailOptions = {
-    from: 'kingn3gu5@gmail.com',
-    to: 'nsavickas988@hotmail.com',
+    from: '${env.HOME_EMAIL}',
+    to: '${env.RECEIVER_EMAIL}',
     subject: 'Welcome',
     text: 'Hello Guy',
     html:'<b>Hello world ✔</b>'

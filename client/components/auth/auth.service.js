@@ -100,6 +100,8 @@ angular.module('passportApp')
       },
 
       resetPassword: function(newPassword, confirmPassword, callback) {
+        var cb = callback || angular.noop;
+
         return UserService.requestReset(currentUser._id, {
           oldPassword: oldPassword,
           newPassword: newPassword
@@ -108,8 +110,6 @@ angular.module('passportApp')
         }).catch(function(err) {
           return cb(err);
         });
-
-
       },
 
       /**

@@ -14,7 +14,7 @@ var OrderSchema = new Schema({
   giftee: {
     type: Schema.Types.ObjectId,
     ref: 'User'
-  }
+  },
 	products: [{
 		type: Schema.Types.ObjectId,
 		ref: 'Product',
@@ -125,11 +125,19 @@ OrderSchema.methods = {
 	attemptPreAuth: function() {
 
 	},
+  attemptProcessPayment: function() {
+
+  },
 	markAsShipped: function() {
 
 	},
 	markAsDelivered: function() {
+    this.status = 'Delivered';
     //should remove item from giftee's wishlist at this point
+    mongoose.model('Wishlist').findByIdAndUpdate(this.giftee, {$pull: {products: this.products}}, function(err, wishlist) {
+      if(err) console.log(err);
+      console.log(wishlist);
+    });
 	}
 
 };
