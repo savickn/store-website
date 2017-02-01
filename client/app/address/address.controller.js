@@ -25,6 +25,15 @@ angular.module('passportApp')
 
     };
 
+    $scope.updateBilling = function(form, address, cb) {
+      Auth.setBillingAddress(address);
+      return Auth.updateUser().then(function(user) {
+        cb(user);
+      }).catch(function(err) {
+        cb(err);
+      })
+    }
+
     /*$scope.updateBilling = function(form, address) {
       console.log(form);
       console.log(address);

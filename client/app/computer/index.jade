@@ -2,21 +2,6 @@
 ///////////////////////////////////////////////////////////// BANNER CONTENT
 
 .container
-  .row
-    .col-lg-2
-      .sort.pull-right(uib-dropdown)
-        button.btn.btn-default(type="button" uib-dropdown-toggle) Sort
-          span.caret
-        ul(uib-dropdown-menu)
-          li
-            a(href="#" ng-click="sortType = 'price'; sortReverse = false") Price: Low to High
-          li
-            a(href="#" ng-click="sortType = 'price'; sortReverse = true") Price: High to Low
-          li
-            a(href="#" ng-click="sortType = 'name'; sortReverse = false") Name: A-Z
-          li
-            a(href="#" ng-click="sortType = 'name'; sortReverse = true") Name: Z-A
-
 
   /////////////////////////////// SEARCH SIDEBAR ///////////////////////////////
 
@@ -58,7 +43,7 @@
                       span.glyphicon.glyphicon-unchecked(ng-if="!this[field + '-checked']")
                       span.glyphicon.glyphicon-check(ng-if="this[field + '-checked']")
 
-              li(uib-dropdown)
+              //li(uib-dropdown)
                 a(href="#" uib-dropdown-toggle) Other
                 ul(role="menu" uib-dropdown-menu ng-click="$event.stopPropagation()")
                   li
@@ -75,22 +60,36 @@
                       span.glyphicon.glyphicon-check(ng-if="onlineOnlyTag" ng-value="filterExpr.onlineOnly = true")
 
 
-
     /////////////////////////////// PRODUCTS DISPLAY ///////////////////////////////
 
 
     .col-lg-9
+      .sort.pull-right(uib-dropdown)
+        button.btn.btn-default(type="button" uib-dropdown-toggle) Sort
+          span.caret
+        ul(uib-dropdown-menu)
+          li
+            a(href="#" ng-click="sortType = 'price'; sortReverse = false") Price: Low to High
+          li
+            a(href="#" ng-click="sortType = 'price'; sortReverse = true") Price: High to Low
+          li
+            a(href="#" ng-click="sortType = 'name'; sortReverse = false") Name: A-Z
+          li
+            a(href="#" ng-click="sortType = 'name'; sortReverse = true") Name: Z-A
+
+
       .product-container-flexbox
-        .product-flexbox(dir-paginate="computer in availableComputers | priceFilter : priceExpr | productFilter : filterExpr | orderBy : sortType : sortReverse | itemsPerPage: pageSize" total-items="totalComputers" current-page="currentPage")
+        .product-flexbox(dir-paginate="product in availableProducts | priceFilter : priceExpr | productFilter : filterExpr | orderBy : sortType : sortReverse | itemsPerPage: pageSize"
+          total-items="totalProducts" current-page="currentPage")
           .flex-item
-            img(src='{{computer.displayPicture.path}}' width='150' height='150' ng-if='computer.displayPicture')
-            img(src='no_image.jpg' width='150' height='150' ng-if='!computer.displayPicture')
+            img(src='{{product.displayPicture.path}}' width='150' height='150' ng-if='product.displayPicture')
+            img(src='no_image.jpg' width='150' height='150' ng-if='!product.displayPicture')
           .flex-item
-            a.text-center(href="/products/computers/{{computer._id}}") {{computer.name}}
+            a.text-center(ui-sref="show{{pageType}}({id: product._id})") {{product.name}}
           .flex-item
-            p.text-center Price: {{computer.price}}
+            p.text-center Price: {{product.price}}
           .flex-item
-            ngcart-addtocart.center-block(id="{{ computer._id }}" name="{{ computer.name }}" price="{{ computer.price }}" quantity="1" quantity-max="30" data="computer") Add to Cart
+            ngcart-addtocart.center-block(id="{{product._id}}" name="{{product.name}}" price="{{product.price}}" quantity="1" quantity-max="30" data="product") Add to Cart
 
 
   ///////////////////////////////  PAGINATION ///////////////////////////////

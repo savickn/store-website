@@ -5,5 +5,4 @@ angular.module('passportApp')
     //$scope.Model = $scope.Model || {Name : "xxx"};
     $scope.errors = {};
     $scope.user = Auth.getCurrentUser();
-    $scope.myWishlist = Auth.getWishlist();
   });

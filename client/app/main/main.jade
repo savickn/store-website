@@ -4,16 +4,19 @@ header#banner.hero-unit
     p.lead Purchase state-of-the-art electronics for discounted prices.
 
 .container
-  .row
-    .col-lg-4
+  .wrappable-flex-row
+    .flex-elem
       a(href='/products/computers')
         img.center(src='computer.jpg' height='200' width='200')
       p.center Computers
-    .col-lg-4
+    .flex-elem
       a(href='/products/keyboards')
         img.center(src='keyboard.jpg' height='200' width='200')
       p.center Keyboards
-    .col-lg-4
+
+
+
+    //.col-lg-4
       a(ui-sref='products.test')
         img.center(src='no_image.jpg' height='200' width='200')
       p.center Test

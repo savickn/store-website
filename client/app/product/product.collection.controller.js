@@ -7,34 +7,21 @@ angular.module('passportApp')
     //work on page anchors
 
     $scope.isAdmin = Auth.isAdmin();
-
-    $scope.errorMessages = "";
-    $scope.validationErrors = {};
+    //$scope.pageType = $state.params.type;
+    console.log($state.params);
+    //$scope.pageType = $state.params.type;
 
     $scope.availableProducts = [];
-
-    $scope.brands = [];
-
     $scope.searchableCategories = [];
 
-    /*$scope.searchableCategories = [{
-        name: 'hello',
-        list: ['aaa', 'bbb', 'ccc']
-      }, {
-        name: 'world',
-        list: ['ddd', 'eee', 'fff']
-      }
-    ];*/
+    //////////////////////////// PAGINATION /////////////////////////////////////
 
-    ///////////////////////////////////////////////////////////////////////////
-    
-    //PAGINATION
     $scope.paginationOptions = [1, 10, 25, 50];
     $scope.currentPage = 1;
-    $scope.totalProducts = 0;
     $scope.pageSize = 10;
+    $scope.totalProducts = 0;
     getResultsPage($scope.currentPage, $scope.pageSize);
-    
+
     $scope.pageChanged = function(newPage) {
       getResultsPage(newPage, $scope.pageSize);
     }
@@ -43,49 +30,27 @@ angular.module('passportApp')
       $scope.pageSize = newSize;
     }
 
+    ///////////////////////// Getting and Modifying Data ///////////////////////
+
     function getResultsPage(pageNumber, pageSize) {
       var options = {
         page: pageNumber,
         perPage: pageSize
       };
-      ProductService.searchProducts(options).then(function(response) {
-        $scope.availableProducts = response.data;   
-        $scope.totalProducts = response.headers('total-Products');
+      ComputerService.getComputers(options).then(function(response) {
+        $scope.availableProducts = response.data;
+        $scope.totalProducts = response.headers('total-Computers');
         getProductInfo(response.data);
       });
     }
 
-    /////////////////////////////////////////////////////////////////////////////
-
-    //SEARCHING + SORTING
-    $scope.sortType = 'name';
-    $scope.sortReverse = false;
-
-    $scope.filterExpr = {
-      brand: []
-    };
-
-    $scope.priceExpr = {
-      minPrice: 1,
-      maxPrice: 10000
-    };
-
-    $scope.getSearch = function(filterExpr) {
-      ProductService.searchProducts(filterExpr).then(function(products) {
-        $scope.availableProducts = products;
-        getInfo(products);
-        getProductInfo(products);
-      });
-    };
-
-    ///////////////////////////////////////////////////////////////////
-
     function getProductInfo(products) {
+      $scope.searchableCategories = [];
       products[0].searchableCategories.forEach(function(category) {
-        $scope.filterExpr[category] = [];
-
-        console.log(category);
-        console.log($scope.filterExpr[category]);
+        category = category.toLowerCase();
+        if(!$scope.filterExpr[category]) {
+          $scope.filterExpr[category] = []; //used to dynamically add fields to the filterExpr
+        }
 
         var obj = {};
         obj.name = category;
@@ -99,27 +64,61 @@ angular.module('passportApp')
       });
     };
 
-    //populates page data
-    function getInfo(products) {
-      products.forEach(function(product) {
-        $scope.brands.pushUnique(product.brand);
+    //used to update the search filter using the dynamic search navbar
+    $scope.updateFilter = function(state, category, value) {
+      console.log(state);
+      console.log(category);
+      console.log(value);
+      if(state === true) {
+        $scope.filterExpr[category].pushUnique(value);
+      } else {
+        $scope.filterExpr[category].remove(value);
+      }
+    }
+
+    //////////////////////// SEARCHING + SORTING ////////////////////////////////
+
+    $scope.sortType = 'name';
+    $scope.sortReverse = false;
+
+    $scope.filterExpr = {};
+
+    $scope.priceExpr = {
+      minPrice: 1,
+      maxPrice: 10000
+    };
+
+    $scope.getSearch = function(filterExpr) {
+      ComputerService.searchComputers(filterExpr).then(function(computers) {
+        $scope.availableComputers = computers;
+        getProductInfo(computers);
       });
     };
 
+    ///////////////////// PRICE SLIDER ////////////////////////////////////
 
-    ///////////////////////////////////////////////////////////////////////
+    $scope.slider = {
+      options: {
+        floor: 1,
+        ceil: 1000,
+        step: 1
+      }
+    };
 
+    //call this if slider is hidden when page loads
+    $scope.refreshSlider = function() {
+      $timeout(function () {
+        $scope.$broadcast('rzSliderForceRender');
+      });
+    };
+
+    ///////////////////// DELETE Computer /////////////////////////////////
 
     $scope.deleteProduct = function(product) {
-      var idx = $scope.availableProducts.indexOf(product);
-      
       ProductService.removeProduct(product._id).then(function() {
-        $scope.availableProducts.splice(idx, 1);
-      }).catch(function(err) {
-        console.log('error. could not remove product')
+        $scope.availableProducts.remove(product);
       });
     };
-
 
   });
 
@@ -156,9 +155,9 @@ angular.module('passportApp')
     $scope.addComputer = function() {
       !$scope.newComputer.gpu ? 'Not Specified' : $scope.newComputer.gpu;
       !$scope.newComputer.cpu ? 'Not Specified' : $scope.newComputer.cpu;
-      !$scope.newComputer.motherboard ? 'Not Specified' : $scope.newComputer.motherboard; 
+      !$scope.newComputer.motherboard ? 'Not Specified' : $scope.newComputer.motherboard;
 
-      $scope.newComputer.publicFields = ['name', 'description', 'price', 'brand', 'onSale', 
+      $scope.newComputer.publicFields = ['name', 'description', 'price', 'brand', 'onSale',
         'onlineOnly', 'featured', 'cpu', 'gpu', 'motherboard'];
 
       if($scope.computerform.$valid && Auth.isAdmin()) {
@@ -170,8 +169,8 @@ angular.module('passportApp')
             Upload.upload({
               url: '/api/pictures',
               method: 'POST',
-              data: {file: pic, filename: pic.name, contentType: pic.type, size: pic.size,  
-                displayPicture: pic.displayPicture, productType: computer.__t, product: computer._id} 
+              data: {file: pic, filename: pic.name, contentType: pic.type, size: pic.size,
+                displayPicture: pic.displayPicture, productType: computer.__t, product: computer._id}
             }).then(function (response) {
               $timeout(function () {
                 $scope.status = "success";
@@ -183,7 +182,7 @@ angular.module('passportApp')
 
                 newComputer.pictures.push({path: response.path});
                 numberOfPictures -= 1;
-                
+
                 if(numberOfPictures === 0) {
                   //console.log('success');
                   $scope.availableComputers.push(newComputer);

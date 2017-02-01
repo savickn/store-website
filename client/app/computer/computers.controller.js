@@ -1,15 +1,17 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('ComputerCollectionCtrl', function ($scope, $stateParams, $timeout, $location,
-      Auth, Upload, ComputerService, CartService, ngCart) {
+  .controller('ComputerCollectionCtrl', function ($scope, $stateParams, $state, $timeout, $location,
+      Auth, Upload, ComputerService, ProductService, ngCart) {
     //check why $setValidity is not working sometime
     //work on page anchors
-
     $scope.isAdmin = Auth.isAdmin();
+    $scope.pageType = $state.params.type;
+    $scope.filterExpr = {
+      __t: $scope.pageType
+    };
 
-    $scope.availableComputers = [];
-
+    $scope.availableProducts = [];
     $scope.searchableCategories = [];
 
     //////////////////////////// PAGINATION /////////////////////////////////////
@@ -17,7 +19,7 @@ angular.module('passportApp')
     $scope.paginationOptions = [1, 10, 25, 50];
     $scope.currentPage = 1;
     $scope.pageSize = 10;
-    $scope.totalComputers = 0;
+    $scope.totalProducts = 0;
     getResultsPage($scope.currentPage, $scope.pageSize);
 
     $scope.pageChanged = function(newPage) {
@@ -30,16 +32,15 @@ angular.module('passportApp')
 
     ///////////////////////// Getting and Modifying Data ///////////////////////
 
-    function getResultsPage(pageNumber, pageSize) {
+    function getResultsPage(pageNumber, pageSize, filterExpr) {
       var options = {
         page: pageNumber,
         perPage: pageSize
       };
-      ComputerService.getComputers(options).then(function(response) {
-        console.log(response);
-        $scope.availableComputers = response.data;
-        $scope.totalComputers = response.headers('total-Computers');
-        console.log($scope.totalComputers);
+
+      ProductService.searchProducts($scope.filterExpr, options).then(function(response) {
+        $scope.availableProducts = response.data;
+        $scope.totalProducts = response.headers('total-Products');
         getProductInfo(response.data);
       });
     }
@@ -69,7 +70,7 @@ angular.module('passportApp')
       console.log(state);
       console.log(category);
       console.log(value);
-      if(state === true) {
+      if(state) {
         $scope.filterExpr[category].pushUnique(value);
       } else {
         $scope.filterExpr[category].remove(value);
@@ -81,18 +82,14 @@ angular.module('passportApp')
     $scope.sortType = 'name';
     $scope.sortReverse = false;
 
-    $scope.filterExpr = {};
-
     $scope.priceExpr = {
       minPrice: 1,
       maxPrice: 10000
     };
 
     $scope.getSearch = function(filterExpr) {
-      ComputerService.searchComputers(filterExpr).then(function(computers) {
-        $scope.availableComputers = computers;
-        getProductInfo(computers);
-      });
+      var search = _.merge(filterExpr, $scope.priceExpr);
+      getResultsPage($scope.currentPage, $scope.pageSize, search);
     };
 
     ///////////////////// PRICE SLIDER ////////////////////////////////////
@@ -114,19 +111,28 @@ angular.module('passportApp')
 
     ///////////////////// DELETE Computer /////////////////////////////////
 
-    $scope.deleteComputer = function(computer) {
-      var idx = $scope.availableComputers.indexOf(computer);
-
-      ComputerService.removeComputer(computer._id).then(function() {
-        $scope.availableComputers.splice(idx, 1);
+    $scope.deleteProduct = function(product) {
+      ProductService.removeProduct(product._id).then(function() {
+        $scope.availableProducts.remove(product);
       });
     };
-
-    /*$scope.addToCart = function(item) {
-      CartService.addToCart(item);
-    };*/
-
   });
+
+  /*ComputerService.getComputers(options).then(function(response) {
+    $scope.availableProducts = response.data;
+    $scope.totalProducts = response.headers('total-Computers');
+    getProductInfo(response.data);
+  });*/
+
+  /*$scope.getSearch = function(filterExpr) {
+    ComputerService.searchComputers(filterExpr).then(function(computers) {
+      $scope.availableComputers = computers;
+      getProductInfo(computers);
+    });
+  };*/
+
+
+
 
 
 

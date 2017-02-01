@@ -17,31 +17,28 @@ angular.module('passportApp')
 
   	$scope.addPaymentMethod = function(form, newPayment) {
       $scope.submitted = true;
+			newPayment.expiryDate = new Date(newPayment.expiryYear, newPayment.expiryMonth);
+			newPayment.user = Auth.getCurrentUser()._id;
 
-      if(form.$valid) {
-  			newPayment.expiryDate = new Date(newPayment.expiryYear, newPayment.expiryMonth);
-  			newPayment.user = Auth.getCurrentUser()._id;
+      PaymentService.addMethod(newPayment).then(function(payment) {
+        $scope.submitted = false;
+        $scope.paymentMethods.pushUnique(payment);
+        AlertService.setAlert('Payment Method Added!','Success');
+  			$scope.newPayment = {};
+  		}).catch(function(err) {
+        err = err.data;
+        $scope.errors = {};
 
-        PaymentService.addMethod(newPayment).then(function(payment) {
-          $scope.submitted = false;
-          $scope.paymentMethods.pushUnique(payment);
-          AlertService.setMessage('Payment Method Added!','Success');
-	  			$scope.newPayment = {};
-	  		}).catch(function(err) {
-          err = err.data;
-          $scope.errors = {};
-
-          angular.forEach(err.errors, function(error, field) {
-            form[field].$setValidity('mongoose', false);
-            $scope.errors[field] = error.message;
-          });
-	  		})
-  		}
+        angular.forEach(err.errors, function(error, field) {
+          form[field].$setValidity('mongoose', false);
+          $scope.errors[field] = error.message;
+        });
+  		})
   	}
 
   	$scope.removePaymentMethod = function(payment) {
   		PaymentService.removeMethod(payment._id).then(function(payment) {
-        AlertService.setMessage('Payment Methods Removed', 'Success');
+        AlertService.setAlert('Payment Methods Removed', 'Success');
         $scope.paymentMethods.remove(payment);
   		}).catch(function(err) {
   			console.log(err);

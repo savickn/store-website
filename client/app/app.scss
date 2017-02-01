@@ -31,7 +31,36 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 .bottom-right {
 	position: absolute;
 	right: 5px;
-	bottom: 5px;	
+	bottom: 5px;
+}
+
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.wrappable-flex-row {
+  @extend .flex-row;
+  flex-wrap: wrap;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.flex-elem {
+  flex: 1 1 0;
+  padding: 5px;
+}
+
+
+.highlightOption {
+	border: -5px solid green;
 }
 
 

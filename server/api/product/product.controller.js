@@ -9,36 +9,31 @@ exports.search = function(req, res) {
     price: {$gt: 0, $lt: 10000000}
   };
 
-  console.log(req.query);
+  var searchObj = _.merge(defaultSearch, req.query.search);
+  console.log(searchObj);
 
-  var searchObj = _.merge(defaultSearch, req.query);
-
-  if(req.query.name) { searchObj.name = new RegExp(req.query.name, "i"); }
-  if(req.query.minPrice >= 0) { searchObj.price['$gt'] = req.query.minPrice; } 
-  if(req.query.maxPrice >= 0) { searchObj.price['$lt'] = req.query.maxPrice; }
+  if(req.query.search.name) { searchObj.name = new RegExp(req.query.search.name, "i"); }
+  if(req.query.search.minPrice >= 0) { searchObj.price['$gt'] = req.query.search.minPrice; }
+  if(req.query.search.maxPrice >= 0) { searchObj.price['$lt'] = req.query.search.maxPrice; }
 
   /*if(req.body.brand.length > 0) { searchObj.brand = {$in: req.body.brand}; }
   if(req.body.motherboard.length > 0) { searchObj.motherboard = {$in: req.body.motherboard}; }
   if(req.body.cpu.length > 0) { searchObj.cpu = {$in: req.body.cpu}; }
   if(req.body.gpu.length > 0) { searchObj.gpu = {$in: req.body.gpu}; }*/
 
-
-  var productCount = 0;
   Product.model.count(searchObj, function(err, count) {
     if(err) { return handleError(res, err); }
-    productCount = count;
-  
+
     var query = Product.model.find(searchObj).populate('displayPicture', '_id contentType path');
 
-    if(req.query.page && req.query.perPage) {
-      query = query.skip((req.query.page-1) * req.query.perPage)
-                   .limit(req.query.perPage);
-    } 
+    if(req.query.pagination.page && req.query.pagination.perPage) {
+      query = query.skip((req.query.pagination.page-1) * req.query.pagination.perPage)
+                   .limit(req.query.pagination.perPage);
+    }
 
     query.exec(function (err, products) {
         if(err) { return handleError(res, err); }
-        //response.computers = computers;
-        return res.status(200).header('total-Products', productCount).json(products);
+        return res.status(200).header('total-Products', count).json(products);
     });
   });
 };

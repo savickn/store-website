@@ -12,7 +12,7 @@ var User = require('../user/user.model');
 
 // Get a single wishlist
 exports.show = function(req, res) {
-  Wishlist.findById(req.params.id).populate('products').exec(function (err, wishlist) {
+  Wishlist.findById(req.params.id).populate('products').populate('user', '-hashedPassword -salt').exec(function (err, wishlist) {
     if(err) { return handleError(res, err); }
     if(!wishlist) { return res.status(404).send('Not Found'); }
     return res.json(wishlist);
@@ -49,7 +49,7 @@ exports.search = function(req, res) {
 
 exports.update = function(req, res) {
   Wishlist.findOneAndUpdate(
-      {_id: req.params.id}, 
+      {_id: req.params.id},
       {$set: {products: req.body.products, private: req.body.private}},
       {new: true}
     )

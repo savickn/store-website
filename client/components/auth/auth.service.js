@@ -112,6 +112,18 @@ angular.module('passportApp')
         });
       },
 
+      /*
+      * Used to update the user
+      */
+
+      updateUser: function(cb) {
+          return UserService.updateUser(currentUser).then(function(user) {
+            cb(user);
+          }).catch(function(err) {
+            cb(err);
+          })
+      },
+
       /**
       ** for handling the authenticated user
       **/

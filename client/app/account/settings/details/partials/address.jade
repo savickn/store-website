@@ -6,7 +6,7 @@
 		h3 Billing Address
 		ns-show-address(address="billingAddress" ng-if="billingAddress | isNotEmpty" ng-show="billingState === 'Default'")
 		ns-add-address(address="billingAddress" type="Billing" state="update" ng-if="billingAddress" ng-show="billingState === 'Edit'")
-		ns-add-address(address="newAddress" type="Billing" state="new" ng-if="!billingAddress" ng-show="billingState === 'New'")
+		ns-add-address(address="newAddress" type="Billing" state="new" ng-if="!(billingAddress | isNotEmpty)" ng-show="billingState === 'New'")
 
 		//ns-add-address(address="billingAddress" type="Billing" cb-func="updateBilling(form, address)" state-func="setBillingState(billingState)" ng-show="billingState === 'New'")
 

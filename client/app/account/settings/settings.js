@@ -76,7 +76,7 @@ angular.module('passportApp')
         templateUrl: 'app/wishlist/show.html',
         controller: 'WishlistCtrl',
         params: {
-          wishlist: {}
+          id: null
         },
         authenticate: true
       })

@@ -1,9 +1,5 @@
 
-.select-address.col-lg-4.col-md-4(ng-repeat="adr in addresses" ng-click="setAddress(adr)" ng-class='{"highlightOption": address === adr}')
-	ns-show-address(address="adr")
-
-
-
-
-
-
+.wrappable-flex-row
+	.select-address.flex-elem(ng-repeat="adr in addresses" ng-click="setAddress(adr)" ng-class='{"highlightOption": address === adr}' ng-if='addresses.length > 0')
+		ns-show-address(address="adr")
+	p.flex-elem(ng-if="addresses.length < 1") You do not have any saved addresses on file. Please click below to add a new address.

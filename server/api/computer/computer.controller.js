@@ -25,8 +25,6 @@ exports.search = function(req, res) {
   if(req.body.featured) { searchObj.featured = req.body.featured; }
   if(req.body.onlineOnly) { searchObj.onlineOnly = req.body.onlineOnly; }
 
-  res.header('debug', searchObj);
-
   var query = Computer.find(searchObj).populate('displayPicture', '_id contentType path');
 
   query.exec(function (err, computers) {
@@ -46,7 +44,7 @@ exports.index = function(req, res) {
     var computerCount = count;
 
     var query = Computer.find(searchObj).populate('displayPicture', '_id contentType path');
-  
+
     if(req.query.page && req.query.perPage) {
       query = query.skip((req.query.page-1) * req.query.perPage)
                    .limit(req.query.perPage);

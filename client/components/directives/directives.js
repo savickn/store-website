@@ -122,7 +122,7 @@ angular.module('passportAppDirectives', [])
 				submitted: '@'
 			},
 			link: function(scope, elem, attrs) {
-				
+
 			}
 		}
 	})
@@ -157,10 +157,6 @@ angular.module('passportAppDirectives', [])
 				type: '@'
 			},
 			link: function(scope, elem, attrs) {
-				//console.log(scope.address);
-				//console.log(scope.addresses);
-				//console.log(scope.type);
-
 				scope.setAddress = function(adr) {
 					scope.address = adr;
 					scope.address.type = scope.type;
@@ -176,9 +172,7 @@ angular.module('passportAppDirectives', [])
 			scope: {
 				address: '='
 			},
-			link: function(scope, elem, attrs) {
-				console.log(scope.address);
-			}
+			link: function(scope, elem, attrs) {}
 		}
 	})
 	//used to add or update a particular ADDRESS that is passed to it
@@ -189,9 +183,9 @@ angular.module('passportAppDirectives', [])
 			scope: {
 				address: '=',
 				type: '@',
-				state: '@'/*,
+				state: '@',
+				cbFunc: '&'/*,
 				formErrors: '=',
-				cbFunc: '&',
 				stateFunc: '&'*/
 			},
 			link: function(scope, elem, attrs) {
@@ -219,12 +213,24 @@ angular.module('passportAppDirectives', [])
 		    	console.log(province);
 		    };
 
-		    /*scope.handleAddress = function(form, address) {
+		    scope.handleAddress = function(form, address) {
 		    	scope.submitted = true;
+					scope.address.type = scope.type;
+		      scope.address.user = Auth.getCurrentUser()._id;
 
 		    	//scope.stateFunc({billingState: 'Default'});
-		    	scope.cbFunc({form: form, address: address});
-		    };*/
+		    	scope.cbFunc({form: form, address: address}).then(function(user) {
+						
+					}).catch(function(err) {
+						err = err.data;
+						scope.errors = {};
+
+						angular.forEach(err.errors, function(error, field) {
+							form[field].$setValidity('mongoose', false);
+							scope.errors[field] = error.message;
+						});
+					})
+		    };
 
 		    scope.addAddress = function(form, address) {
 		      scope.submitted = true;
@@ -255,6 +261,7 @@ angular.module('passportAppDirectives', [])
 		      var addressId = address._id; //used to update currentUser
 		      AddressService.updateAddress(address).then(function(address) {
 						scope.submitted = false;
+						scope.address = address;
 						if(scope.type === 'Billing') {
 							Auth.setBillingAddress(address);
 						}

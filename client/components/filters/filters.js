@@ -23,15 +23,15 @@ angular.module('passportAppFilters', [])
 				}
 
 				for(var i in filterExpr) {
-					if(filterExpr[i] === false) { 
+					if(filterExpr[i] === false) {
 						//console.log('false:' + filterExpr[i]);
-						continue; 
+						continue;
 					}
-					
+
 					if(Array.isArray(filterExpr[i])) {
 						//console.log('Array:' + filterExpr[i]);
-						if(filterExpr[i].length < 1) { 
-							continue; 
+						if(filterExpr[i].length < 1) {
+							continue;
 						} else {
 							fields++;
 							filterExpr[i].forEach(function(value) {
@@ -52,7 +52,7 @@ angular.module('passportAppFilters', [])
 						checkMatch(filterExpr[i], product[i]);
 					}
 				}
-				
+
 				/*console.log(product.name);
 				console.log(fields);
 				console.log(matches);*/
@@ -90,7 +90,18 @@ angular.module('passportAppFilters', [])
             }
             return false;
         };
-    });
+    })
+		.filter('isEmpty', function () {
+	        var bar;
+	        return function (obj) {
+	            for (bar in obj) {
+	                if (obj.hasOwnProperty(bar)) {
+	                    return false;
+	                }
+	            }
+	            return true;
+	        };
+	    });
 
 
 

@@ -11,9 +11,6 @@ angular.module('passportApp')
       .state('wishlists.show', {
         url: '/:id',
         templateUrl: 'app/wishlist/show.html',
-        controller: 'WishlistCtrl',
-        params: {
-          wishlist: {}
-        }
+        controller: 'WishlistCtrl'
       })
   });

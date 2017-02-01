@@ -6,7 +6,7 @@ angular.module('passportApp')
       if(!$scope.user.reward) {
         RewardService.createRewards({user: $scope.user._id}).then(function(reward) {
           $scope.user.reward = reward;
-          AlertService.setAlert("You successfully registered for our rewards program. Your card number is ${reward.cardNumber}", "Success");
+          AlertService.setAlert("You successfully registered for our rewards program. Your card number is " + reward.cardNumber.toString(), "Success");
         }).catch(function(err) {
           console.log(err);
           AlertService.setAlert("The signup process for the rewards card was unsuccessful. Please try again later.", "Error");

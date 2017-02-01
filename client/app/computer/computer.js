@@ -16,19 +16,12 @@ angular.module('passportApp')
           pagecount: {
             value: '10',
             squash: true
+          },
+          type: {
+            value: 'Computer'
           }
         }
       })
-      /*.state('newProduct.computer', {
-        url: '/computer',
-        templateUrl: 'app/computer/new.html',
-        controller: 'ComputerUploadCtrl',
-        params: {
-          type: 'Computer'
-        },
-        authenticate: true
-      })*/
-
       .state('newcomputer', {
         url: '/products/computers/new',
         templateUrl: 'app/computer/new.html',
@@ -43,12 +36,15 @@ angular.module('passportApp')
       });
   });
 
-/* nested route - must have <ui-view> in parent template, will embed the child within the parent template
-      .state('computers.show', {
-        url: '/:id',
-        templateUrl: 'app/computer/show.html',
-        controller: 'ComputerCtrl'
-      });*/
+  /*.state('newProduct.computer', {
+    url: '/computer',
+    templateUrl: 'app/computer/new.html',
+    controller: 'ComputerUploadCtrl',
+    params: {
+      type: 'Computer'
+    },
+    authenticate: true
+  })*/
 
 //resolve: {
         //  objId: function($stateParams) {
