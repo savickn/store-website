@@ -5,7 +5,6 @@ var app = require('../../app');
 var request = require('supertest');
 
 describe('GET /api/pictures', function() {
-
   it('should respond with JSON array', function(done) {
     request(app)
       .get('/api/pictures')
@@ -18,3 +17,19 @@ describe('GET /api/pictures', function() {
       });
   });
 });
+
+describe('POST /api/pictures', function() {
+  it('should respond with JSON object', function(done) {
+    request(app)
+      .post('/api/pictures')
+      .field('', '')
+      .contentType('', '')
+      .size('', '')
+      .path()
+      displayPicture: Boolean,
+      product: 	{
+      	type: Schema.Types.ObjectId
+      }
+      .attach('avatar', '../../public/computer.jpeg')
+  })
+})

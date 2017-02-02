@@ -184,8 +184,9 @@ angular.module('passportAppDirectives', [])
 				address: '=',
 				type: '@',
 				state: '@',
-				cbFunc: '&'/*,
-				formErrors: '=',
+				cbFunc: '&',
+				//addressForm: '=',
+				formErrors: '='/*,
 				stateFunc: '&'*/
 			},
 			link: function(scope, elem, attrs) {
@@ -213,24 +214,12 @@ angular.module('passportAppDirectives', [])
 		    	console.log(province);
 		    };
 
-		    scope.handleAddress = function(form, address) {
+		    /*scope.handleAddress = function(form, address) {
 		    	scope.submitted = true;
-					scope.address.type = scope.type;
-		      scope.address.user = Auth.getCurrentUser()._id;
-
-		    	//scope.stateFunc({billingState: 'Default'});
-		    	scope.cbFunc({form: form, address: address}).then(function(user) {
-						
-					}).catch(function(err) {
-						err = err.data;
-						scope.errors = {};
-
-						angular.forEach(err.errors, function(error, field) {
-							form[field].$setValidity('mongoose', false);
-							scope.errors[field] = error.message;
-						});
-					})
-		    };
+					console.log(form);
+					console.log(address);
+		    	scope.cbFunc({form: form, address: address});
+		    };*/
 
 		    scope.addAddress = function(form, address) {
 		      scope.submitted = true;

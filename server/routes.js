@@ -13,7 +13,6 @@ module.exports = function(app) {
   app.use('/api/users', require('./api/user'));
   app.use('/api/pictures', require('./api/picture'));
   app.use('/api/reviews', require('./api/review'));
-  app.use('/api/upvotes', require('./api/upvote'));
   app.use('/api/computers', require('./api/computer'));
   app.use('/api/monitors', require('./api/monitor'));
   app.use('/api/keyboards', require('./api/keyboard'));
@@ -26,10 +25,10 @@ module.exports = function(app) {
   app.use('/api/midiscores', require('./api/midi_score'));
   app.use('/api/data', require('./api/data'));
   app.use('/api/payments', require('./api/payment'));
-  
+
 
   app.use('/auth', require('./auth'));
-  
+
   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app|bower_components|assets)/*')
    .get(errors[404]);

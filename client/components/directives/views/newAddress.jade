@@ -1,4 +1,4 @@
-form.form(name='addressForm' role='form' novalidate)
+form.form(name="addressForm" role='form' novalidate)
 	.form-group(ng-class='{ "has-success": addressForm.country.$valid && submitted, "has-error": addressForm.country.$invalid && submitted}')
 		label(for="country") Country
 		select.form-control(name="country" ng-model="address.country" ng-change="populateProvinces(address.country)" required)
@@ -19,7 +19,7 @@ form.form(name='addressForm' role='form' novalidate)
 		p.help-block(ng-show='addressForm.street.$error.required && submitted')
 			| Please enter a street address.
 		p.help-block(ng-show='addressForm.street.$error.mongoose')
-			| {{ errors.street }}
+			| {{ formErrors.street }}
 
 	.form-group(ng-class='{ "has-success": addressForm.city.$valid && submitted, "has-error": addressForm.city.$invalid && submitted}')
 		label(for="city") City
@@ -27,19 +27,19 @@ form.form(name='addressForm' role='form' novalidate)
 		p.help-block(ng-show='addressForm.city.$error.required && submitted')
 			| Please enter a city.
 		p.help-block(ng-show='addressForm.city.$error.mongoose')
-			| {{ errors.city }}
+			| {{ formErrors.city }}
 
 	.form-group(ng-class='{ "has-success": addressForm.pobox.$valid && submitted, "has-error": addressForm.pobox.$invalid && submitted}')
 		label(for="pobox") PO Box (if applicable)
 		input.form-control(type="text" name="pobox" placeholder="Pleae enter a PO Box number if applicable." ng-model="address.pobox")
 		p.help-block(ng-show='addressForm.pobox.$error.mongoose')
-			| {{ errors.pobox }}
+			| {{ formErrors.pobox }}
 
 	.form-group(ng-class='{ "has-success": addressForm.aptNumber.$valid && submitted, "has-error": addressForm.aptNumber.$invalid && submitted}')
 		label(for="aptNumber") Apartment Number (if applicable)
 		input.form-control(type="text" name="aptNumber" placeholder="Pleae enter an apartment number if applicable." ng-model="address.aptNumber")
 		p.help-block(ng-show='addressForm.aptNumber.$error.mongoose')
-			| {{ errors.aptNumber }}
+			| {{ formErrors.aptNumber }}
 
 	.form-group(ng-class='{ "has-success": addressForm.postalCode.$valid && submitted, "has-error": addressForm.postalCode.$invalid && submitted}')
 		label(for="postalCode") Postal Code
@@ -49,7 +49,7 @@ form.form(name='addressForm' role='form' novalidate)
 		p.help-block(ng-show='addressForm.postalCode.$error.pattern && submitted')
 			| This postal code is not in the correct format. Please enter a postal code in the format 'A1A2B2'.
 		p.help-block(ng-show='addressForm.postalCode.$error.mongoose')
-			| {{ errors.postalCode }}
+			| {{ formErrors.postalCode }}
 
 	.form-group(ng-class='{ "has-success": addressForm.nickname.$valid && submitted, "has-error": addressForm.nickname.$invalid && submitted}')
 		label(for="nickname") Nickname

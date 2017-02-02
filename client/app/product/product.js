@@ -22,24 +22,27 @@ angular.module('passportApp')
         	});
         }
       })
-      .state('products.test', {
-        url: '/test',
-        templateUrl: 'app/product/index.html',
-        controller: 'ProductCollectionCtrl',
-        params: {
-          page: {
-            value: '1',
-            squash: true
-          },
-          pagecount: {
-            value: '10',
-            squash: true
-          }
-        }
-      })
   });
 
+
+
 /*
+  .state('products.test', {
+    url: '/test',
+    templateUrl: 'app/product/index.html',
+    controller: 'ProductCollectionCtrl',
+    params: {
+      page: {
+        value: '1',
+        squash: true
+      },
+      pagecount: {
+        value: '10',
+        squash: true
+      }
+    }
+  })
+
   function($scope, ProductService) {
           $scope.availableComputers = [];
           $scope.path = 'computers'

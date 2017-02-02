@@ -20,10 +20,10 @@ angular.module('passportApp')
     $scope.currentPage = 1;
     $scope.pageSize = 10;
     $scope.totalProducts = 0;
-    getResultsPage($scope.currentPage, $scope.pageSize);
+    getResultsPage($scope.currentPage, $scope.pageSize, $scope.filterExpr);
 
     $scope.pageChanged = function(newPage) {
-      getResultsPage(newPage, $scope.pageSize);
+      getResultsPage(newPage, $scope.pageSize, $scope.filterExpr);
     }
 
     $scope.sizeChanged = function(newSize) {
@@ -38,11 +38,13 @@ angular.module('passportApp')
         perPage: pageSize
       };
 
-      ProductService.searchProducts($scope.filterExpr, options).then(function(response) {
+      ProductService.searchProducts(filterExpr, options).then(function(response) {
         $scope.availableProducts = response.data;
         $scope.totalProducts = response.headers('total-Products');
         getProductInfo(response.data);
-      });
+      }).catch(function(err) {
+        console.log(err);
+      })
     }
 
     function getProductInfo(products) {

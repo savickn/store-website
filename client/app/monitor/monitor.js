@@ -4,10 +4,23 @@
 angular.module('passportApp')
   .config(function ($stateProvider) {
     $stateProvider
-      .state('monitors', {
-        url: '/monitors',
-        templateUrl: 'app/monitor/index.html',
-        controller: 'MonitorsCtrl'
+      .state('products.monitors', {
+        url: '/monitors?page&pagecount',
+        templateUrl: 'app/product/index.html',
+        controller: 'ProductCollectionCtrl',
+        params: {
+          page: {
+            value: '1',
+            squash: true
+          },
+          pagecount: {
+            value: '10',
+            squash: true
+          },
+          type: {
+            value: 'Monitor'
+          }
+        }
       })
       .state('monitors/show', {
       	url: '/monitors/:id',

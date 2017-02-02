@@ -156,7 +156,7 @@ exports.update = function(req, res) {
   User.findOneAndUpdate(
     {_id: req.params.id},
     {$set: req.body},
-    {new: true}
+    {new: true, runValidators: true}
   )
   .select('-salt -hashedPassword')
   .populate('reward wishlist')

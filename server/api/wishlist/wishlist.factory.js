@@ -1,12 +1,11 @@
 var Factory = require('rosie').Factory;
-var AddressFactory = require('../address/address.factory.js')
 
-var user = Factory.define('user')
+var wishlist = Factory.define('wishlist')
   .sequence('id')
-  .sequence('name', function(i) { return 'user' + i; })
-  .sequence('email', function(i) { return 'user' + i + '@example.com'; })
+  .sequence('name', function(i) { return 'wishlist' + i; })
+  .sequence('email', function(i) { return 'wishlist' + i + '@example.com'; })
   .attr('onlineCredit', 0)
-  .attr('role', 'user')
+  .attr('role', 'wishlist')
   .attr('phoneNumber', '645-765-4432')
 
   //.attr('wishlist', {})
@@ -22,7 +21,7 @@ var user = Factory.define('user')
     return values[id % values.length];
   })
 
-//var user_wishlist = Factory.define('user-wishlist').extend('user')
+//var wishlist_wishlist = Factory.define('wishlist-wishlist').extend('wishlist')
 //  .attr('state', 'disabled');
 
-module.exports = user;
+module.exports = wishlist;

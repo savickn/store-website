@@ -80,7 +80,7 @@
 
 
     .col-lg-9
-      .product-container-flexbox
+      .product-container-flexbox(ng-if="availableProducts.length > 0")
         .product-flexbox(dir-paginate="product in availableProducts | priceFilter : priceExpr | productFilter : filterExpr | orderBy : sortType : sortReverse | itemsPerPage: pageSize"
           total-items="totalProducts" current-page="currentPage")
           .flex-item
@@ -92,6 +92,7 @@
             p.text-center Price: {{product.price}}
           .flex-item
             ngcart-addtocart.center-block(id="{{product._id}}" name="{{product.name}}" price="{{product.price}}" quantity="1" quantity-max="30" data="product") Add to Cart
+      p(ng-if="availableProducts.length < 1") There are no products matching that query.
 
 
   ///////////////////////////////  PAGINATION ///////////////////////////////

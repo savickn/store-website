@@ -1,15 +1,14 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('ProductCollectionCtrl', function ($scope, $stateParams, $timeout, $location,
-      Auth, Upload, ProductService, CartService, ngCart) {
-    //check why $setValidity is not working sometime
-    //work on page anchors
+  .controller('ProductCollectionCtrl', function ($scope, $stateParams, $state, $timeout, $location,
+      Auth, Upload, ProductService, ngCart) {
 
     $scope.isAdmin = Auth.isAdmin();
-    //$scope.pageType = $state.params.type;
-    console.log($state.params);
-    //$scope.pageType = $state.params.type;
+    $scope.pageType = $state.params.type;
+    $scope.filterExpr = {
+      __t: $scope.pageType
+    };
 
     $scope.availableProducts = [];
     $scope.searchableCategories = [];
@@ -20,10 +19,10 @@ angular.module('passportApp')
     $scope.currentPage = 1;
     $scope.pageSize = 10;
     $scope.totalProducts = 0;
-    getResultsPage($scope.currentPage, $scope.pageSize);
+    getResultsPage($scope.currentPage, $scope.pageSize, $scope.filterExpr);
 
     $scope.pageChanged = function(newPage) {
-      getResultsPage(newPage, $scope.pageSize);
+      getResultsPage(newPage, $scope.pageSize, $scope.filterExpr);
     }
 
     $scope.sizeChanged = function(newSize) {
@@ -32,16 +31,19 @@ angular.module('passportApp')
 
     ///////////////////////// Getting and Modifying Data ///////////////////////
 
-    function getResultsPage(pageNumber, pageSize) {
+    function getResultsPage(pageNumber, pageSize, filterExpr) {
       var options = {
         page: pageNumber,
         perPage: pageSize
       };
-      ComputerService.getComputers(options).then(function(response) {
+
+      ProductService.searchProducts(filterExpr, options).then(function(response) {
         $scope.availableProducts = response.data;
-        $scope.totalProducts = response.headers('total-Computers');
+        $scope.totalProducts = response.headers('total-Products');
         getProductInfo(response.data);
-      });
+      }).catch(function(err) {
+        console.log(err);
+      })
     }
 
     function getProductInfo(products) {
@@ -69,7 +71,7 @@ angular.module('passportApp')
       console.log(state);
       console.log(category);
       console.log(value);
-      if(state === true) {
+      if(state) {
         $scope.filterExpr[category].pushUnique(value);
       } else {
         $scope.filterExpr[category].remove(value);
@@ -81,18 +83,14 @@ angular.module('passportApp')
     $scope.sortType = 'name';
     $scope.sortReverse = false;
 
-    $scope.filterExpr = {};
-
     $scope.priceExpr = {
       minPrice: 1,
       maxPrice: 10000
     };
 
     $scope.getSearch = function(filterExpr) {
-      ComputerService.searchComputers(filterExpr).then(function(computers) {
-        $scope.availableComputers = computers;
-        getProductInfo(computers);
-      });
+      var search = _.merge(filterExpr, $scope.priceExpr);
+      getResultsPage($scope.currentPage, $scope.pageSize, search);
     };
 
     ///////////////////// PRICE SLIDER ////////////////////////////////////
@@ -119,9 +117,7 @@ angular.module('passportApp')
         $scope.availableProducts.remove(product);
       });
     };
-
   });
-
 
 
             /*Upload.upload({

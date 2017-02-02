@@ -116,12 +116,15 @@ angular.module('passportApp')
       * Used to update the user
       */
 
-      updateUser: function(cb) {
-          return UserService.updateUser(currentUser).then(function(user) {
-            cb(user);
-          }).catch(function(err) {
-            cb(err);
-          })
+      updateUser: function(callback) {
+        var cb = callback || angular.noop;
+        return UserService.updateUser(currentUser._id, currentUser).then(function(user) {
+          console.log(user);
+          currentUser = user;
+          return cb(null, user);
+        }).catch(function(err) {
+          return cb(err);
+        })
       },
 
       /**

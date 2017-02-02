@@ -3,9 +3,9 @@
 angular.module('passportApp')
   .controller('AddressCtrl', function ($scope, Auth, UserService, AddressService, AlertService) {
     $scope.isAdmin = Auth.isAdmin();
-    $scope.errors = {};
+    $scope.formErrors = {};
 
-    $scope.billingAddress = Auth.getBillingAddress();
+    $scope.billingAddress = Auth.getBillingAddress()[0];
     $scope.shippingAddresses = Auth.getShippingAddresses();
     $scope.newAddress = {};
 
@@ -25,69 +25,25 @@ angular.module('passportApp')
 
     };
 
-    $scope.updateBilling = function(form, address, cb) {
-      Auth.setBillingAddress(address);
-      return Auth.updateUser().then(function(user) {
-        cb(user);
-      }).catch(function(err) {
-        cb(err);
-      })
-    }
-
     /*$scope.updateBilling = function(form, address) {
       console.log(form);
       console.log(address);
+      Auth.setBillingAddress(address);
+      Auth.updateUser().then(function(user) {
+        console.log(user);
+        $scope.billingAddress = user.billingAddress;
+        AlertService.setAlert("Billing Address Updated.", "Success");
+      }).catch(function(err) {
+        err = err.data;
+        $scope.formErrors = {};
 
-      if(form.$valid) {
-        var user = Auth.getCurrentUser()
-        user.billingAddress = address;
-
-        UserService.updateUser(user._id, user).then(function(user) {
-          console.log(user);
-          Auth.setCurrentUser(user);
-          $scope.billingAddress = Auth.getBillingAddress();
-          $scope.billingState = 'Default';
-        }).catch(function(err) {
-          err = err.data;
-          $scope.errors = {};
-
-          angular.forEach(err.errors, function(error, field) {
-            form[field].$setValidity('mongoose', false);
-            $scope.errors[field] = error.message;
-          });
-        })
-      }
-    }
-
-    $scope.updateShipping = function(form, address) {
-
+        angular.forEach(err.errors, function(error, field) {
+          form[field].$setValidity('mongoose', false);
+          $scope.formErrors[field] = error.message;
+        });
+      })
     }*/
 
-    /*$scope.addAddress = function(form, address) {
-      scope.submitted = true;
-      scope.address.type = scope.type;
-      scope.address.user = Auth.getCurrentUser()._id;
-
-      if(form.$valid){
-        AddressService.addAddress(address)
-        .then(function(address) {
-          scope.submitted = false;
-          Auth.setBillingAddress(address);
-          scope.address = {};
-          //push to current User
-          console.log(address);
-        })
-        .catch(function(err) {
-          err = err.data;
-          scope.errors = {};
-
-          angular.forEach(err.errors, function(error, field) {
-            form[field].$setValidity('mongoose', false);
-            scope.errors[field] = error.message;
-          });
-        });
-      }
-    };*/
 
     $scope.removeAddress = function(addressId) {
       AddressService.removeAddress(addressId).then(function() {
@@ -99,6 +55,65 @@ angular.module('passportApp')
     };
 
   });
+
+
+
+
+
+  /*$scope.updateBilling = function(form, address) {
+    console.log(form);
+    console.log(address);
+
+    if(form.$valid) {
+      var user = Auth.getCurrentUser()
+      user.billingAddress = address;
+
+      UserService.updateUser(user._id, user).then(function(user) {
+        console.log(user);
+        Auth.setCurrentUser(user);
+        $scope.billingAddress = Auth.getBillingAddress();
+        $scope.billingState = 'Default';
+      }).catch(function(err) {
+        err = err.data;
+        $scope.errors = {};
+
+        angular.forEach(err.errors, function(error, field) {
+          form[field].$setValidity('mongoose', false);
+          $scope.errors[field] = error.message;
+        });
+      })
+    }
+  }
+
+  $scope.updateShipping = function(form, address) {
+
+  }*/
+
+  /*$scope.addAddress = function(form, address) {
+    scope.submitted = true;
+    scope.address.type = scope.type;
+    scope.address.user = Auth.getCurrentUser()._id;
+
+    if(form.$valid){
+      AddressService.addAddress(address)
+      .then(function(address) {
+        scope.submitted = false;
+        Auth.setBillingAddress(address);
+        scope.address = {};
+        //push to current User
+        console.log(address);
+      })
+      .catch(function(err) {
+        err = err.data;
+        scope.errors = {};
+
+        angular.forEach(err.errors, function(error, field) {
+          form[field].$setValidity('mongoose', false);
+          scope.errors[field] = error.message;
+        });
+      });
+    }
+  };*/
 
 
 

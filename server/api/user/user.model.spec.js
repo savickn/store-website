@@ -5,13 +5,15 @@ var app = require('../../app');
 var User = require('./user.model');
 var UserFactory = require('./user.factory.js');
 
-var user = new User({
+/*var user = new User({
   provider: 'local',
   name: 'Fake User',
   phoneNumber: '4365675433',
   email: 'test@test.com',
   password: 'password'
-});
+});*/
+
+var user = UserFactory.build();
 
 describe('User Model', function() {
   //clears users from db
@@ -54,7 +56,7 @@ describe('User Model', function() {
 
   it('should fail if the email is improperly formatted', function(done) {
     user.email = 'test';
-    user.save(function(err) {
+    User.create(user, function(err) {
       should.exist(err);
       done();
     })
@@ -62,14 +64,14 @@ describe('User Model', function() {
 
   it('should fail if the phone number is improperly formatted', function(done) {
     user.phoneNumber = '1235';
-    user.save(function(err) {
+    User.create(user, function(err) {
       should.exist(err);
       done();
     })
   })
 
   it('should should have virtual property NumberOfPurchases', function(done) {
-    user.save(function(err, user) {
+    User.create(user, function(err, user) {
       should.exist(user.numberOfPurchases);
       done();
     })

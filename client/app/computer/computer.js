@@ -6,8 +6,8 @@ angular.module('passportApp')
     $stateProvider
       .state('products.computers', {
         url: '/computers?page&pagecount',
-        templateUrl: 'app/computer/index.html',
-        controller: 'ComputerCollectionCtrl',
+        templateUrl: 'app/product/index.html',
+        controller: 'ProductCollectionCtrl',
         params: {
           page: {
             value: '1',

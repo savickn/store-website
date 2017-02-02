@@ -3,36 +3,43 @@
 var _ = require('lodash');
 var Product = require('./product.model');
 
-
 exports.search = function(req, res) {
-  var defaultSearch = {
-    price: {$gt: 0, $lt: 10000000}
+  var search = JSON.parse(req.query.search);
+  var pagination = JSON.parse(req.query.pagination);
+  console.log(search);
+  console.log(pagination);
+
+  var searchObj = {
+    __t: search.__t,
+    price: {"$gt": 0, "$lt": 1000000000}
   };
 
-  var searchObj = _.merge(defaultSearch, req.query.search);
+  if(search.name) { searchObj.name = new RegExp(search.name, "i"); }
+  if(search.minPrice >= 0) { searchObj.price["$gt"] = search.minPrice; }
+  if(search.maxPrice >= 0) { searchObj.price["$lt"] = search.maxPrice; }
+  if(search.brand && search.brand.length > 0) { searchObj.brand = {$in: search.brand}; }
+
+  if(search.motherboard && search.motherboard.length > 0) { searchObj.motherboard = {$in: search.motherboard}; }
+  if(search.cpu && search.cpu.length > 0) { searchObj.cpu = {$in: search.cpu}; }
+  if(search.gpu && search.gpu.length > 0) { searchObj.gpu = {$in: search.gpu}; }
+
   console.log(searchObj);
-
-  if(req.query.search.name) { searchObj.name = new RegExp(req.query.search.name, "i"); }
-  if(req.query.search.minPrice >= 0) { searchObj.price['$gt'] = req.query.search.minPrice; }
-  if(req.query.search.maxPrice >= 0) { searchObj.price['$lt'] = req.query.search.maxPrice; }
-
-  /*if(req.body.brand.length > 0) { searchObj.brand = {$in: req.body.brand}; }
-  if(req.body.motherboard.length > 0) { searchObj.motherboard = {$in: req.body.motherboard}; }
-  if(req.body.cpu.length > 0) { searchObj.cpu = {$in: req.body.cpu}; }
-  if(req.body.gpu.length > 0) { searchObj.gpu = {$in: req.body.gpu}; }*/
 
   Product.model.count(searchObj, function(err, count) {
     if(err) { return handleError(res, err); }
 
     var query = Product.model.find(searchObj).populate('displayPicture', '_id contentType path');
 
-    if(req.query.pagination.page && req.query.pagination.perPage) {
-      query = query.skip((req.query.pagination.page-1) * req.query.pagination.perPage)
-                   .limit(req.query.pagination.perPage);
+    if(pagination.page && pagination.perPage) {
+      query = query.skip((pagination.page-1) * pagination.perPage)
+                   .limit(pagination.perPage);
     }
 
     query.exec(function (err, products) {
         if(err) { return handleError(res, err); }
+        console.log(products);
+        console.log(typeof products);
+        console.log(count);
         return res.status(200).header('total-Products', count).json(products);
     });
   });
@@ -95,7 +102,6 @@ exports.create = function(req, res) {
 
 // Updates an existing product in the DB.
 exports.update = function(req, res) {
-  if(req.body._id) { delete req.body._id; }
   Product.findById(req.params.id, function (err, product) {
     if (err) { return handleError(res, err); }
     if(!product) { return res.status(404).send('Not Found'); }

@@ -1,5 +1,7 @@
 'use strict';
 
+//used to test if HTTP requests return the correct methdos
+
 var app = require('../..');
 import request from 'supertest';
 

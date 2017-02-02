@@ -41,8 +41,10 @@
     "passport-twitter": "latest",
     "paypal-rest-sdk": "^1.6.8",
     "pretty-error": "^2.0.0",
+    "proxyquire": "^1.7.11",
     "rosie": "^1.6.0",
-    "serve-favicon": "~2.0.1"
+    "serve-favicon": "~2.0.1",
+    "sinon": "^1.17.7"
   },
   "devDependencies": {
     "grunt": "~0.4.4",

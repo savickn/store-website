@@ -10,15 +10,15 @@ var PictureSchema = new Schema({
   size: Number,
   path: String,
   image: Buffer,
-  displayPicture: Boolean,
-  product: 	{	
+  displayPicture: {
+    type: Boolean,
+    default: false
+  },
+  product: 	{
   	type: Schema.Types.ObjectId
   }
 });
 
-/*PictureSchema.statics.getPictureId = function(filename, cb) {
-  return this.find({filename: filename}, '_id');
-}*/
 
 PictureSchema.pre('save', function(next) {
 	if(this.displayPicture === true) {

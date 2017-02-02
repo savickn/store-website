@@ -17,7 +17,6 @@ var logger = log4js.getLogger('negus');
 exports.index = function(req, res) {
   Picture.find({}, '_id contentType path', function (err, pictures) {
     if(err) { return handleError(res, err); }
-
     return res.status(200).json(pictures);
   });
 };
@@ -43,10 +42,10 @@ exports.create = function(req, res) {
   mkdirp(destination, function(err) {
     var rstream = fs.createReadStream(path)
       .pipe(fs.createWriteStream(destination + '/' + req.body.filename));
-    
+
     rstream.on('finish', function () {
       var body = {image: image, filename: req.body.filename, product: req.body.product,
-        displayPicture: req.body.displayPicture, size: req.body.size, contentType: req.body.contentType, 
+        displayPicture: req.body.displayPicture, size: req.body.size, contentType: req.body.contentType,
         path: productType + '/' + req.body.filename};
       Picture.create(body, function(err, picture) {
         if(err) { return handleError(res, err); }
