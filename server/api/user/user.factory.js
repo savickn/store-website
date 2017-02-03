@@ -9,20 +9,16 @@ var user = Factory.define('user')
   .attr('role', 'user')
   .attr('phoneNumber', '645-765-4432')
 
-  //.attr('wishlist', {})
-  //.attr('reward')
-  //.attr('orders')
-  //.attr('paymentMethods')
-  //.attr('billingAddress', {})
-  //.attr('shippingAddresses')
+  .attr('wishlist')
+  .attr('reward')
+  .attr('orders', [])
+  .attr('paymentMethods', [])
+  .attr('billingAddress')
+  .attr('shippingAddresses', [])
 
-  // Define `position` to depend on `id`.
   .attr('promotionalEmails', ['id'], function(id) {
     var values = [true, false];
     return values[id % values.length];
   })
-
-//var user_wishlist = Factory.define('user-wishlist').extend('user')
-//  .attr('state', 'disabled');
 
 module.exports = user;

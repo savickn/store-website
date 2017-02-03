@@ -22,4 +22,9 @@ angular.module('passportApp')
           }
         }
       })
+      .state('newKeyboard', {
+        url: '/keyboards/new',
+        templateUrl: 'app/keyboard/new.html',
+        controller: 'KeyboardCtrl'
+      })
   });

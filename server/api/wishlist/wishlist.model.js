@@ -9,7 +9,7 @@ var WishlistSchema = new Schema({
 		default: false
 	},
 	products: [{
-		type: Schema.Types.ObjectId, 
+		type: Schema.Types.ObjectId,
 		ref: 'Product',
 		index: true
 	}],
@@ -20,10 +20,9 @@ var WishlistSchema = new Schema({
 });
 
 WishlistSchema.pre('save', function(next) {
-	console.log(this);
 	mongoose.model('User').findOneAndUpdate(
-		{_id: this.user}, 
-		{$set: {wishlist: this._id}}, 
+		{_id: this.user},
+		{$set: {wishlist: this._id}},
 		function(err, user) {
 			if(err) {next(err);}
 			next();

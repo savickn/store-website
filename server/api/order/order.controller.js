@@ -54,7 +54,7 @@ exports.show = function(req, res) {
 
 function addLeadingZeroes(number) {
   var num = number.toString();
-  while(num.length < 8) {
+  while(num.length < 10) {
     num = "0" + num;
   };
   return num;

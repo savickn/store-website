@@ -25,5 +25,6 @@ var address = Factory.define('address')
     var provinces = provinceList[country];
     return provinces[id % provinces.length];
   })
+  .attr('user')
 
 module.exports = address;

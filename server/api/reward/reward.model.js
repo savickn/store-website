@@ -7,7 +7,7 @@ var RewardSchema = new Schema({
 	cardNumber: {
 		type: String,
 		required: true,
-		match: /^\d{8}$/
+		match: /^([0-9]{8})$/
 	},
 	points: {
 		type: Number,

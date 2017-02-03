@@ -22,7 +22,12 @@ angular.module('passportApp')
           }
         }
       })
-      .state('monitors/show', {
+      .state('newMonitor', {
+        url: '/monitors/new',
+        templateUrl: 'app/monitor/new.html',
+        controller: 'MonitorCtrl'
+      })
+      .state('showMonitor', {
       	url: '/monitors/:id',
       	templateUrl: 'app/monitor/show.html',
       	controller: 'MonitorCtrl'

@@ -10,9 +10,9 @@ var ProductSchema = new Schema({
 		type: String,
 		required: 'You must include a name for this product.'
 	},
-	description: {	
+	description: {
 		type: String,
-		required: 'You must include a description for this product.'	
+		required: 'You must include a description for this product.'
 	},
 	price: {
 		type: Number,
@@ -26,17 +26,17 @@ var ProductSchema = new Schema({
 		required: 'You must include a brand for this product.'
 	},
 	reviews: [{
-		type: Schema.Types.ObjectId, 
+		type: Schema.Types.ObjectId,
 		ref: 'Review',
 		index: true
 	}],
 	pictures: [{
-		type: Schema.Types.ObjectId, 
+		type: Schema.Types.ObjectId,
 		ref: 'Picture',
 		index: true
 	}],
 	displayPicture: {
-		type: Schema.Types.ObjectId, 
+		type: Schema.Types.ObjectId,
 		ref: 'Picture'
 	},
 	inventory: [Inventory],
@@ -63,13 +63,6 @@ var ProductSchema = new Schema({
 	}
 }, {collection: 'products'});
 
-
-ProductSchema.virtual('recommended').get(function() {
-	//refers to products that are frequently bought with this item
-
-
-});
-
 /*
 	sale: {
 		type: [Sale],
@@ -80,15 +73,38 @@ ProductSchema.virtual('recommended').get(function() {
 			message: 'Only one sale can be active at a time.'
 		}
 	},
-*/
 
-
-/*ProductSchema
+ProductSchema
   .virtual('searchableCategories')
   .get(function() {
     	return _.extend(this.searchableCategories, ['featured', 'onlineOnly', 'onSale', 'brand'])
     };
-  });*/
+  });
+
+ProductSchema.virtual('getPublicFields').get(function() {
+	var obj = {};
+	var self = this;
+	self.publicFields.forEach(function(field) {
+		obj[field] = self.field;
+	})
+	return obj;
+});
+*/
+
+/*
+* Pre and Post Hooks
+*/
+
+ProductSchema.pre('remove', function(next) {
+	mongoose.model('Review').remove({product: this._id}).exec();
+	mongoose.model('Picture').remove({product: this._id}).exec();
+
+	next();
+});
+
+/*
+* Virtual Methods
+*/
 
 // Public product information
 ProductSchema
@@ -107,28 +123,20 @@ ProductSchema
     };
   });
 
+ProductSchema
+  .virtual('recommended')
+  .get(function() {
+	//refers to products that are frequently bought with this item
 
-/*ProductSchema.virtual('getPublicFields').get(function() {
-	var obj = {};
-	var self = this;
-	self.publicFields.forEach(function(field) {
-		obj[field] = self.field;
-	})
-	return obj;
-});*/
-
-ProductSchema.pre('remove', function(next) {
-	mongoose.model('Review').remove({product: this._id}).exec();
-	mongoose.model('Picture').remove({product: this._id}).exec();
-
-	next();
 });
 
-ProductSchema.virtual('salePrice').get(function() {
-	if(this.sale) {
-		var salePrice = this.price * this.sale.discountRate;
-		return salePrice;
-	}
+ProductSchema
+  .virtual('salePrice')
+  .get(function() {
+  	if(this.sale) {
+  		var salePrice = this.price * this.sale.discountRate;
+  		return salePrice;
+  	}
 });
 
 ProductSchema.set('toJSON', {virtuals: true});

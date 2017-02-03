@@ -32,7 +32,8 @@ var OrderSchema = new Schema({
 		required: true
 	},
 	orderNumber: {
-		type: Number,
+		type: String,
+    match: /^([0-9]{10})$/,
     required: true
 	},
 	orderDate: {
