@@ -2,9 +2,12 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('TestCtrl', function ($scope, UserService, ComputerService) {
+  .controller('TestCtrl', function ($scope, $timeout, UserService, ComputerService) {
   	$scope.email = {};
-    $scope.availableComputers = [];
+
+    $scope.errors = {};
+    $scope.formObj = {};
+    $scope.submitted = false;
 
   	$scope.sendEmail = function() {
   		UserService.sendEmail($scope.email).then(function(success) {
@@ -21,6 +24,15 @@ angular.module('passportApp')
         console.log(error);
       });
     };
+
+    $scope.formSubmit = function(form, obj) {
+      $scope.submitted = true;
+      console.log(form);
+      console.log(obj);
+      $timeout(function () {
+        $scope.submitted = false;
+      }, 10000);
+    }
 
 
 

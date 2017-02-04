@@ -1,18 +1,19 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('SignupController', function ($scope, $location, $window, Auth, FlashService) {
+  .controller('SignupController', function ($scope, $timeout, $location, $window, Auth, FlashService) {
     $scope.user = {};
     $scope.errors = {};
+    $scope.submitted = false;
 
-    $scope.register = function(form) {
+    $scope.register = function(form, user) {
       $scope.submitted = true;
 
       if(form.$valid) {
         Auth.createUser({
-          name: $scope.user.name,
-          email: $scope.user.email,
-          password: $scope.user.password
+          name: user.name,
+          email: user.email,
+          password: user.password
         }).then(function(user) {
           FlashService.setMessage('You have successfully created an account.', 'Success');
           $location.path('/');
@@ -24,6 +25,7 @@ angular.module('passportApp')
           angular.forEach(err.errors, function(error, field) {
             form[field].$setValidity('mongoose', false);
             $scope.errors[field] = error.message;
+            $timeout()
           });
         });
       }

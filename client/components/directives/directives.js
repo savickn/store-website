@@ -118,13 +118,35 @@ angular.module('passportAppDirectives', [])
 			templateUrl: '../components/directives/views/email.html',
 			scope: {
 				form: '=',
-				errs: '=',
-				submitted: '@'
+				model: '=',
+				errors: '=',
+				submitted: '='
 			},
 			link: function(scope, elem, attrs) {
-
+				console.log(scope.form);
+				console.log(scope.model);
+				console.log(scope.errors);
+				console.log(scope.submitted);
 			}
 		}
+	})
+	.directive('nsTimeoutButton', function($timeout) {
+		return {
+			restrict: 'E',
+			templateUrl: '../components/directives/views/timeoutButton.html',
+			scope: {
+				content: '@'
+			},
+			link: function(scope, elem, attrs) {
+				scope.disabled = false;
+				scope.disable = function() {
+					scope.disabled = true;
+					$timeout(() => {
+						scope.disabled = false;
+					}, 1000)
+				}
+			}
+		};
 	})
 	/*.directive('nsErrors', function() {
 		return {
@@ -182,17 +204,12 @@ angular.module('passportAppDirectives', [])
 			templateUrl: '../components/directives/views/newAddress.html',
 			scope: {
 				address: '=',
-				type: '@',
-				state: '@',
-				cbFunc: '&',
-				//addressForm: '=',
-				formErrors: '='/*,
-				stateFunc: '&'*/
+				cbFunc: '&'
 			},
 			link: function(scope, elem, attrs) {
 				//check for favorite shipping address in Cookies
-				//create shipping address selector
-				//autofill billing address with user billing address
+				scope.errors = {}
+				scope.submitted = false;
 
 				scope.countries = [];
 		    scope.provinces = [];
@@ -214,51 +231,12 @@ angular.module('passportAppDirectives', [])
 		    	console.log(province);
 		    };
 
-		    /*scope.handleAddress = function(form, address) {
+		    scope.handleAddress = function(form, address) {
 		    	scope.submitted = true;
-					console.log(form);
-					console.log(address);
-		    	scope.cbFunc({form: form, address: address});
-		    };*/
-
-		    scope.addAddress = function(form, address) {
-		      scope.submitted = true;
-		      scope.address.type = scope.type;
-		      scope.address.user = Auth.getCurrentUser()._id;
-
-		      if(form.$valid){
-		      	AddressService.addAddress(address).then(function(address) {
-			      	scope.submitted = false;
-			      	if(scope.type === 'Billing') {
-								Auth.setBillingAddress(address);
-							} else if(scope.type === 'Shipping') {
-								Auth.addShippingAddress(address);
-							}
-						}).catch(function(err) {
-			        err = err.data;
-			        scope.errors = {};
-
-			        angular.forEach(err.errors, function(error, field) {
-			          form[field].$setValidity('mongoose', false);
-			          scope.errors[field] = error.message;
-			        });
-			      });
-		      }
-		    };
-
-		    scope.updateAddress = function(form, address) {
-		      var addressId = address._id; //used to update currentUser
-		      AddressService.updateAddress(address).then(function(address) {
-						scope.submitted = false;
-						scope.address = address;
-						if(scope.type === 'Billing') {
-							Auth.setBillingAddress(address);
-						}
-
-		      }).catch(function(err) {
-		        console.log(err);
-		      })
-		    };
+					if(form.$valid) {
+		    		scope.cbFunc({form: form, address: address, errors: scope.errors, submitted: scope.submitted});
+					};
+				};
 
 		    (function init() {
 		      scope.populateCountries();
@@ -326,6 +304,56 @@ angular.module('passportAppDirectives', [])
 			}
 		}
 	});
+
+
+
+
+
+
+
+	/*scope.addAddress = function(form, address) {
+		scope.submitted = true;
+		scope.address.type = scope.type;
+		scope.address.user = Auth.getCurrentUser()._id;
+
+		if(form.$valid){
+			AddressService.addAddress(address).then(function(address) {
+				scope.submitted = false;
+				if(scope.type === 'Billing') {
+					Auth.setBillingAddress(address);
+				} else if(scope.type === 'Shipping') {
+					Auth.addShippingAddress(address);
+				}
+			}).catch(function(err) {
+				err = err.data;
+				scope.errors = {};
+
+				angular.forEach(err.errors, function(error, field) {
+					form[field].$setValidity('mongoose', false);
+					scope.errors[field] = error.message;
+				});
+			});
+		}
+	};
+
+	scope.updateAddress = function(form, address) {
+		var addressId = address._id; //used to update currentUser
+		AddressService.updateAddress(address).then(function(address) {
+			scope.submitted = false;
+			scope.address = address;
+			if(scope.type === 'Billing') {
+				Auth.setBillingAddress(address);
+			}
+
+		}).catch(function(err) {
+			console.log(err);
+		})
+	};*/
+
+
+
+
+
 
 /*
 

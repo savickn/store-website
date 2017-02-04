@@ -152,14 +152,18 @@ exports.changePassword = function(req, res) {
 
 exports.update = function(req, res) {
   console.log(req.body);
+  var opts = {
+    runValidators: true,
+    new: true
+  };
 
   User.findOneAndUpdate(
     {_id: req.params.id},
     {$set: req.body},
-    {new: true, runValidators: true}
+    opts
   )
   .select('-salt -hashedPassword')
-  .populate('reward wishlist')
+  .populate('reward wishlist orders paymentMethods')
   .exec(function(err, user) {
     if (err) { return validationError(res, err); }
     return res.status(200).json(user);
@@ -172,7 +176,7 @@ exports.update = function(req, res) {
 exports.me = function(req, res, next) {
   User.findOne({_id: req.user._id})
   .select('-salt -hashedPassword')
-  .populate('reward orders wishlist billingAddress shippingAddresses paymentMethods')
+  .populate('reward orders wishlist paymentMethods')
   .exec(function(err, user) { // don't ever give out the password or salt
     if (err) return next(err);
     if (!user) return res.status(401).send('Unauthorized');

@@ -16,11 +16,11 @@ var cityList = {
 };
 
 var AddressSchema = new Schema({
-	type: {
+	/*type: {
 		type: String,
 		enum: ['Billing', 'Shipping'],
 		required: true
-	},
+	},*/
 	nickname: {
 		type: String,
 		required: 'You must provide a nickname for this address.'
@@ -30,10 +30,10 @@ var AddressSchema = new Schema({
 		required: 'You must provide a street address.'
 	},
 	poBox: {
-		type: Number
+		type: String
 	},
 	aptNumber: {
-		type: Number
+		type: String
 	},
 	postalCode: {
 		type: String,
@@ -53,17 +53,17 @@ var AddressSchema = new Schema({
 		type: String,
 		//enum: countryList,
 		required: 'You must select a country.'
-	},
+	}/*,
 	user: {
 		type: Schema.Types.ObjectId,
 		ref: 'User'
-	}
+	}*/
 });
 
 /*
 * Pre and Post Hooks
 */
-
+/*
 AddressSchema.pre("save", function(next) {
   if(this.type === 'Billing') {
   	mongoose.model('User').findOneAndUpdate(
@@ -106,14 +106,14 @@ AddressSchema.pre('remove', function(next) {
 			}
 		);
 	}
-})
+})*/
 
 /*
 * Validations
 */
 
 //validate that user does not have 2+ addresses with the same nickname, not working currently
-AddressSchema
+/*AddressSchema
 	.path('nickname')
 	.validate(function(nickname) {
 		var state = true;
@@ -129,7 +129,7 @@ AddressSchema
 			})
 			return state;
 		});
-	}, 'The nickname you provided is already associated with another address.')
+	}, 'The nickname you provided is already associated with another address.')*/
 
 // Validate the postal code, use api to compare postal code to province and country
 AddressSchema

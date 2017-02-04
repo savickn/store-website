@@ -17,8 +17,8 @@ angular.module('passportApp')
       	url: '/style',
         templateUrl: 'app/test/style.html',
       })
-      .state('test.computers', {
-      	url: '/computers',
-      	templateUrl: 'app/test/computers.html'
+      .state('test.forms', {
+      	url: '/forms',
+      	templateUrl: 'app/test/forms.html'
       });
   });

@@ -1,9 +1,0 @@
-
-//.col-lg-4(ng-repeat="computer in availableComputers")
-  img.center-block(src='{{computer.displayPicture.path}}' width='150' height='150' ng-if='computer.displayPicture')
-  img.center-block(src='no_image.jpg' width='150' height='150' ng-if='!computer.displayPicture') 
-  
-  .product-content.divider
-    a.text-center(href="/products/computers/{{computer._id}}") {{computer.name}} 
-    p.text-center Price: {{computer.price}}
-    ngcart-addtocart.center-block(id="{{ computer._id }}" name="{{ computer.name }}" price="{{ computer.price }}" quantity="1" quantity-max="30" data="computer") Add to Cart    

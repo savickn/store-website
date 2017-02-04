@@ -1,14 +1,10 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('ProductCollectionCtrl', function ($scope, $stateParams, $state, $timeout, $location,
-      Auth, Upload, ProductService, ngCart) {
+  .controller('ProductCollectionCtrl', function ($scope, $state, $timeout, $location, Auth, ProductService, ngCart) {
 
     $scope.isAdmin = Auth.isAdmin();
     $scope.pageType = $state.params.type;
-    $scope.filterExpr = {
-      __t: $scope.pageType
-    };
 
     $scope.availableProducts = [];
     $scope.searchableCategories = [];
@@ -19,32 +15,47 @@ angular.module('passportApp')
     $scope.currentPage = 1;
     $scope.pageSize = 10;
     $scope.totalProducts = 0;
-    getResultsPage($scope.currentPage, $scope.pageSize, $scope.filterExpr);
 
     $scope.pageChanged = function(newPage) {
-      getResultsPage(newPage, $scope.pageSize, $scope.filterExpr);
+      $scope.currentPage = newPage;
+      $scope.getResults();
     }
 
     $scope.sizeChanged = function(newSize) {
       $scope.pageSize = newSize;
     }
 
-    ///////////////////////// Getting and Modifying Data ///////////////////////
+    //////////////////////// SEARCHING + SORTING ////////////////////////////////
 
-    function getResultsPage(pageNumber, pageSize, filterExpr) {
+    $scope.sortType = 'name';
+    $scope.sortReverse = false;
+
+    $scope.priceExpr = {
+      minPrice: 1,
+      maxPrice: 10000
+    };
+
+    $scope.filterExpr = {
+      __t: $scope.pageType
+    };
+
+    $scope.getResults = function() {
+      var search = _.merge($scope.filterExpr, {});
+      //var search = _.merge($scope.filterExpr, $scope.priceExpr); NOT WORKING???
       var options = {
-        page: pageNumber,
-        perPage: pageSize
+        page: $scope.currentPage,
+        perPage: $scope.pageSize
       };
-
-      ProductService.searchProducts(filterExpr, options).then(function(response) {
-        $scope.availableProducts = response.data;
+      ProductService.searchProducts(search, options).then(function(response) {
+        $scope.availableProducts = response.data.plain();
         $scope.totalProducts = response.headers('total-Products');
         getProductInfo(response.data);
       }).catch(function(err) {
         console.log(err);
       })
-    }
+    };
+
+    ///////////////////////// Getting and Modifying Data ///////////////////////
 
     function getProductInfo(products) {
       $scope.searchableCategories = [];
@@ -78,21 +89,6 @@ angular.module('passportApp')
       }
     }
 
-    //////////////////////// SEARCHING + SORTING ////////////////////////////////
-
-    $scope.sortType = 'name';
-    $scope.sortReverse = false;
-
-    $scope.priceExpr = {
-      minPrice: 1,
-      maxPrice: 10000
-    };
-
-    $scope.getSearch = function(filterExpr) {
-      var search = _.merge(filterExpr, $scope.priceExpr);
-      getResultsPage($scope.currentPage, $scope.pageSize, search);
-    };
-
     ///////////////////// PRICE SLIDER ////////////////////////////////////
 
     $scope.slider = {
@@ -117,7 +113,29 @@ angular.module('passportApp')
         $scope.availableProducts.remove(product);
       });
     };
+
+    (function init() {
+      $scope.getResults();
+    })();
   });
+
+
+
+      /*function getResultsPage(pageNumber, pageSize, filterExpr) {
+        var options = {
+          page: pageNumber,
+          perPage: pageSize
+        };
+
+        ProductService.searchProducts(filterExpr, options).then(function(response) {
+          $scope.availableProducts = response.data;
+          $scope.totalProducts = response.headers('total-Products');
+          getProductInfo(response.data);
+        }).catch(function(err) {
+          console.log(err);
+        })
+      }*/
+
 
 
             /*Upload.upload({

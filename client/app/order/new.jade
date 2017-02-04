@@ -4,13 +4,13 @@ title Secure Checkout
   .row
     .col-lg-12
       form(name="orderForm" novalidate)
-        wizard(on-finish="finishedWizard()")
+        wizard
           wz-step(wz-title="Shipping")
             h3 Shipping Address
             p Please select one of your saved addresses or specify a new address.
 
-            ns-show-address(address="newOrder.shippingAddress" ng-if="(shippingState === 'Default') && (shippingState | isNotEmpty)")
-            ns-select-address(address="newOrder.shippingAddress" addresses="shippingAddresses" type="Shipping" ng-if="shippingState === 'Select'")
+            //ns-show-address(address="newOrder.shippingAddress" ng-if="(shippingState === 'Default') && (shippingState | isNotEmpty)")
+            ns-select-address(address="newOrder.shippingAddress" addresses="shippingAddresses" type="Shipping ng-if="shippingState === 'Select'")
             ns-add-address(address="newOrder.shippingAddress" type="Shipping" state="return" ng-if="shippingState === 'New'")
 
             button.btn.btn-primary(ng-click="setShippingState('New')" ng-show="shippingState === 'Default'") Add a New Address

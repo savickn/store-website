@@ -1,0 +1,9 @@
+.form-group(ng-class='{ "has-success": form.email.$valid && submitted, "has-error": form.email.$invalid && submitted }')
+  label Email
+  input.form-control(type='email' name='email' ng-model='model.email' pattern="[A-Za-z0-9]+@([A-Za-z])+(\\.[A-Za-z]+)+" required)
+  p.help-block(ng-show='form.email.$error.required && submitted')
+    | Please enter an email address.
+  p.help-block(ng-show='form.email.$error.pattern && submitted')
+    | This email address is not in the correct format. Please enter an email address in the format 'example@example.com'.
+  p.help-block(ng-show='form.email.$error.mongoose')
+    | {{ errors.email }}

@@ -3,22 +3,14 @@
     .col-sm-12
       h1 Sign up
     .col-sm-12
-      form.form(name='signupForm' ng-submit='register(signupForm)' novalidate)
+      form.form(name='signupForm' ng-submit='register(signupForm, user)' novalidate)
         .form-group(ng-class='{ "has-success": signupForm.name.$valid && submitted, "has-error": signupForm.name.$invalid && submitted }')
           label Name
           input.form-control(type='text' name='name' ng-model='user.name' required)
           p.help-block(ng-show='signupForm.name.$error.required && submitted')
             | A name is required
 
-        .form-group(ng-class='{ "has-success": signupForm.email.$valid && submitted, "has-error": signupForm.email.$invalid && submitted }')
-          label Email
-          input.form-control(type='email' name='email' ng-model='user.email' pattern="[A-Za-z0-9]+@([A-Za-z])+(\\.[A-Za-z]+)+" required)
-          p.help-block(ng-show='signupForm.email.$error.required && submitted')
-            | Please enter an email address.
-          p.help-block(ng-show='signupForm.email.$error.pattern && submitted')
-            | This email address is not in the correct format. Please enter an email address in the format 'example@example.com'.
-          p.help-block(ng-show='signupForm.email.$error.mongoose')
-            | {{ errors.email }}
+        ns-email(form="signupForm" model="user" errors="errors" submitted="submitted")
 
         .form-group(ng-class='{ "has-success": signupForm.password.$valid && submitted, "has-error": signupForm.password.$invalid && submitted }')
           label Password
@@ -29,6 +21,7 @@
             | {{ errors.password }}
 
         div
+          //ns-timeout-button(content="Sign Up")
           button.btn.btn-inverse.btn-lg.btn-login(type='submit')
             | Sign up
           = ' '
@@ -51,3 +44,17 @@
             i.fa.fa-twitter
             |  Connect with Twitter
   hr
+
+
+//button.btn.btn-inverse.btn-lg.btn-login(type='submit')
+  | Sign up
+//= ' '
+//.form-group(ng-class='{ "has-success": signupForm.email.$valid && submitted, "has-error": signupForm.email.$invalid && submitted }')
+  label Email
+  input.form-control(type='email' name='email' ng-model='user.email' pattern="[A-Za-z0-9]+@([A-Za-z])+(\\.[A-Za-z]+)+" required)
+  p.help-block(ng-show='signupForm.email.$error.required && submitted')
+    | Please enter an email address.
+  p.help-block(ng-show='signupForm.email.$error.pattern && submitted')
+    | This email address is not in the correct format. Please enter an email address in the format 'example@example.com'.
+  p.help-block(ng-show='signupForm.email.$error.mongoose')
+    | {{ errors.email }}

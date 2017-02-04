@@ -7,7 +7,6 @@ exports.search = function(req, res) {
   var search = JSON.parse(req.query.search);
   var pagination = JSON.parse(req.query.pagination);
   console.log(search);
-  console.log(pagination);
 
   var searchObj = {
     __t: search.__t,
@@ -37,9 +36,6 @@ exports.search = function(req, res) {
 
     query.exec(function (err, products) {
         if(err) { return handleError(res, err); }
-        console.log(products);
-        console.log(typeof products);
-        console.log(count);
         return res.status(200).header('total-Products', count).json(products);
     });
   });

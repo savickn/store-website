@@ -116,13 +116,16 @@ angular.module('passportApp')
       * Used to update the user
       */
 
-      updateUser: function(callback) {
+      updateUser: function(updates, callback) {
         var cb = callback || angular.noop;
-        return UserService.updateUser(currentUser._id, currentUser).then(function(user) {
+        return UserService.updateUser(currentUser._id, updates).then(function(user) {
+          console.log('auth success');
           console.log(user);
           currentUser = user;
-          return cb(null, user);
+          return cb(user);
         }).catch(function(err) {
+          console.log('auth failure');
+          console.log(err);
           return cb(err);
         })
       },
@@ -147,12 +150,8 @@ angular.module('passportApp')
         return currentUser.shippingAddresses;
       },
 
-      addShippingAddress: function(address) {
+      updateShippingAddresses: function(address) {
         currentUser.shippingAddresses.pushUnique(address);
-      },
-
-      removeShippingAddress: function(address) {
-        currentUser.shippingAddresses.remove(address);
       },
 
       /*
@@ -163,7 +162,7 @@ angular.module('passportApp')
         return currentUser.billingAddress || {};
       },
 
-      setBillingAddress: function(address) {
+      updateBillingAddress: function(address) {
         currentUser.billingAddress = address;
       },
 

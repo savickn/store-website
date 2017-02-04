@@ -14,7 +14,7 @@
 			p.help-block(ng-show='infoForm.email.$error.pattern && submitted')
 				| This email address is not in the correct format. Please enter an email address in the format 'example@example.com'.
 			p.help-block(ng-show='infoForm.email.$error.mongoose')
-				| {{ errors.other }}
+				| {{ errors.email }}
 
 		.form-group(ng-class='{ "has-success": infoForm.phoneNumber.$valid && submitted, "has-error": infoForm.phoneNumber.$invalid && submitted}')
 			label Phone Number
@@ -24,13 +24,13 @@
 			p.help-block(ng-show='infoForm.phoneNumber.$error.pattern && submitted')
 				| The phone number you entered is not in the correct format.
 			p.help-block(ng-show='infoForm.phoneNumber.$error.mongoose')
-				| {{ errors.other }}
+				| {{ errors.phoneNumber }}
 
 		.form-group(ng-class='{ "has-success": infoForm.promos.$valid && submitted, "has-error": infoForm.promos.$invalid && submitted}')
 			label Receive Promotional Emails?
 			input.form-control(type='checkbox' name='promos' ng-model='userUpdates.promotionalEmails')
 			p.help-block(ng-show='infoForm.promos.$error.mongoose')
-				| {{ errors.other }}
+				| {{ errors.promotionalEmails }}
 
 		button.btn.btn-md.btn-primary(type='submit') Save changes
 

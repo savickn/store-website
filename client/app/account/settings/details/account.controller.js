@@ -2,7 +2,9 @@
 
 angular.module('passportApp')
   .controller('AccountCtrl', function ($scope, AlertService, UserService, Auth, DataService, $state) {
+    $scope.user = Auth.getCurrentUser();
     $scope.errors = {};
+
     $scope.userUpdates = {
       email: $scope.user.email,
       phoneNumber: $scope.user.phoneNumber,
@@ -11,9 +13,16 @@ angular.module('passportApp')
 
 		$scope.updateUser = function(form, userId, userUpdates) {
       $scope.submitted = true
+      var updates = {};
+      //used to filter out properties that didnt change
+      for(let prop in userUpdates) {
+        if(userUpdates[prop] !== $scope.user[prop]) {
+          updates[prop] = userUpdates[prop];
+        }
+      };
 
       if(form.$valid && form.$dirty) {
-        UserService.updateUser(userId, userUpdates).then(function(user) {
+        UserService.updateUser(userId, updates).then(function(user) {
           $scope.user = user;
           $scope.submitted = false;
           AlertService.setAlert("Your account was successfully updated.", "Success");

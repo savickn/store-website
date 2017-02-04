@@ -4,7 +4,7 @@ angular.module('passportApp')
   .controller('OrderUploadCtrl', function ($scope, $timeout, Auth, OrderService, AlertService, ngCart, $state, DataService) {
     $scope.isAdmin = Auth.isAdmin();
 
-    $scope.billingAddress = Auth.getBillingAddress() || {};
+    $scope.billingAddress = Auth.getBillingAddress()[0];
     $scope.shippingAddresses = Auth.getShippingAddresses();
     $scope.paymentMethods = Auth.getPaymentMethods();
 

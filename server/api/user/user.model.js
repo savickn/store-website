@@ -27,7 +27,7 @@ var UserSchema = new Schema({
     type: String,
     match: [/((1-)|1)?[0-9]{3}-?[0-9]{3}-?[0-9]{4}/, "This phone number is not in the correct format."]
   },
-  /*shippingAddresses: {
+  shippingAddresses: {
     type: [Address.schema], //primary shipping address is saved to cookie
     validate: {
       validator: function(arr) {
@@ -44,16 +44,7 @@ var UserSchema = new Schema({
       },
       message: 'An user can only have one billing address.'
     }
-  },*/
-  billingAddress: {
-    type: Schema.Types.ObjectId,
-    ref: 'Address'
   },
-  shippingAddresses: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Address',
-    index: true
-  }],
   promotionalEmails: {
     type: Boolean,
     default: false
@@ -153,11 +144,9 @@ UserSchema
     };
   });
 
-
 /**
  * Validations
  */
-
 
 // Validate empty email
 UserSchema
@@ -180,10 +169,10 @@ UserSchema
   .path('email')
   .validate(function(value, respond) {
     var self = this;
-    this.constructor.findOne({email: value}, function(err, user) {
+    mongoose.model('User').findOne({email: value}, function(err, user) {
       if(err) throw err;
       if(user) {
-        if(self.id === user.id) return respond(true);
+        if(self._id === user._id) return respond(true);
         return respond(false);
       }
       respond(true);
@@ -195,11 +184,9 @@ var validatePresenceOf = function(value) {
   return value && value.length;
 };
 
-
 /**
  * PRE and POST Hooks
  */
-
 
 UserSchema
   .pre('save', function(next) {
@@ -215,7 +202,6 @@ UserSchema.pre('remove', function(next) {
   mongoose.model('Wishlist').remove({user: this._id}).exec();
   mongoose.model('Reward').remove({user: this._id}).exec();
   mongoose.model('PaymentMethod').remove({user: this._id}).exec();
-  mongoose.model('Address').remove({user: this._id}).exec();
 
   next();
 });
@@ -262,3 +248,14 @@ UserSchema.methods = {
 };
 
 module.exports = mongoose.model('User', UserSchema);
+
+
+/*billingAddress: {
+  type: Schema.Types.ObjectId,
+  ref: 'Address'
+},
+shippingAddresses: [{
+  type: Schema.Types.ObjectId,
+  ref: 'Address',
+  index: true
+}],*/
