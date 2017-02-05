@@ -2,41 +2,42 @@
 
 .container
 	.row
-		.col-lg-6
+		.col-lg-6.col-md-12.col-sm-12
 			h3 Search for User
 			form.form(role="form" name="userSearchForm" ng-submit="searchUsers(query)" novalidate)
 				p.help-text Use this form to search for user's. Not all fields must be filled out.
-				.form-group(ng-class='{ "has-success": userSearchForm.country.$valid && submitted, "has-error": userSearchForm.country.$invalid && submitted}')
+				.form-group(ng-class='{ "has-success": userSearchForm.name.$valid && submitted, "has-error": userSearchForm.name.$invalid && submitted}')
 					label(for="name") Name
 					input.form-control(type="text" name="name" placeholder="Please enter a name." ng-model="userQuery.name")
 
-				.form-group(ng-class='{ "has-success": userSearchForm.country.$valid && submitted, "has-error": userSearchForm.country.$invalid && submitted}')
+				.form-group(ng-class='{ "has-success": userSearchForm.phoneNumber.$valid && submitted, "has-error": userSearchForm.phoneNumber.$invalid && submitted}')
 					label(for="phoneNumber") Phone Number
 					input.form-control(type="tel" name="phoneNumber" placeholder="Please enter a phone number." ng-model="userQuery.phoneNumber" pattern='((1-)|1)?[0-9]{3}-?[0-9]{3}-?[0-9]{4}')
 					p.help-block(ng-show='userSearchForm.phoneNumber.$error.pattern && submitted')
 						| Please enter a valid phone number.
 
-				.form-group(ng-class='{ "has-success": userSearchForm.country.$valid && submitted, "has-error": userSearchForm.country.$invalid && submitted}')
+				.form-group(ng-class='{ "has-success": userSearchForm.email.$valid && submitted, "has-error": userSearchForm.email.$invalid && submitted}')
 					label(for="email") Email
 					input.form-control(type="email" name="email" placeholder="Please enter an email." ng-model="userQuery.email" pattern="[A-Za-z0-9]+@([A-Za-z])+(\\.[A-Za-z]+)+")
 					p.help-block(ng-show='userSearchForm.email.$error.pattern && submitted')
-						| Please enter a valid email.						
+						| Please enter a valid email.
 
-				.form-group(ng-class='{ "has-success": userSearchForm.country.$valid && submitted, "has-error": userSearchForm.country.$invalid && submitted}')
+				.form-group(ng-class='{ "has-success": userSearchForm.cardNumber.$valid && submitted, "has-error": userSearchForm.cardNumber.$invalid && submitted}')
 					label(for="cardNumber") Reward Card Number
-					input.form-control(type="number" name="cardNumber" ng-model="query.cardNumber" pattern="[0-9]{8}" oninvalid="setCustomValidity('Please enter an 8 digit number.')")
+					input.form-control(type="number" name="cardNumber" ng-model="query.cardNumber" placeholder="Please enter a reward card number." pattern="[0-9]{8}")
+					p.help-block(ng-show='userSearchForm.cardNumber.$error.pattern && submitted')
+						| Please enter an 8-digit card number.
 
+				button.btn.btn-primary(ng-disabled="userQuery | isEmpty" type="submit") Search
 
-				button.btn.btn-primary(ng-disabled="formInactive" type="submit") Search
-	
 	.row(ng-show="(users.length < 1) && submitted")
-		p No users matched this query.
-	
+		.col-lg-6.col-md-12.col-sm-12
+			p No users matched this query.
+
 	.row
-		ul.list-group
-		li.list-group-item(ng-repeat='user in users')
-			a(href="/users/{{user._id}}")
-				span.glyphicon.glyphicon-link.pull-left
-			p {{user.name}}
-	.row
-		ui-view
+		.col-lg-6.col-md-12.col-sm-12
+			ul.list-group
+			li.list-group-item(ng-repeat='user in users')
+				a(ui-sref="showUser({id: user._id})")
+					span.glyphicon.glyphicon-link.pull-left
+				p {{user.name}}

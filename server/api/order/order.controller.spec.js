@@ -1,7 +1,8 @@
 'use strict';
 
-var app = require('../..');
-import request from 'supertest';
+var expect = require('chai').expect;
+var app = require('../../app');
+var request = require('supertest');
 
 describe('Order API:', function() {
   describe('GET /api/orders', function() {
@@ -22,7 +23,7 @@ describe('Order API:', function() {
     });
 
     it('should respond with JSON array', function() {
-      orders.should.be.instanceOf(Array);
+      expect(orders).to.be.instanceOf(Array);
     });
   });
 });

@@ -7,6 +7,13 @@
 
 var User = require('../api/user/user.model');
 
+
+/*
+* auto generate Products on seed
+*/
+
+
+
 User.find({}).remove(function() {
   User.create({
     provider: 'local',

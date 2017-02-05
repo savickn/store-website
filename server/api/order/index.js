@@ -5,9 +5,7 @@ var controller = require('./order.controller');
 
 var router = express.Router();
 
-router.post('/checkout', controller.checkout);
 router.get('/search', controller.search);
-
 router.get('/', controller.index);
 router.get('/:id', controller.show);
 router.post('/', controller.create);

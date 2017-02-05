@@ -1,10 +1,9 @@
 var Factory = require('rosie').Factory;
 
-var address = Factory.define('address')
+var address = new Factory()
   .sequence('id')
-  .attr('type', 'Billing')
-  .attr('nickname', ['type', 'id'], function(type, id) {
-    return type + id;
+  .attr('nickname', ['id'], function(type, id) {
+    return 'billing' + id;
   })
   .attr('street', ['id'], function(id) {
     return 'street' + id;
@@ -25,6 +24,5 @@ var address = Factory.define('address')
     var provinces = provinceList[country];
     return provinces[id % provinces.length];
   })
-  .attr('user')
 
 module.exports = address;

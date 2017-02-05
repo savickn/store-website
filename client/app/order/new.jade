@@ -10,12 +10,12 @@ title Secure Checkout
             p Please select one of your saved addresses or specify a new address.
 
             //ns-show-address(address="newOrder.shippingAddress" ng-if="(shippingState === 'Default') && (shippingState | isNotEmpty)")
-            ns-select-address(address="newOrder.shippingAddress" addresses="shippingAddresses" type="Shipping ng-if="shippingState === 'Select'")
-            ns-add-address(address="newOrder.shippingAddress" type="Shipping" state="return" ng-if="shippingState === 'New'")
+            ns-select-address(address="newOrder.shippingAddress" addresses="shippingAddresses" ng-if="shippingState === 'Select'")
+            ns-add-address(address="newOrder.shippingAddress" cb-func="validateShipping(form, address, errors, submitted)" ng-if="shippingState === 'New'")
 
-            button.btn.btn-primary(ng-click="setShippingState('New')" ng-show="shippingState === 'Default'") Add a New Address
-            button.btn.btn-primary(ng-click="setShippingState('Select')" ng-show="shippingState === 'Default'") Use an Existing Address
-            button.btn.btn-primary(ng-click="setShippingState('Default')" ng-show="shippingState !== 'Default'") Back
+            button.btn.btn-primary(ng-click="setShippingState('New')" ng-show="shippingState === 'Select'") Add a New Address
+            //button.btn.btn-primary(ng-click="setShippingState('Select')" ng-show="shippingState === 'Default'") Use an Existing Address
+            button.btn.btn-primary(ng-click="setShippingState('Select')" ng-show="shippingState !== 'Select'") Back
 
             input.btn.btn-primary(type="submit" wz-next value="Continue" ng-if="newOrder.shippingAddress | isNotEmpty")
 
@@ -26,9 +26,11 @@ title Secure Checkout
             ns-select-payment(payment="newOrder.paymentMethod" payments="paymentMethods" ng-if="paymentState === 'Select'")
             ns-add-payment(payment="newOrder.paymentMethod" ng-if="paymentState === 'New'")
 
-            button.btn.btn-primary(ng-click="setPaymentState('New')" ng-show="paymentState === 'Default'") Add a New Payment Method
-            button.btn.btn-primary(ng-click="setPaymentState('Select')" ng-show="paymentState === 'Default'") Use an Existing Payment Method
-            button.btn.btn-primary(ng-click="setPaymentState('Default')" ng-show="paymentState !== 'Default'") Back
+            //cb-func="validatePayment(form, payment, errors, submitted)"
+
+            button.btn.btn-primary(ng-click="setPaymentState('New')" ng-show="paymentState === 'Select'") Add a New Payment Method
+            //button.btn.btn-primary(ng-click="setPaymentState('Select')" ng-show="paymentState === 'Default'") Use an Existing Payment Method
+            button.btn.btn-primary(ng-click="setPaymentState('Select')" ng-show="paymentState !== 'Select'") Back
 
             input.btn.btn-primary(type="submit" wz-next value="Continue" ng-if="newOrder.paymentMethod | isNotEmpty")
 
@@ -39,7 +41,7 @@ title Secure Checkout
               label(for="sameAsShipping") Same as Shipping Address?
               input.form-control(type="checkbox" name="sameAsShipping" ng-model="sameAsShipping" ng-change="setBillingAsShipping(sameAsShipping)")
 
-            ns-add-address(address="newOrder.billingAddress" type="Billing" state="return" ng-if="billingState === 'New'")
+            ns-add-address(address="newOrder.billingAddress" cb-func="validateBilling(form, address, errors, submitted)" ng-if="billingState === 'New'")
 
             button.btn.btn-primary(ng-click="setBillingState('New')" ng-show="(billingState === 'Default') && !sameAsShipping") Add a New Address
             button.btn.btn-primary(ng-click="setBillingState('Default')" ng-show="billingState !== 'Default'") Back
@@ -65,7 +67,7 @@ title Secure Checkout
             ns-show-address(address="newOrder.billingAddress")
 
             h4 Order Info
-            p Subtotal: {{newOrder.subtotal}}
+            p Subtotal: {{newOrder.subTotal}}
             p Tax: {{newOrder.tax}}
             p Shipping Costs: {{newOrder.shippingCost}}
             p Total: {{newOrder.total}}

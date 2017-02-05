@@ -8,12 +8,6 @@
 var _ = require('lodash');
 var Order = require('./order.model');
 
-
-exports.checkout = function(req, res) {
-  console.log(req.body);
-  return res.status(200).json(req.body);
-};
-
 // Search orders
 exports.search = function(req, res) {
   var searchObj = req.query.search;
@@ -46,7 +40,10 @@ exports.index = function(req, res) {
 
 // Get a single order
 exports.show = function(req, res) {
-  Order.findById(req.params.id, function (err, order) {
+  Order.findById(req.params.id)
+    .populate('customer giftee', '-hashedPassword -salt')
+    .populate('products')
+    .exec(function (err, order) {
     if(err) { return handleError(res, err); }
     return res.json(order);
   });
@@ -66,6 +63,7 @@ exports.create = function(req, res) {
     status: 'Awaiting Pre-Auth',
     orderDate: Date.now()
   };
+
   Order.count({}, function(err, count) {
     var number = count + 1;
     defaultObj.orderNumber = addLeadingZeroes(number);

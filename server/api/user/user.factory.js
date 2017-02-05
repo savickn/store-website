@@ -1,20 +1,21 @@
 var Factory = require('rosie').Factory;
 var AddressFactory = require('../address/address.factory.js')
 
-var user = Factory.define('user')
+var user = new Factory()
   .sequence('id')
-  .sequence('name', function(i) { return 'user' + i; })
-  .sequence('email', function(i) { return 'user' + i + '@example.com'; })
-  .attr('onlineCredit', 0)
+  .attr('name', ['id'], function(i) { return 'user' + i; })
+  .attr('email', ['id'], function(i) { return 'user' + i + '@example.com'; })
+  .attr('password', 'password')
+  //.attr('onlineCredit', 0)
   .attr('role', 'user')
   .attr('phoneNumber', '645-765-4432')
 
   .attr('wishlist')
   .attr('reward')
-  .attr('orders', [])
-  .attr('paymentMethods', [])
+  .attr('orders')
+  .attr('paymentMethods')
   .attr('billingAddress')
-  .attr('shippingAddresses', [])
+  .attr('shippingAddresses')
 
   .attr('promotionalEmails', ['id'], function(id) {
     var values = [true, false];

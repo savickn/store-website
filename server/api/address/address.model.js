@@ -16,11 +16,6 @@ var cityList = {
 };
 
 var AddressSchema = new Schema({
-	/*type: {
-		type: String,
-		enum: ['Billing', 'Shipping'],
-		required: true
-	},*/
 	nickname: {
 		type: String,
 		required: 'You must provide a nickname for this address.'
@@ -53,60 +48,15 @@ var AddressSchema = new Schema({
 		type: String,
 		//enum: countryList,
 		required: 'You must select a country.'
-	}/*,
-	user: {
-		type: Schema.Types.ObjectId,
-		ref: 'User'
-	}*/
+	}
 });
 
 /*
 * Pre and Post Hooks
 */
-/*
-AddressSchema.pre("save", function(next) {
-  if(this.type === 'Billing') {
-  	mongoose.model('User').findOneAndUpdate(
-	    {_id: this.user},
-	    {$set: {billingAddress: this._id}},
-	    function(err, user) {
-	      if(err) {next(err);}
-	      next();
-	    }
-	  );
-  } else if(this.type === 'Shipping') {
-  	mongoose.model('User').findOneAndUpdate(
-	    {_id: this.user},
-	    {$addToSet: {shippingAddresses: this._id}},
-	    function(err, product) {
-	      if(err) {next(err);}
-	      next();
-	    }
-	  );
-  }
-});
 
-AddressSchema.pre('remove', function(next) {
-	if(this.type === 'Billing') {
-		mongoose.model('User').findOneAndUpdate(
-			{_id: this.user},
-			{$set: {billingAddress: {}}},
-			function(err, user) {
-				if(err) {next(err);}
-	      next();
-			}
-		);
-	} else if(this.type === 'Shipping') {
-		mongoose.model('User').findOneAndUpdate(
-			{_id: this.user},
-			{$pull: {shippingAddresses: this._id}},
-			function(err, user) {
-				if(err) {next(err);}
-	      next();
-			}
-		);
-	}
-})*/
+
+
 
 /*
 * Validations
@@ -161,3 +111,50 @@ module.exports = mongoose.model('Address', AddressSchema);
 		ref: 'User',
 		required: true
 	}*/
+
+
+
+  /*
+  AddressSchema.pre("save", function(next) {
+    if(this.type === 'Billing') {
+    	mongoose.model('User').findOneAndUpdate(
+  	    {_id: this.user},
+  	    {$set: {billingAddress: this._id}},
+  	    function(err, user) {
+  	      if(err) {next(err);}
+  	      next();
+  	    }
+  	  );
+    } else if(this.type === 'Shipping') {
+    	mongoose.model('User').findOneAndUpdate(
+  	    {_id: this.user},
+  	    {$addToSet: {shippingAddresses: this._id}},
+  	    function(err, product) {
+  	      if(err) {next(err);}
+  	      next();
+  	    }
+  	  );
+    }
+  });
+
+  AddressSchema.pre('remove', function(next) {
+  	if(this.type === 'Billing') {
+  		mongoose.model('User').findOneAndUpdate(
+  			{_id: this.user},
+  			{$set: {billingAddress: {}}},
+  			function(err, user) {
+  				if(err) {next(err);}
+  	      next();
+  			}
+  		);
+  	} else if(this.type === 'Shipping') {
+  		mongoose.model('User').findOneAndUpdate(
+  			{_id: this.user},
+  			{$pull: {shippingAddresses: this._id}},
+  			function(err, user) {
+  				if(err) {next(err);}
+  	      next();
+  			}
+  		);
+  	}
+  })*/

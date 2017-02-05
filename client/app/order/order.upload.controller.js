@@ -1,8 +1,10 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('OrderUploadCtrl', function ($scope, $timeout, Auth, OrderService, AlertService, ngCart, $state, DataService) {
+  .controller('OrderUploadCtrl', function ($scope, $timeout, Auth, OrderService, AlertService, ngCart, $state, DataService, AddressService) {
     $scope.isAdmin = Auth.isAdmin();
+    $scope.errors = {};
+    $scope.newAddress = {};
 
     $scope.billingAddress = Auth.getBillingAddress()[0];
     $scope.shippingAddresses = Auth.getShippingAddresses();
@@ -15,6 +17,56 @@ angular.module('passportApp')
       billingAddress: {},
       paymentMethod: {}
     };
+
+    /////////////////////// VALIDATE NEW INFO //////////////////////////
+
+    $scope.validateBilling = function(form, address, errors, submitted) {
+      AddressService.validateAddress(address).then(function() {
+        $scope.billingAddress = address;
+        $scope.billingState = 'Select';
+        submitted = false;
+      }).catch(function(err) {
+        err = err.data;
+        errors = {};
+
+        angular.forEach(err.errors, function(error, field) {
+          form[field].$setValidity('mongoose', false);
+          errors[field] = error.message;
+        });
+      })
+    };
+
+    $scope.validateShipping = function(form, address, errors, submitted) {
+      AddressService.validateAddress(address).then(function() {
+        $scope.shippingAddresses.pushUnique(address);
+        $scope.shippingState = 'Select';
+        submitted = false;
+      }).catch(function(err) {
+        err = err.data;
+        errors = {};
+
+        angular.forEach(err.errors, function(error, field) {
+          form[field].$setValidity('mongoose', false);
+          errors[field] = error.message;
+        });
+      })
+    };
+
+    /*$scope.validatePayment = function(form, address, errors, submitted) {
+      AddressService.validateAddress(address).then(function() {
+        $scope.shippingAddresses.pushUnique(address);
+        $scope.shippingState = 'Select';
+        submitted = false;
+      }).catch(function(err) {
+        err = err.data;
+        errors = {};
+
+        angular.forEach(err.errors, function(error, field) {
+          form[field].$setValidity('mongoose', false);
+          errors[field] = error.message;
+        });
+      })
+    };*/
 
     //make AJAX calls to determine tax/shipping costs
     $scope.getOrderInfo = function(order) {
@@ -47,8 +99,8 @@ angular.module('passportApp')
     };
 
     $scope.billingState = 'Default';
-    $scope.shippingState = 'Default';
-    $scope.paymentState = 'Default';
+    $scope.shippingState = 'Select';
+    $scope.paymentState = 'Select';
 
     $scope.setBillingState = function(state) {
       $scope.billingState = state;
@@ -64,6 +116,12 @@ angular.module('passportApp')
 
     //Add Orders
     $scope.checkout = function(form, order) {
+      console.log(order.products.length);
+
+      /*order.products.forEach(function(product) {
+        product = product._id;
+      });*/
+      console.log(order);
       OrderService.createOrder(order).then(function(order) {
         console.log('success');
         console.log(order);

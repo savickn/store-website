@@ -1,19 +1,25 @@
 'use strict';
 
-var should = require('should');
+var expect = require('chai').expect;
 var app = require('../../app');
 var Address = require('./address.model');
 var AddressFactory = require('./address.factory.js');
 
-var address = AddressFactory.build();
-console.log(address);
+
 
 describe('Address Model', function() {
+  var address;
+
   before(function(done) {
     Address.remove().exec().then(function() {
       done();
     });
   });
+
+  beforeEach(function(done) {
+    address = new Address(AddressFactory.build());
+    done();
+  })
 
   afterEach(function(done) {
     Address.remove().exec().then(function() {
@@ -23,27 +29,32 @@ describe('Address Model', function() {
 
   it('should begin with no addresses', function(done) {
     Address.find({}, function(err, addresses) {
-      addresses.should.have.length(0);
+      expect(addresses).to.have.length(0);
       done();
     });
   });
 
-  it('should fail when saving a duplicate address', function(done) {
-    Address.create(address, function(err, address) {
-      var addressDup = new Address(address);
-      addressDup.save(function(err) {
-        should.exist(err);
-        done();
-      });
-    });
-  });
-
-  it('should successfully save an address', function(done) {
+  it('should successfully save a valid address', function(done) {
     Address.create(address, function(err, address) {
       if(err) {done(err)};
-      console.log(address);
-      should.exist(address);
+      expect(address).to.exist;
       done();
-    })
-  })
+    });
+  });
+
+  it('should fail to save an invalid postal code', function(done) {
+    address.postalCode = 'm9r'
+    Address.create(address, function(err, address) {
+      expect(err).to.exist;
+      done();
+    });
+  });
+
+  it('should fails to save without a street address', function(done) {
+    address.street = '';
+    Address.create(address, function(err, address) {
+      expect(err).to.exist;
+      done();
+    });
+  });
 })

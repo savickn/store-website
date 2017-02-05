@@ -2,3 +2,9 @@
 .container
   .row
     alert-message
+
+  .row
+    h3 Order Number: {{currentOrder.orderNumber}}
+    ul.list-group
+      li.list-group-item Customer: {{currentOrder.customer.name}}
+      li.list-group-item Price: {{currentOrder.totalPrice}}

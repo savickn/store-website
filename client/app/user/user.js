@@ -19,8 +19,8 @@ angular.module('passportApp')
           }
         }
       })
-      .state('users.show', {
-        url: '/:id',
+      .state('showUser', {
+        url: 'users/:id',
         templateUrl: 'app/user/show.html',
         controller: 'UserCtrl'
       });

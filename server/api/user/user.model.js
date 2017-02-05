@@ -167,9 +167,9 @@ UserSchema
 // Validate email is not taken
 UserSchema
   .path('email')
-  .validate(function(value, respond) {
+  .validate(function(email, respond) {
     var self = this;
-    mongoose.model('User').findOne({email: value}, function(err, user) {
+    mongoose.model('User').findOne({email: email}, function(err, user) {
       if(err) throw err;
       if(user) {
         if(self._id === user._id) return respond(true);

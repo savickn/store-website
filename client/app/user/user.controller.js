@@ -7,7 +7,7 @@ angular.module('passportApp')
     $scope.addPoints = true;
 
 
-    UserService.getUser(stateParams.id).then(function(user) {
+    UserService.getUser($stateParams.id).then(function(user) {
       $scope.user = user;
     });
 

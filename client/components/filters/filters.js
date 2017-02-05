@@ -81,27 +81,27 @@ angular.module('passportAppFilters', [])
 	    }
 	})
 	.filter('isNotEmpty', function () {
-        var bar;
-        return function (obj) {
-            for (bar in obj) {
-                if (obj.hasOwnProperty(bar)) {
-                    return true;
-                }
-            }
-            return false;
-        };
-    })
-		.filter('isEmpty', function () {
-	        var bar;
-	        return function (obj) {
-	            for (bar in obj) {
-	                if (obj.hasOwnProperty(bar)) {
-	                    return false;
-	                }
-	            }
-	            return true;
-	        };
-	    });
+      var bar;
+      return function (obj) {
+          for (bar in obj) {
+              if (obj.hasOwnProperty(bar)) {
+                  return true;
+              }
+          }
+          return false;
+      };
+  })
+	.filter('isEmpty', function () {
+      var bar;
+      return function (obj) {
+          for (bar in obj) {
+              if (obj.hasOwnProperty(bar)) {
+                  return false;
+              }
+          }
+          return true;
+      };
+  });
 
 
 

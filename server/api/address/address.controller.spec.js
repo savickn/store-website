@@ -1,13 +1,13 @@
 'use strict';
 
 //used to test if HTTP requests return the correct methdos
-
-var app = require('../..');
-import request from 'supertest';
+var expect = require('chai').expect;
+var app = require('../../app');
+var request = require('supertest');
 
 describe('Address API:', function() {
-  describe('GET /api/addresses', function() {
-    var addresss;
+  /*describe('GET /api/addresses', function() {
+    var addresses;
 
     beforeEach(function(done) {
       request(app)
@@ -18,13 +18,13 @@ describe('Address API:', function() {
           if(err) {
             return done(err);
           }
-          addresss = res.body;
+          addresses = res.body;
           done();
         });
     });
 
     it('should respond with JSON array', function() {
-      addresss.should.be.instanceOf(Array);
+      expect(addresses).to.be.instanceOf(Array);
     });
-  });
+  });*/
 });

@@ -1,15 +1,16 @@
 'use strict';
 
-var app = require('../..');
-import request from 'supertest';
+var expect = require('chai').expect;
+var app = require('../../app');
+var request = require('supertest');
 
 describe('Wishlist API:', function() {
-  describe('GET /y', function() {
+  /*describe('GET /api/wishlist/:id', function() {
     var wishlists;
 
     beforeEach(function(done) {
       request(app)
-        .get('/y')
+        .get('/api/wishlist/:id')
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
@@ -24,5 +25,5 @@ describe('Wishlist API:', function() {
     it('should respond with JSON array', function() {
       wishlists.should.be.instanceOf(Array);
     });
-  });
+  });*/
 });

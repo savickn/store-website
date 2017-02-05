@@ -16,12 +16,23 @@ exports.create = function(req, res) {
   });
 };
 
+exports.validate = function(req, res) {
+  var address = new Address(req.body);
+  address.validate(function(err) {
+    if(err) {
+      return handleError(res, err);
+    } else {
+      console.log('pass validate')
+    }
+  })
+}
+
 // Updates an existing product in the DB.
 exports.update = function(req, res) {
   Address.findOneAndUpdate(
-    {_id: req.params.id}, 
+    {_id: req.params.id},
     {$set: req.body},
-    {new: true}, 
+    {new: true},
     function (err, address) {
     if (err) { return handleError(res, err); }
     if(!address) { return res.status(404).send('Not Found'); }
@@ -53,6 +64,9 @@ function handleError(res, err) {
 
 
 /*
+
+
+
 
 // Get list of products
 exports.index = function(req, res) {

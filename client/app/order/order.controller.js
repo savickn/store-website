@@ -8,9 +8,6 @@ angular.module('passportApp')
 
     $scope.currentOrder = {};
 
-    //ngCart.setTaxRate(7.5);
-    //ngCart.setShipping(2.99);
-
     OrderService.getOrder($stateParams.id).then(function(order) {
       $scope.currentOrder = order;
     });

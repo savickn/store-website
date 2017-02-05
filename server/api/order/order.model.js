@@ -18,13 +18,13 @@ var OrderSchema = new Schema({
 	products: [{
 		type: Schema.Types.ObjectId,
 		ref: 'Product',
-		index: true,
+		index: true/*,
     validate: {
 			validator: function(arr) {
-				return arr.length >= 1;
+				return arr.length > 0;
 			},
 			message: 'An order must contain at least one product.'
-		}
+		}*/
 	}],
 	status: {
 		type: String,
@@ -147,7 +147,11 @@ OrderSchema.methods = {
 * Virtuals
 */
 
-
+OrderSchema
+  .virtual('totalPrice')
+  .get(function() {
+    return this.subTotal + this.tax + this.shippingCost;
+  })
 
 OrderSchema.set('toJSON', {virtuals: true});
 

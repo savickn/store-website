@@ -8,10 +8,12 @@ function addLeadingZeroes(number) {
   return num;
 };
 
-var reward = Factory.define('reward')
+var reward = new Factory()
   .sequence('id')
-  .attr('cardNumber', ['id'], addLeadingZeroes(id))
-  .attr('points', 0)
+  .attr('cardNumber', ['id'], function(id) {
+    return addLeadingZeroes(id);
+  })
+  .attr('points')
   .attr('user')
 
 module.exports = reward;

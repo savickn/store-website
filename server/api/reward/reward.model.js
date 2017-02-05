@@ -6,8 +6,8 @@ var mongoose = require('mongoose'),
 var RewardSchema = new Schema({
 	cardNumber: {
 		type: String,
-		required: true,
-		match: /^([0-9]{8})$/
+    match: /^([0-9]{8})$/,
+		required: true
 	},
 	points: {
 		type: Number,
@@ -18,26 +18,32 @@ var RewardSchema = new Schema({
 	},
 	user: {
 		type:Schema.Types.ObjectId,
-		ref: 'User'
+		ref: 'User',
+    required: true
 	}
 });
 
 /*
-* Pre and Post Hooks
+* Validations
 */
 
 //prevents multiple rewards entries
-RewardSchema.pre('save', function(next) {
-	var self = this;
-	mongoose.model('User').findOne({_id: self.user}, function(err, user) {
-		if(err) {next(err);}
-		if(user.reward) {
-			self.invalidate("user", "You already have a plum account!");
-			done();
-		}
-		next();
-	});
-})
+RewardSchema
+  .path('user')
+  .validate(function(userId, respond) {
+    var self = this;
+    mongoose.model('User').findOne({_id: userId}, function(err, user) {
+      if(err) throw err;
+      if(user.reward) {
+        return respond(false);
+      }
+      respond(true);
+    })
+  }, 'You already have a plum account!');
+
+/*
+* Pre and Post Hooks
+*/
 
 RewardSchema.pre('save', function(next) {
 	mongoose.model('User').findOneAndUpdate(
@@ -47,26 +53,32 @@ RewardSchema.pre('save', function(next) {
 	      if(err) {next(err);}
 	      next();
     	}
-  	);
-})
+  );
+});
 
 /*
 * Class methods
 */
 
 RewardSchema.statics = {
-    getCount: function() {
 
-    }
-}
+};
 
 /*
 * Instance methods
 */
 
 RewardSchema.methods = {
-
-}
+    addPoints: function(points) {
+      this.points += points;
+    },
+    removePoints: function(points) {
+      this.points -= points;
+      if(this.points < 0) {
+        this.points = 0;
+      }
+    }
+};
 
 /*
 * Virtuals

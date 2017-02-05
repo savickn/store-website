@@ -1,26 +1,22 @@
 'use strict';
 
-var should = require('should');
+var expect = require('chai').expect;
 var app = require('../../app');
 var User = require('./user.model');
 var UserFactory = require('./user.factory.js');
 
-/*var user = new User({
-  provider: 'local',
-  name: 'Fake User',
-  phoneNumber: '4365675433',
-  email: 'test@test.com',
-  password: 'password'
-});*/
-
-var user = UserFactory.build();
-
 describe('User Model', function() {
-  //clears users from db
+  var user;
+
   before(function(done) {
     User.remove().exec().then(function() {
       done();
     });
+  });
+
+  beforeEach(function(done) {
+    user = new User(UserFactory.build());
+    done();
   });
 
   afterEach(function(done) {
@@ -31,16 +27,24 @@ describe('User Model', function() {
 
   it('should begin with no users', function(done) {
     User.find({}, function(err, users) {
-      users.should.have.length(0);
+      expect(users.length).to.equal(0);
       done();
     });
   });
 
+  it('should create a valid user', function(done) {
+    User.create(user, function(err, user) {
+      if(err) done(err);
+      expect(user).to.exist;
+      done();
+    })
+  });
+
   it('should fail when saving a duplicate user', function(done) {
-    user.save(function() {
+    user.save(function(err, user) {
       var userDup = new User(user);
       userDup.save(function(err) {
-        should.exist(err);
+        expect(err).to.exist;
         done();
       });
     });
@@ -49,44 +53,42 @@ describe('User Model', function() {
   it('should fail when saving without an email', function(done) {
     user.email = '';
     user.save(function(err) {
-      should.exist(err);
+      expect(err).to.exist;
       done();
     });
   });
 
   it('should fail if the email is improperly formatted', function(done) {
     user.email = 'test';
-    User.create(user, function(err) {
-      should.exist(err);
+    user.save(function(err) {
+      expect(err).to.exist;
       done();
-    })
-  })
+    });
+  });
 
   it('should fail if the phone number is improperly formatted', function(done) {
     user.phoneNumber = '1235';
-    User.create(user, function(err) {
-      should.exist(err);
+    user.save(function(err) {
+      expect(err).to.exist;
       done();
-    })
-  })
-
-  it('should should have virtual property NumberOfPurchases', function(done) {
-    User.create(user, function(err, user) {
-      should.exist(user.numberOfPurchases);
-      done();
-    })
-  })
-
-
-
-
-
-
-  it("should authenticate user if password is valid", function() {
-    return user.authenticate('password').should.be.true;
+    });
   });
 
-  it("should not authenticate user if password is invalid", function() {
-    return user.authenticate('blah').should.not.be.true;
+  it('numberOfPurchases should return no orders', function(done) {
+    user.save(function(err, user) {
+      if(err) done(err);
+      expect(user.numberOfPurchases).to.equal(0);
+      done();
+    });
+  });
+
+  it("should authenticate user if password is valid", function(done) {
+    expect(user.authenticate('password')).to.be.true;
+    done();
+  });
+
+  it("should not authenticate user if password is invalid", function(done) {
+    expect(user.authenticate('blah')).to.not.be.true;
+    done();
   });
 });

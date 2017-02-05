@@ -18,7 +18,7 @@
         p.help-block(ng-show='orderSearchForm.orderNumber.$error.mongoose')
           | {{ errors.orderNumber }}
 
-      button.btn.btn-primary(type="submit") Search
+      button.btn.btn-primary(type="submit" ng-disabled="orderQuery | isEmpty") Search
 
     ul.list-group
       li.list-group-item(ng-repeat="order in orders")
