@@ -18,11 +18,18 @@ module.exports = function(config) {
       'client/bower_components/angular-cookies/angular-cookies.js',
       'client/bower_components/angular-sanitize/angular-sanitize.js',
       'client/bower_components/angular-animate/angular-animate.js',
+      'client/bower_components/angular-aria/angular-aria.js',
       'client/bower_components/angular-route/angular-route.js',
-      'client/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
-      'client/bower_components/lodash/dist/lodash.compat.js',
-      'client/bower_components/angular-socket-io/socket.js',
       'client/bower_components/angular-ui-router/release/angular-ui-router.js',
+      'client/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
+      'client/bower_components/lodash/lodash.js',
+      'client/bower_components/ngCart/dist/ngCart.js',
+      'client/bower_components/angularUtils-pagination/dirPagination.js',
+      'client/bower_components/ng-file-upload/ng-file-upload.js',
+      'client/bower_components/restangular/dist/restangular.js',
+      'client/bower_components/angularjs-slider/dist/rzslider.js',
+      'client/bower_components/angular-wizard/dist/angular-wizard.js',
+      'client/bower_components/angular-material/angular-material.js',
       'client/app/app.js',
       'client/app/app.coffee',
       'client/app/**/*.js',
@@ -87,7 +94,7 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['PhantomJS'],
+    browsers: ['Chrome'],
 
 
     // Continuous Integration mode

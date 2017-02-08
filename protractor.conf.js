@@ -15,6 +15,7 @@ exports.config = {
   // If true, only chromedriver will be started, not a standalone selenium.
   // Tests for browsers other than chrome will not run.
   chromeOnly: true,
+  //chromeDriver: '../selenium/chromedriver',
 
   // list of files / patterns to load in the browser
   specs: [
@@ -31,7 +32,10 @@ exports.config = {
   // and
   // https://code.google.com/p/selenium/source/browse/javascript/webdriver/capabilities.js
   capabilities: {
-    'browserName': 'chrome'
+    'browserName': 'chrome',
+    'chromeOptions': {
+        'args': ['--disable-extensions',]
+    }
   },
 
   // ----- The test framework -----
@@ -45,6 +49,8 @@ exports.config = {
   //
   // See the full list at https://github.com/juliemr/minijasminenode
   jasmineNodeOpts: {
+    showColors: true,
+    includeStackTrace: true,
     defaultTimeoutInterval: 30000
   }
 };

@@ -8,14 +8,14 @@ describe('Controller: ReviewCtrl', function () {
   var ReviewCtrl, scope;
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope) {
-    scope = $rootScope.$new();
-    ReviewCtrl = $controller('ReviewCtrl', {
+  beforeEach(inject(function (_$controller_, _$rootScope_) {
+    scope = _$rootScope_.$new();
+    ReviewCtrl = _$controller_('ReviewCtrl', {
       $scope: scope
     });
   }));
 
   it('should ...', function () {
-    expect(1).toEqual(1);
+    expect(ReviewCtrl).toBeDefined();
   });
 });
