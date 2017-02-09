@@ -24,6 +24,7 @@ angular.module('passportApp', [
       .otherwise('/');
 
     $locationProvider.html5Mode(true);
+    $httpProvider.interceptors.push('spinnerInterceptor');
     $httpProvider.interceptors.push('authInterceptor');
     RestangularProvider.setBaseUrl('/api/');
   })
@@ -54,7 +55,64 @@ angular.module('passportApp', [
     };
   })
 
-  .run(function ($rootScope, $location, Auth, AlertService) {
+  .factory('spinnerInterceptor', function($rootScope, $q, $timeout) {
+    return {
+      request: function(config) {
+        //console.log('request');
+        //console.log(config);
+        $rootScope.$broadcast('$postingStart', config.url);
+        return $q.resolve(config);
+      },
+      response: function(response) {
+        //console.log('response');
+        //console.log(response);
+        $rootScope.$broadcast('$postingEnd', response.config.url);
+        return $q.resolve(response);
+      },
+      responseError: function(response) {
+        $rootScope.$broadcast('$postingEnd', response.config.url);
+        return $q.reject(response);
+      }
+    };
+  })
+
+  .run(function ($rootScope, $location, $timeout, Auth, AlertService, $mdDialog) {
+    var showing = false;
+
+    function showWait() {
+      if(showing) return;
+      $mdDialog.show({
+        template: '<md-dialog id="plz_wait" style="background-color:transparent;box-shadow:none">' +
+        '<div layout="row" layout-sm="column" layout-align="center center" aria-label="wait">' +
+        '<md-progress-circular md-mode="indeterminate" ></md-progress-circular>' +
+        '</div>' +
+        '</md-dialog>',
+        parent: angular.element(document.body),
+        clickOutsideToClose: false,
+        fullscreen: false
+      }).then(function(answer) {
+        showing = false;
+      });
+    }
+
+    $rootScope.$on('$postingStart', function(event, url) {
+      if (!$rootScope.postingStartTimer) {
+        $rootScope.postingStartTimer = $timeout(function() {
+          showWait();
+          showing = true;
+        }, 250);
+      }
+    });
+
+    $rootScope.$on('$postingEnd', function(event, url) {
+      if ($rootScope.postingStartTimer) {
+        $timeout.cancel($rootScope.postingStartTimer);
+        $rootScope.postingStartTimer = false;
+        if(!showing) return;
+        $mdDialog.cancel();
+      }
+    });
+
     // Redirect to login if route requires auth and you're not logged in
     $rootScope.$on('$stateChangeStart', function (event, next) {
       Auth.isLoggedInAsync(function(loggedIn) {

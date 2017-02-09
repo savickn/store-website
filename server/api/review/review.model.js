@@ -42,6 +42,25 @@ var ReviewSchema = new Schema({
 * Pre and POST Hooks
 */
 
+//sets verified field to user, NOT WORKING
+ReviewSchema.pre("save", function(next) {
+  let self = this;
+  mongoose.model('User').findById(this.author)
+    .populate('orders', 'products')
+    .exec(function(err, user) {
+      if(err) {next(err);}
+      for(let order of user.orders) {
+        for(let product of order.products) {
+          if(product === self.product) {
+            self.verified = true;
+            next(self);
+          }
+        }
+      };
+      next();
+  });
+});
+
 //data consistency with product
 ReviewSchema.pre("save", function(next) {
   mongoose.model('Product').findOneAndUpdate(

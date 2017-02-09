@@ -23,6 +23,7 @@ exports.validate = function(req, res) {
       return handleError(res, err);
     } else {
       console.log('pass validate')
+      return res.status(200).json();
     }
   })
 }

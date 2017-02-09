@@ -25,7 +25,7 @@ exports.show = function(req, res) {
 
 exports.search = function(req, res) {
   var searchObj = _.merge({}, req.query);
-  var wishlists = {};
+  var wishlists = [];
 
   User.find(searchObj)
     .select('name wishlist')
@@ -38,7 +38,6 @@ exports.search = function(req, res) {
       		return {_id: user.wishlist._id, name: user.name, products: user.wishlist.products};
       	}
       });
-
       return res.status(200).json(wishlists);
     });
 }
@@ -60,8 +59,6 @@ exports.update = function(req, res) {
     }
 	);
 };
-
-
 
 function handleError(res, err) {
   return res.status(500).send(err);

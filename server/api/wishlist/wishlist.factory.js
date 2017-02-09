@@ -1,9 +1,9 @@
 var Factory = require('rosie').Factory;
 
-var wishlist = Factory.define('wishlist')
+var wishlist = new Factory()
   .sequence('id')
-  .attr('products', [])
-  .attr('private', false)
+  .attr('products')
+  .attr('private')
   .attr('user')
 
 module.exports = wishlist;

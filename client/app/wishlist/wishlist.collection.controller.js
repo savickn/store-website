@@ -9,7 +9,6 @@ angular.module('passportApp')
         WishlistService.searchWishlists(giftee).then(function(wishlists) {
           $scope.wishlistQuery = wishlists;
           $scope.giftee = {};
-          $state.transitionTo('wishlists');
         })
       }
   	};

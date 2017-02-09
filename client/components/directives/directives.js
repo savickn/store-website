@@ -148,26 +148,6 @@ angular.module('passportAppDirectives', [])
 			}
 		};
 	})
-	/*.directive('nsErrors', function() {
-		return {
-			restrict: 'E',
-			templateUrl: '../components/directives/views/errors.html',
-			scope: {
-				form: '=',
-				errs: '=',
-				submitted: '@'
-			},
-			link: function(scope, elem, attrs) {
-				scope.errors = {};
-				angular.forEach(errs, function(error, field) {
-					form[field].$setValidity('mongoose', false);
-					scope.errors[field] = error.message;
-				});
-			}
-		}
-	})*/
-
-
 	//should be passed OUTPUT_VAR (e.g. address) and ADDRESS_LIST (e.g. addresses) which is used to set OUTPUT_VAR
 	.directive('nsSelectAddress', function() {
 		return {
@@ -204,6 +184,7 @@ angular.module('passportAppDirectives', [])
 			templateUrl: '../components/directives/views/newAddress.html',
 			scope: {
 				address: '=',
+				errors: '<',
 				cbFunc: '&'
 			},
 			link: function(scope, elem, attrs) {
@@ -231,10 +212,10 @@ angular.module('passportAppDirectives', [])
 		    	console.log(province);
 		    };
 
-		    scope.handleAddress = function(form, address) {
+		    scope.handleAddress = function(form, address, errors, submitted) {
 		    	scope.submitted = true;
 					if(form.$valid) {
-		    		scope.cbFunc({form: form, address: address, errors: scope.errors, submitted: scope.submitted});
+		    		scope.cbFunc({form: form, address: address, errors: errors, submitted: submitted});
 					};
 				};
 

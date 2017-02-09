@@ -13,16 +13,10 @@
 					input.form-control(type="email" name="email" placeholder="Please enter the giftee's email address." ng-model="giftee.email")
 				button.btn.btn-primary(type="submit" ng-disabled="giftee | isEmpty") Search
 
-	//shows items in the selected wishlist
-	.row
-		.col-lg-12
-			ui-view
-
-	//shows wishlists returned from search
 	.row
 		.col-lg-12
 			ul.list-group(ng-repeat="wishlist in wishlistQuery")
 				li.list-group-item
 					p Name: {{wishlist.name}}
 					p Items: {{wishlist.products.length}}
-					a(ui-sref="wishlists.show({id: wishlist._id})" ng-if="wishlist.products.length > 0") Go to Wishlist
+					a(ui-sref="showWishlist({id: wishlist._id})" ng-if="wishlist.products.length > 0") Go to Wishlist

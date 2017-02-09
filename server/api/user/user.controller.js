@@ -49,25 +49,24 @@ var sendResetEmail = function(req, res, cb) {
 
 exports.search = function(req, res) {
   console.log(req.query);
+  var searchObj = _.merge({}, req.query);
 
-  if(req.query.cardNumber) {
-    Reward.find({cardNumber: req.query.cardNumber})
+  if(searchObj.cardNumber) {
+    Reward.findOne({cardNumber: req.query.cardNumber})
     .populate('user', '-salt -hashedPassword')
     .exec(function(err, reward) {
       if(err) return res.status(500).send(err);
-      return res.status(200).json(reward.user);
+      return res.status(200).json([reward.user]);
     })
+  } else {
+    User.find(searchObj)
+    .select('-salt -hashedPassword')
+    .populate('reward wishlist')
+    .exec(function(err, users) {
+      if(err) return res.status(500).send(err);
+      return res.status(200).json(users);
+    });
   }
-
-  var searchObj = _.merge({}, req.query);
-
-  User.find(searchObj)
-  .select('-salt -hashedPassword')
-  .populate('reward wishlist')
-  .exec(function(err, users) {
-    if(err) return res.status(500).send(err);
-    return res.status(200).json(users);
-  });
 };
 
 /**

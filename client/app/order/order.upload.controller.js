@@ -3,8 +3,9 @@
 angular.module('passportApp')
   .controller('OrderUploadCtrl', function ($scope, $timeout, Auth, OrderService, AlertService, ngCart, $state, DataService, AddressService) {
     $scope.isAdmin = Auth.isAdmin();
-    $scope.errors = {};
-    $scope.newAddress = {};
+    $scope.newShippingAddress = {};
+    $scope.newBillingAddress = {};
+    $scope.newPayment = {};
 
     $scope.billingAddress = Auth.getBillingAddress()[0];
     $scope.shippingAddresses = Auth.getShippingAddresses();
@@ -39,8 +40,10 @@ angular.module('passportApp')
     $scope.validateShipping = function(form, address, errors, submitted) {
       AddressService.validateAddress(address).then(function() {
         $scope.shippingAddresses.pushUnique(address);
-        $scope.shippingState = 'Select';
+        $scope.newShippingAddress = {};
         submitted = false;
+        $scope.shippingState = 'Select';
+        AlertService.setAlert('Please select the newly added address.', 'Warning');
       }).catch(function(err) {
         err = err.data;
         errors = {};
@@ -67,6 +70,10 @@ angular.module('passportApp')
         });
       })
     };*/
+
+    $scope.clearAlert = function() {
+      AlertService.clearAlert();
+    }
 
     //make AJAX calls to determine tax/shipping costs
     $scope.getOrderInfo = function(order) {

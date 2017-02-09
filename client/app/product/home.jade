@@ -1,7 +1,17 @@
 .container
-	nav.navbar.navbar-default
-		.navbar-header
-			a.navbar-brand(href="#") Products
+	md-nav-bar(md-selected-nav-item="currentNavItem")
+		md-nav-item(md-nav-sref="products.computers" name="page1") Computers
+		md-nav-item(md-nav-sref="products.monitors" name="page2") Monitors
+		md-nav-item(md-nav-sref="products.keyboards" name="page3") Keyboards
+		md-nav-item(md-nav-sref="products.featured" name="page4") Featured
+
+	ui-view
+
+
+//nav.navbar.navbar-default
+	.navbar-header
+		a.navbar-brand(href="#") Products
+	span
 		ul.nav.navbar-nav
 			li
 				a(ui-sref="products.computers") Computers
@@ -11,7 +21,3 @@
 				a(ui-sref="products.keyboards") Keyboards
 			li
 				a(ui-sref="products.featured") Featured
-
-	.row
-		.col-lg-12
-			ui-view

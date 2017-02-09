@@ -5,12 +5,13 @@ angular.module('passportApp')
     $scope.users = [];
     $scope.userQuery = {};
 
-    $scope.searchUsers = function(query) {
+    $scope.searchUsers = function(form, query) {
       $scope.submitted = true;
-      if($scope.userSearchForm.$valid) {
+      if(form.$valid) {
         UserService.searchUsers(query).then(function(users) {
           $scope.users = users;
           $scope.submitted = false;
+          $scope.userQuery = {};
         }).catch(function(err) {
           console.log(err);
         })

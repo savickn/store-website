@@ -2,6 +2,7 @@
 
 angular.module('passportApp')
   .controller('ProductCollectionCtrl', function ($scope, $state, $timeout, $location, Auth, ProductService, ngCart) {
+    $scope.sidebarOpen = true;
 
     $scope.isAdmin = Auth.isAdmin();
     $scope.pageType = $state.params.type;

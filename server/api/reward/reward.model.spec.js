@@ -17,6 +17,9 @@ describe('Reward Model', function() {
     Reward.remove().exec().then(function() {
       done();
     });
+    User.remove().exec().then(function() {
+      done();
+    });
   });
 
   beforeEach(function(done) {
@@ -32,10 +35,6 @@ describe('Reward Model', function() {
     Reward.remove().exec().then(function() {
       done();
     });
-    User
-  });
-
-  after(function(done) {
     User.remove().exec().then(function() {
       done();
     });
@@ -55,18 +54,25 @@ describe('Reward Model', function() {
     })
   })
 
-  /*it('should update user.reward field if successfully saved', function(done) {
-    Reward.create(reward_with_user, function(err, reward) {
+  it('should update user.reward field if successfully saved', function(done) {
+    Reward.create(rewardWithUser, function(err, reward) {
       expect(reward).to.exist;
-
-
-      done();
+      User.find({reward: reward._id}, function(err, user) {
+        expect(user).to.exist;
+        done();
+      })
     })
   })
 
   it('should fail to save if the user already has a reward card', function(done) {
-
-  })*/
+    Reward.create(rewardWithUser, function(err, reward) {
+      expect(reward).to.exist;
+      Reward.create(rewardWithUser, function(err, reward) {
+        expect(err).to.exist;
+        done();
+      })
+    })
+  })
 
   it('should set points to 0 if not provided', function(done) {
     Reward.create(rewardWithUser, function(err, reward) {

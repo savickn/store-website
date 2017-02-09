@@ -4,7 +4,7 @@
 	.row
 		.col-lg-6.col-md-12.col-sm-12
 			h3 Search for User
-			form.form(role="form" name="userSearchForm" ng-submit="searchUsers(query)" novalidate)
+			form.form(role="form" name="userSearchForm" ng-submit="searchUsers(userSearchForm, userQuery)" novalidate)
 				p.help-text Use this form to search for user's. Not all fields must be filled out.
 				.form-group(ng-class='{ "has-success": userSearchForm.name.$valid && submitted, "has-error": userSearchForm.name.$invalid && submitted}')
 					label(for="name") Name
@@ -24,7 +24,7 @@
 
 				.form-group(ng-class='{ "has-success": userSearchForm.cardNumber.$valid && submitted, "has-error": userSearchForm.cardNumber.$invalid && submitted}')
 					label(for="cardNumber") Reward Card Number
-					input.form-control(type="number" name="cardNumber" ng-model="query.cardNumber" placeholder="Please enter a reward card number." pattern="[0-9]{8}")
+					input.form-control(type="text" name="cardNumber" ng-model="userQuery.cardNumber" placeholder="Please enter a reward card number." pattern="^([0-9]{8})$")
 					p.help-block(ng-show='userSearchForm.cardNumber.$error.pattern && submitted')
 						| Please enter an 8-digit card number.
 

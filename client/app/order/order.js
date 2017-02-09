@@ -20,7 +20,7 @@ angular.module('passportApp')
         }
       })
       .state('showOrder', {
-        url: '/showOrder/:id',
+        url: '/orders/:id',
         templateUrl: 'app/order/show.html',
         controller: 'OrderCtrl'
       })

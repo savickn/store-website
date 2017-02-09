@@ -57,29 +57,9 @@ var AddressSchema = new Schema({
 
 
 
-
 /*
 * Validations
 */
-
-//validate that user does not have 2+ addresses with the same nickname, not working currently
-/*AddressSchema
-	.path('nickname')
-	.validate(function(nickname) {
-		var state = true;
-		mongoose.model('User').findOne({_id: this.user}, function(err, user) {
-			var addresses = user.shippingAddresses
-			if(user.billingAddress) {
-				addresses.push(user.billingAddress);
-			}
-			addresses.forEach(function(address) {
-				if(address.nickname === nickname) {
-					return false;
-				}
-			})
-			return state;
-		});
-	}, 'The nickname you provided is already associated with another address.')*/
 
 // Validate the postal code, use api to compare postal code to province and country
 AddressSchema
@@ -105,6 +85,9 @@ AddressSchema.set('toJSON', {virtuals: true});
 module.exports = mongoose.model('Address', AddressSchema);
 
 
+
+
+
 /*
 	user: {
 		type: Schema.Types.ObjectId,
@@ -112,7 +95,24 @@ module.exports = mongoose.model('Address', AddressSchema);
 		required: true
 	}*/
 
-
+  //validate that user does not have 2+ addresses with the same nickname, not working currently
+  /*AddressSchema
+  	.path('nickname')
+  	.validate(function(nickname) {
+  		var state = true;
+  		mongoose.model('User').findOne({_id: this.user}, function(err, user) {
+  			var addresses = user.shippingAddresses
+  			if(user.billingAddress) {
+  				addresses.push(user.billingAddress);
+  			}
+  			addresses.forEach(function(address) {
+  				if(address.nickname === nickname) {
+  					return false;
+  				}
+  			})
+  			return state;
+  		});
+  	}, 'The nickname you provided is already associated with another address.')*/
 
   /*
   AddressSchema.pre("save", function(next) {

@@ -15,9 +15,23 @@ var WishlistSchema = new Schema({
 	}],
 	user: {
 		type: Schema.Types.ObjectId,
-		ref: 'User'
+		ref: 'User',
+    required: true
 	}
 });
+
+
+/*
+* Class Methods
+*/
+
+WishlistSchema.statics = {
+
+};
+
+/*
+* Virtuals
+*/
 
 WishlistSchema.pre('save', function(next) {
 	mongoose.model('User').findOneAndUpdate(

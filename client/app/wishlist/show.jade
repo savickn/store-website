@@ -1,12 +1,13 @@
-alert-message
+.container
+	alert-message
 
-h3 {{wishlist.user.name}}'s Wishlist
+	h3 {{wishlist.user.name}}'s Wishlist
 
-p(ng-if="wishlist.products.length < 1") Your wishlist in empty.
-ul.list-group(ng-repeat="product in wishlist.products" ng-if="wishlist.products.length > 0")
-	li.list-group-item
-		a.pull-left(src="product.displayPicture")
-		p Product: {{product.name}}
-		p Price: {{product.price}}
-		toggle-item-wishlist(product-id="{{product._id}}" ng-if="isOwner")
-		button.btn.btn-primary(ng-click="purchaseFromWishlist(wishlist._id, product)" ng-if="!isOwner") Purchase for User
+	p(ng-if="wishlist.products.length < 1") Your wishlist in empty.
+	ul.list-group(ng-repeat="product in wishlist.products" ng-if="wishlist.products.length > 0")
+		li.list-group-item
+			a.pull-left(src="product.displayPicture")
+			p Product: {{product.name}}
+			p Price: {{product.price}}
+			toggle-item-wishlist(product-id="{{product._id}}" ng-if="isOwner")
+			button.btn.btn-primary(ng-click="purchaseFromWishlist(wishlist._id, product)" ng-if="!isOwner") Purchase for User

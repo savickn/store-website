@@ -44,12 +44,12 @@ exports.update = function(req, res) {
 //used to upvote
 exports.upvote = function(req, res) {
   Review.findOneAndUpdate(
-    {_id: req.params.id}, 
+    {_id: req.params.id},
     {$addToSet: {upvotes: req.body.upvote}},
-    {new: true}, 
+    {new: true},
     function(err, review) {
-      if (err) { return handleError(res, err); }
-      //if(!review) { return res.status(404).send('Not Found'); }
+      if (err) return handleError(res, err);
+      if(!review) return res.status(404).send('Not Found');
       return res.status(200).json(review)
     });
 }
@@ -77,9 +77,9 @@ function isDuplicateLike() {
     req.body.upvotes.forEach(function(upvote) {
       if(upvote.authorId === req.body.newUpvote.authorId) {
         return true;
-      } 
+      }
     });
-    return false;   
+    return false;
   }
 
   if(isDuplicateLike()) { return res.status(501).send('Duplicate Like') };
@@ -93,7 +93,7 @@ function isDuplicateLike() {
   /*Review.findById(req.params.id, function (err, review) {
     if (err) { return handleError(res, err); }
     if(!review) { return res.status(404).send('Not Found'); }
-    
+
     var updated = _.merge(review, req.body);
     updated.upvotes = req.body.upvotes;
     updated.save(function (err) {

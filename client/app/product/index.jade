@@ -1,112 +1,110 @@
 
 ///////////////////////////////////////////////////////////// BANNER CONTENT
 
-.container
-  .row
-    .col-lg-2
-      .sort.pull-right(uib-dropdown)
-        button.btn.btn-default(type="button" uib-dropdown-toggle) Sort
-          span.caret
-        ul(uib-dropdown-menu)
+//used for debugging the searchFilter
+//.row
+  ul
+    li(ng-repeat="field in filterExpr") {{field}}
+
+/////////////////////////////// SEARCH SIDEBAR ///////////////////////////////
+
+
+.flex-row(layout="row")
+  md-sidenav(layout="column" layout-padding="0" md-component-id="left" class="md-sidenav-left" md-is-locked-open="sidebarOpen")
+    .navbar-header
+      a.navbar-brand(href="#" ng-click="getResults()") Search
+
+    ul.navbar.nav(layout="column")
+      li(uib-dropdown)
+        a(href="#" uib-dropdown-toggle) Product Name
+        ul(uib-dropdown-menu ng-click="$event.stopPropagation()")
           li
-            a(href="#" ng-click="sortType = 'price'; sortReverse = false") Price: Low to High
+            input.form-control(type='text' placeholder='Enter the name here.' ng-model='filterExpr.name' ng-click="$event.stopPropagation()")
+
+      li(uib-dropdown)
+        a(href="#" uib-dropdown-toggle ng-click="toggleAdvSearch") Price
+        ul(uib-dropdown-menu ng-click="$event.stopPropagation()")
+          //li
+            md-slider-container
+              span 0
+              md-slider(min="0" max="100000" ng-model="priceExpr.price")
+              span 100000
           li
-            a(href="#" ng-click="sortType = 'price'; sortReverse = true") Price: High to Low
+            input.form-control(type="number" placeholder='Enter minimum price.' ng-model="priceExpr.minPrice")
           li
-            a(href="#" ng-click="sortType = 'name'; sortReverse = false") Name: A-Z
+            input.form-control(type="number" placeholder='Enter maximum price.' ng-model="priceExpr.maxPrice")
+
+      //draws all variable categories
+      li(ng-repeat="category in searchableCategories" uib-dropdown)
+        a(href="#" uib-dropdown-toggle) {{category.name | capitalize}}
+        ul(role="menu" uib-dropdown-menu ng-click="$event.stopPropagation()")
+          li(ng-repeat="field in category.list")
+            a(href="" ng-click="this[field + '-checked'] = !this[field + '-checked']; updateFilter(this[field + '-checked'], category.name, field)") {{field}}
+              span.glyphicon.glyphicon-unchecked(ng-if="!this[field + '-checked']")
+              span.glyphicon.glyphicon-check(ng-if="this[field + '-checked']")
+
+      li(uib-dropdown)
+        a(href="#" uib-dropdown-toggle) Other
+        ul(role="menu" uib-dropdown-menu ng-click="$event.stopPropagation()")
           li
-            a(href="#" ng-click="sortType = 'name'; sortReverse = true") Name: Z-A
-
-
-  /////////////////////////////// SEARCH SIDEBAR ///////////////////////////////
-
-  //used for debugging the searchFilter
-  //.row
-    ul
-      li(ng-repeat="field in filterExpr") {{field}}
-
-  .row
-    .col-lg-3
-      nav.navbar.sidebar
-        form.container-fluid(name="sidebarForm")
-          .navbar-header
-            a.navbar-brand(href="#" ng-click="getResults()") Search
-
-          //.collapse.navbar-collapse
-          div
-            ul.nav.navbar-nav
-              li(uib-dropdown)
-                a(href="#" uib-dropdown-toggle) Product Name
-                ul(uib-dropdown-menu ng-click="$event.stopPropagation()")
-                  li
-                    input.form-control(type='text' placeholder='Enter the name here.' ng-model='filterExpr.name' ng-click="$event.stopPropagation()")
-
-              li(uib-dropdown)
-                a(href="#" uib-dropdown-toggle ng-click="toggleAdvSearch") Price
-                ul(uib-dropdown-menu ng-click="$event.stopPropagation()")
-                  li
-                    input.form-control(type="number" placeholder='Enter minimum price.' ng-model="priceExpr.minPrice")
-                  li
-                    input.form-control(type="number" placeholder='Enter maximum price.' ng-model="priceExpr.maxPrice")
-
-              //draws all variable categories
-              li(ng-repeat="category in searchableCategories" uib-dropdown)
-                a(href="#" uib-dropdown-toggle) {{category.name | capitalize}}
-                ul(role="menu" uib-dropdown-menu ng-click="$event.stopPropagation()")
-                  li(ng-repeat="field in category.list")
-                    a(href="" ng-click="this[field + '-checked'] = !this[field + '-checked']; updateFilter(this[field + '-checked'], category.name, field)") {{field}}
-                      span.glyphicon.glyphicon-unchecked(ng-if="!this[field + '-checked']")
-                      span.glyphicon.glyphicon-check(ng-if="this[field + '-checked']")
-
-              li(uib-dropdown)
-                a(href="#" uib-dropdown-toggle) Other
-                ul(role="menu" uib-dropdown-menu ng-click="$event.stopPropagation()")
-                  li
-                    a(href="" ng-click="onSaleTag = !onSaleTag") On Sale
-                      span.glyphicon.glyphicon-unchecked(ng-if="!onSaleTag" ng-value="filterExpr.onSale = false")
-                      span.glyphicon.glyphicon-check(ng-if="onSaleTag" ng-value="filterExpr.onSale = true")
-                  li
-                    a(href="" ng-click="featuredTag = !featuredTag") Featured
-                      span.glyphicon.glyphicon-unchecked(ng-if="!featuredTag" ng-value="filterExpr.featured = false")
-                      span.glyphicon.glyphicon-check(ng-if="featuredTag" ng-value="filterExpr.featured = true")
-                  li
-                    a(href="" ng-click="onlineOnlyTag = !onlineOnlyTag") Online Only
-                      span.glyphicon.glyphicon-unchecked(ng-if="!onlineOnlyTag" ng-value="filterExpr.onlineOnly = false")
-                      span.glyphicon.glyphicon-check(ng-if="onlineOnlyTag" ng-value="filterExpr.onlineOnly = true")
+            a(href="" ng-click="onSaleTag = !onSaleTag") On Sale
+              span.glyphicon.glyphicon-unchecked(ng-if="!onSaleTag" ng-value="filterExpr.onSale = false")
+              span.glyphicon.glyphicon-check(ng-if="onSaleTag" ng-value="filterExpr.onSale = true")
+          li
+            a(href="" ng-click="featuredTag = !featuredTag") Featured
+              span.glyphicon.glyphicon-unchecked(ng-if="!featuredTag" ng-value="filterExpr.featured = false")
+              span.glyphicon.glyphicon-check(ng-if="featuredTag" ng-value="filterExpr.featured = true")
+          li
+            a(href="" ng-click="onlineOnlyTag = !onlineOnlyTag") Online Only
+              span.glyphicon.glyphicon-unchecked(ng-if="!onlineOnlyTag" ng-value="filterExpr.onlineOnly = false")
+              span.glyphicon.glyphicon-check(ng-if="onlineOnlyTag" ng-value="filterExpr.onlineOnly = true")
 
 
 
-    /////////////////////////////// PRODUCTS DISPLAY ///////////////////////////////
+        /////////////////////////////// PRODUCTS DISPLAY ///////////////////////////////
+
+  .product-container-flexbox(ng-show="availableProducts.length > 0")
+    .product-flexbox(dir-paginate="product in availableProducts | priceFilter : priceExpr | productFilter : filterExpr | orderBy : sortType : sortReverse | itemsPerPage: pageSize"
+      total-items="totalProducts" current-page="currentPage")
+      .flex-item
+        img(src='{{product.displayPicture.path}}' width='150' height='150' ng-if='product.displayPicture')
+        img(src='no_image.jpg' width='150' height='150' ng-if='!product.displayPicture')
+      .flex-item
+        a(ui-sref="show{{pageType}}({id: product._id})") {{product.name}}
+      .flex-item
+        p Price: {{product.price}}
+      .flex-item
+        ngcart-addtocart(id="{{product._id}}" name="{{product.name}}" price="{{product.price}}" quantity="1" quantity-max="30" data="product") Add to Cart
+  p(ng-show="availableProducts.length < 1") There are no products matching that query.
 
 
-    .col-lg-9
-      .product-container-flexbox(ng-show="availableProducts.length > 0")
-        .product-flexbox(dir-paginate="product in availableProducts | priceFilter : priceExpr | productFilter : filterExpr | orderBy : sortType : sortReverse | itemsPerPage: pageSize"
-          total-items="totalProducts" current-page="currentPage")
-          .flex-item
-            img(src='{{product.displayPicture.path}}' width='150' height='150' ng-if='product.displayPicture')
-            img(src='no_image.jpg' width='150' height='150' ng-if='!product.displayPicture')
-          .flex-item
-            a.text-center(ui-sref="show{{pageType}}({id: product._id})") {{product.name}}
-          .flex-item
-            p.text-center Price: {{product.price}}
-          .flex-item
-            ngcart-addtocart.center-block(id="{{product._id}}" name="{{product.name}}" price="{{product.price}}" quantity="1" quantity-max="30" data="product") Add to Cart
-      p(ng-show="availableProducts.length < 1") There are no products matching that query.
+///////////////////////////////  PAGINATION ///////////////////////////////
 
 
-  ///////////////////////////////  PAGINATION ///////////////////////////////
+.row
+  .col-lg-4.col-lg-offset-3
+    dir-pagination-controls(on-page-change="pageChanged(newPageNumber)")
+  .col-lg-2.col-lg-offset-10
+    .pagination-control
+      label Items per page:
+        .pagination(uib-dropdown)
+          button.btn.btn-default(type="button" uib-dropdown-toggle) {{pageSize}}
+            span.caret
+          ul(uib-dropdown-menu)
+            li(ng-repeat="pageOpt in paginationOptions")
+              a(href="#" ng-click="sizeChanged(pageOpt)") {{pageOpt}}
 
 
-  .row
-    .col-lg-4.col-lg-offset-3
-      dir-pagination-controls(on-page-change="pageChanged(newPageNumber)")
-    .col-lg-2.col-lg-offset-10
-      .pagination-control
-        label Items per page:
-          .pagination(uib-dropdown)
-            button.btn.btn-default(type="button" uib-dropdown-toggle) {{pageSize}}
-              span.caret
-            ul(uib-dropdown-menu)
-              li(ng-repeat="pageOpt in paginationOptions")
-                a(href="#" ng-click="sizeChanged(pageOpt)") {{pageOpt}}
+  .col-lg-2
+    .sort.pull-right(uib-dropdown)
+      button.btn.btn-default(type="button" uib-dropdown-toggle) Sort
+        span.caret
+      ul(uib-dropdown-menu)
+        li
+          a(href="#" ng-click="sortType = 'price'; sortReverse = false") Price: Low to High
+        li
+          a(href="#" ng-click="sortType = 'price'; sortReverse = true") Price: High to Low
+        li
+          a(href="#" ng-click="sortType = 'name'; sortReverse = false") Name: A-Z
+        li
+          a(href="#" ng-click="sortType = 'name'; sortReverse = true") Name: Z-A

@@ -32,17 +32,17 @@ var taxMap = {
 
 // Get a single computer
 exports.countries = function(req, res) {
-  return res.json(countries);
+  return res.status(200).json(countries);
 };
 
 exports.provinces = function(req, res) {
   var provinces = provinceMap[req.query.country];
-  return res.json(provinces);
+  return res.status(200).json(provinces);
 };
 
 exports.taxes = function(req, res) {
   var taxRate = taxMap[req.query.province];
-  return res.json(taxRate);
+  return res.status(200).json(taxRate);
 }
 
 function handleError(res, err) {
