@@ -3,16 +3,15 @@
 	.review-container
 		.flex-review
 			h3 {{currentReview.product.name}} Review
-			ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-init="rating = star.rating + 1")
-				li.verified(ng-if="currentReview.verified") VERIFIED REVIEWER
-				li Upvotes: {{currentReview.upvotes.length}}
-				li Rating: {{currentReview.rating}}
+			md-list(ng-init="rating = star.rating + 1")
+				md-list-item.verified(ng-if="currentReview.verified") VERIFIED REVIEWER
+				md-list-item Author: {{currentReview.author.name}}
+				md-list-item Upvotes: {{currentReview.upvotes.length}}
+				md-list-item Rating:
 					div.no-touch(class='star-rating' star-rating rating-value="rating" data-max="10")
-				li Description: {{currentReview.summary}}
-				li Author: {{currentReview.author.name}}
-
-			.review-upvote
-				a(href='#', ng-click='upvoteReview(currentReview)' ng-show='!isDuplicateLike') Mark as Helpful?
-				a(href='#', ng-click='removeUpvote(currentReview)' ng-show='isDuplicateLike') Unhelpful?
-				ul.nav.nav-tabs.nav-stacked(ng-repeat='upvote in currentReview.upvotes')
-					li {{upvote.userName}}
+				md-list-item Description: {{currentReview.summary}}
+				md-list-item
+					a(href='#', ng-click='upvoteReview(currentReview)' ng-show='!isDuplicateLike') Helpful?
+					a(href='#', ng-click='removeUpvote(currentReview)' ng-show='isDuplicateLike') Unhelpful?
+				//md-list-item
+					p(ng-repeat='upvote in currentReview.upvotes') {{upvote.userName}}

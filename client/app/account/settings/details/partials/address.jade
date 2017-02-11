@@ -6,21 +6,17 @@
 		ns-add-address(address="billingAddress" cb-func="updateBilling(form, address, errors, submitted)" ng-if="billingAddress | isNotEmpty" ng-show="billingState === 'Edit'")
 		ns-add-address(address="billingAddress" cb-func="updateBilling(form, address, errors, submitted)" ng-if="!(billingAddress | isNotEmpty)" ng-show="billingState === 'New'")
 
-		//ns-add-address(address="billingAddress" type="Billing" state="update" ng-if="billingAddress" ng-show="billingState === 'Edit'")
-		//ns-add-address(address="newAddress" type="Billing" state="new" ng-if="!(billingAddress | isNotEmpty)" ng-show="billingState === 'New'")
-
-		button.btn.btn-primary(ng-if="billingAddress | isNotEmpty" ng-show="billingState === 'Default'" ng-click="setBillingState('Edit')") Edit your billing address?
-		button.btn.btn-primary(ng-if="!(billingAddress | isNotEmpty)" ng-show="billingState === 'Default'" ng-click="setBillingState('New')") Add a billing address?
-		button.btn.btn-primary(ng-show="billingState !== 'Default'" ng-click="setBillingState('Default')") Back
-
+		md-button.md-primary.md-raised(ng-if="billingAddress | isNotEmpty" ng-show="billingState === 'Default'" ng-click="setBillingState('Edit')") Edit your billing address?
+		md-button.md-primary.md-raised(ng-if="!(billingAddress | isNotEmpty)" ng-show="billingState === 'Default'" ng-click="setBillingState('New')") Add a billing address?
+		md-button.md-primary.md-raised(ng-show="billingState !== 'Default'" ng-click="setBillingState('Default')") Back
+	.col-lg-12
 		h3 Shipping Addresses
-		ul.nav.nav-tabs.nav-stacked.col-md-6.col-lg-6.col-sm-6(ng-if="shippingAddresses.length > 0")
-			li(ng-repeat="address in shippingAddresses")
+		ul.nav(layout="row" ng-if="shippingAddresses.length > 0")
+			li(layout="column" flex="100" ng-repeat="address in shippingAddresses")
 				ns-add-address(address="address" cb-func="updateShipping(form, address, errors, submitted)" ng-show="shippingState === 'Edit'")
 				ns-show-address(address="address" ng-show="shippingState === 'Default'")
-
 		ns-add-address(address="newAddress" cb-func="updateShipping(form, address, errors, submitted)" ng-if="shippingAddresses.length < 6" ng-show="shippingState === 'New'")
 
-		button.btn.btn-primary(ng-if="shippingAddresses.length > 0" ng-show="shippingState === 'Default'" ng-click="setShippingState('Edit')") Edit your shipping address?
-		button.btn.btn-primary(ng-if="shippingAddresses.length < 6" ng-show="shippingState === 'Default'" ng-click="setShippingState('New')") Add a shipping address?
-		button.btn.btn-primary(ng-show="shippingState !== 'Default'" ng-click="setShippingState('Default')") Back
+		md-button.md-primary.md-raised(ng-if="shippingAddresses.length > 0" ng-show="shippingState === 'Default'" ng-click="setShippingState('Edit')") Edit your shipping address?
+		md-button.md-primary.md-raised(ng-if="shippingAddresses.length < 6" ng-show="shippingState === 'Default'" ng-click="setShippingState('New')") Add a shipping address?
+		md-button.md-primary.md-raised(ng-show="shippingState !== 'Default'" ng-click="setShippingState('Default')") Back

@@ -66,6 +66,7 @@ angular.module('passportAppFilters', [])
 	})
 	.filter('priceFilter', function() {
 		return function(products, priceExpr) {
+			if((priceExpr.minPrice === undefined) || (priceExpr.maxPrice === undefined)) return products;
 			var filtered = [];
 			products.forEach(function(product) {
 				if(product.price >= priceExpr.minPrice && product.price <= priceExpr.maxPrice) {

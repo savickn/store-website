@@ -4,7 +4,8 @@ angular.module('passportApp')
   .controller('AddressCtrl', function ($scope, Auth, UserService, AddressService, AlertService) {
     $scope.isAdmin = Auth.isAdmin();
     $scope.newAddress = {};
-    $scope.saveToDb = true;
+    $scope.billingErrors = {};
+    $scope.shippingErrors = {};
 
     $scope.billingAddress = Auth.getBillingAddress()[0] || {};
     $scope.shippingAddresses = Auth.getShippingAddresses();

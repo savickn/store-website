@@ -81,10 +81,22 @@
 ///////////////////////////////  PAGINATION ///////////////////////////////
 
 
-.row
-  .col-lg-4.col-lg-offset-3
+.controls(layout="row" layout-align="flex-end")
+  .sort-dropdown(uib-dropdown)
+    button.btn.btn-default(type="button" uib-dropdown-toggle) Sort
+      span.caret
+    ul(uib-dropdown-menu)
+      li
+        a(href="#" ng-click="sortType = 'price'; sortReverse = false") Price: Low to High
+      li
+        a(href="#" ng-click="sortType = 'price'; sortReverse = true") Price: High to Low
+      li
+        a(href="#" ng-click="sortType = 'name'; sortReverse = false") Name: A-Z
+      li
+        a(href="#" ng-click="sortType = 'name'; sortReverse = true") Name: Z-A
+
+  .pagination
     dir-pagination-controls(on-page-change="pageChanged(newPageNumber)")
-  .col-lg-2.col-lg-offset-10
     .pagination-control
       label Items per page:
         .pagination(uib-dropdown)
@@ -93,18 +105,3 @@
           ul(uib-dropdown-menu)
             li(ng-repeat="pageOpt in paginationOptions")
               a(href="#" ng-click="sizeChanged(pageOpt)") {{pageOpt}}
-
-
-  .col-lg-2
-    .sort.pull-right(uib-dropdown)
-      button.btn.btn-default(type="button" uib-dropdown-toggle) Sort
-        span.caret
-      ul(uib-dropdown-menu)
-        li
-          a(href="#" ng-click="sortType = 'price'; sortReverse = false") Price: Low to High
-        li
-          a(href="#" ng-click="sortType = 'price'; sortReverse = true") Price: High to Low
-        li
-          a(href="#" ng-click="sortType = 'name'; sortReverse = false") Name: A-Z
-        li
-          a(href="#" ng-click="sortType = 'name'; sortReverse = true") Name: Z-A

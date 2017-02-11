@@ -5,14 +5,25 @@
 
 'use strict';
 
-var User = require('../api/user/user.model');
+var User = require('../api/user/user.model.js');
+var Computer = require('../api/computer/computer.model.js');
+var ComputerFactory = require('../api/computer/computer.factory.js');
 
 
 /*
 * auto generate Products on seed
 */
 
-
+Computer.find({}).remove(function() {
+  Computer.create(
+    ComputerFactory.build(),
+    ComputerFactory.build(),
+    ComputerFactory.build(),
+    ComputerFactory.build(),
+    function() {
+      console.log('finished populating computers');
+    })
+})
 
 User.find({}).remove(function() {
   User.create({

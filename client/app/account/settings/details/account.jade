@@ -1,46 +1,8 @@
-.row
-  alert-message
+alert-message
 
-.row
-  nav.navbar.navbar-default
-    ul.nav.navbar-nav
-      li
-        a(href="/settings/account/info") Account Info
-      li
-        a(href="/settings/account/password") Password
-      li
-        a(href="/settings/account/address") Addresses
+md-nav-bar(md-selected-nav-item="currentNavItem")
+	md-nav-item(md-nav-sref="settings.account.info" name="page1") Info
+	md-nav-item(md-nav-sref="settings.account.password" name="page2") Password
+	md-nav-item(md-nav-sref="settings.account.address" name="page3") Addresses
 
-.row
-  ui-view
-
-
-    //li(ng-if="isAdmin")
-      a(href="#" ng-click="setViewState('Edit')") Edit
-    //li(ng-if="isAdmin")
-      a(href="#" ng-click="setViewState('Picture')") Add Pictures
-
-
-  //.col-lg-6
-    h3 Shipping Addresses
-    ul.list-group(ng-repeat='shipping in userUpdates.shippingAddresses')
-      ns-address(address="shipping" type="Shipping")
-      button.btn.btn-primary(ng-click='setAsPrimaryAddress(address)') Set this as your primary shipping address.
-    a.btn.btn-primary(href="/settings/account/shipping") Add Shipping Address
-
-  //.view(ui-view="address")
-
-
-
-
-  //.col-lg-6
-    h3 Shipping Address
-    ul.list-group(ng-repeat='shipping in user.shippingAddresses')
-      li.list-group-item NickName: {{shipping.nickname}}
-      li.list-group-item Street Address: {{shipping.street}}
-      li.list-group-item City: {{shipping.city}}
-      li.list-group-item Postal Code: {{shipping.postalCode}}
-      li.list-group-item Province: {{shipping.province}}
-      li.list-group-item Country: {{shipping.country}}
-      button.btn.btn-primary(ng-click='setAsPrimaryAddress(address)') Set this as your primary shipping address.
-    a.btn.btn-primary(href="/settings/account/shipping") Edit your shipping address
+ui-view

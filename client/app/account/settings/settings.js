@@ -21,15 +21,6 @@ angular.module('passportApp')
         url: '/password',
         templateUrl: 'app/account/settings/details/partials/password.html'
       })
-      /*.state('settings.account.email', {
-        url: '/email',
-        templateUrl: 'app/account/settings/details/partials/email.html'
-        views: {
-          'main@settings.account.email' : {
-            templateURL: 'app/account/settings/details/partials/email.html'
-          }
-        }
-      })*/
       .state('settings.account.info', {
         url: '/info',
         templateUrl: 'app/account/settings/details/partials/info.html'
@@ -39,23 +30,6 @@ angular.module('passportApp')
         templateUrl: 'app/account/settings/details/partials/address.html',
         controller: 'AddressCtrl'
       })
-
-
-      /*.state('settings.account.billing', {
-        url: '/billing',
-        templateUrl: 'app/account/settings/details/partials/address.html',
-        params: {
-          type: 'Billing'
-        }
-      })
-      .state('settings.account.shipping', {
-        url: '/shipping',
-        templateUrl: 'app/account/settings/details/partials/address.html',
-        params: {
-          type: 'Shipping'
-        }
-      })*/
-
 
       .state('settings.paymentOptions', {
         url: '/paymentOptions',
@@ -69,7 +43,6 @@ angular.module('passportApp')
         controller: 'PaymentCtrl',
         authenticate: true
       })
-
 
       .state('settings.myWishlist', {
         url: '/myWishlist',

@@ -8,5 +8,5 @@ module.exports = {
     uri: 'mongodb://localhost/passport-test'
   },
 
-  seedDB: false
+  seedDB: true
 };

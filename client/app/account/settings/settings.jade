@@ -1,17 +1,17 @@
 
 .container
-  .row
-    .col-lg-4.col-md-4.col-sm-4
-      ul.list-group
-        li.list-group-item
+  .flex-settings(layout="row")
+    md-sidenav.md-sidenav-left(md-component-id="leftNav" md-disable-backdrop md-is-locked-open="true" flex="25")
+      md-list
+        md-list-item
           a(ui-sref="settings.account.info") Account Details
-        li.list-group-item
+        md-list-item
           a(ui-sref="settings.rewards") My Rewards
-        li.list-group-item
+        md-list-item
           a(ui-sref="settings.myWishlist({id: user.wishlist._id})") Wishlist
-        li.list-group-item
+        md-list-item
           a(ui-sref="settings.paymentOptions") Payment Options
-        li.list-group-item
+        md-list-item
           a(ui-sref="settings.orderHistory") Order History
-    .col-lg-8.col-md-8.col-sm-8
+    md-content(flex="75")
       ui-view

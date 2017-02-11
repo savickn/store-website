@@ -2,6 +2,17 @@
 'use strict';
 
 angular.module('passportAppDirectives', [])
+	.directive('mongooseError', function () {
+		return {
+			restrict: 'A',
+			require: 'ngModel',
+			link: function(scope, element, attrs, ngModel) {
+				element.on('keydown', function() {
+					return ngModel.$setValidity('mongoose', true);
+				});
+			}
+		};
+	})
 	.directive('starRating', function() {
 		return {
 			restrict : 'A',
@@ -189,7 +200,6 @@ angular.module('passportAppDirectives', [])
 			},
 			link: function(scope, elem, attrs) {
 				//check for favorite shipping address in Cookies
-				scope.errors = {}
 				scope.submitted = false;
 
 				scope.countries = [];
