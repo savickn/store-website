@@ -9,6 +9,8 @@ angular.module('passportApp')
     $scope.formObj = {};
     $scope.submitted = false;
 
+    $scope.books = [];
+
   	$scope.sendEmail = function() {
   		UserService.sendEmail($scope.email).then(function(success) {
   			console.log(success);
@@ -16,14 +18,6 @@ angular.module('passportApp')
   			console.log(error);
   		});
   	};
-
-    $scope.send = function() {
-      UserService.send().then(function(success) {
-        console.log(success);
-      }).catch(function(error) {
-        console.log(error);
-      });
-    };
 
     $scope.formSubmit = function(form, obj) {
       $scope.submitted = true;
@@ -34,7 +28,18 @@ angular.module('passportApp')
       }, 10000);
     }
 
-
+    $scope.getBooks = function(form, query) {
+      let url = `https://www.goodreads.com/search/index.xml?key=${key}&q=` + query.author;
+      console.log(url);
+      if(form.$valid) {
+        fetch(url, {}).then(function(data) {
+          console.log(data);
+          $scope.books = data;
+        }).catch(function(err) {
+          console.log(err);
+        });
+      };
+    };
 
   });
 

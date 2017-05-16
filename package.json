@@ -2,9 +2,12 @@
   "name": "passport",
   "version": "0.0.0",
   "main": "server/app.js",
+  "author": "nick-savickas",
+  "license": "MIT",
   "dependencies": {
     "base64-arraybuffer": "^0.1.5",
     "blob-util": "^1.2.0",
+    "bower": "1.6.5",
     "body-parser": "~1.5.0",
     "chai": "^3.5.0",
     "composable-middleware": "^0.3.0",
@@ -105,9 +108,10 @@
     "time-grunt": "~0.3.1"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": "6.3.1"
   },
   "scripts": {
+    "postinstall": "./node_modules/bower/bin/bower install",
     "start": "node server/app.js",
     "test": "grunt test",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"

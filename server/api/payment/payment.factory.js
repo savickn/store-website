@@ -27,7 +27,7 @@ var payment = Factory.define('payment')
     num += id.toString();
     num = addTrailingZeroes(num);
     return num;
-  }),
+  })
   .attr('expiryDate', function() {
     return new Date('January', '2018');
   })

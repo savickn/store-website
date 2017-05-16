@@ -20,5 +20,9 @@ angular.module('passportApp')
       .state('test.forms', {
       	url: '/forms',
       	templateUrl: 'app/test/forms.html'
+      })
+      .state('test.gr', {
+      	url: '/goodreads',
+      	templateUrl: 'app/test/goodreads.html'
       });
   });

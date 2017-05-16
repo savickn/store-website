@@ -15,10 +15,10 @@ title Secure Checkout
             ns-select-address(address="newOrder.shippingAddress" addresses="shippingAddresses" ng-if="shippingState === 'Select'")
             ns-add-address(address="newShippingAddress" cb-func="validateShipping(form, address, errors, submitted)" ng-if="shippingState === 'New'")
 
-            button.btn.btn-primary(ng-click="setShippingState('New')" ng-show="shippingState === 'Select'") Add a New Address
-            button.btn.btn-primary(ng-click="setShippingState('Select')" ng-show="shippingState !== 'Select'") Back
+            md-button.md-raised(ng-click="setShippingState('New')" ng-show="shippingState === 'Select'") Add a New Address
+            md-button.md-raised(ng-click="setShippingState('Select')" ng-show="shippingState !== 'Select'") Back
 
-            input.btn.btn-primary(type="submit" wz-next value="Continue" ng-if="newOrder.shippingAddress | isNotEmpty" ng-click="clearAlert()")
+            md-button.md-raised(type="submit" wz-next ng-if="newOrder.shippingAddress | isNotEmpty" ng-click="clearAlert()") Continue
 
           wz-step(wz-title="Payment")
             h3 Choose a Payment Method
@@ -27,10 +27,10 @@ title Secure Checkout
             ns-select-payment(payment="newOrder.paymentMethod" payments="paymentMethods" ng-if="paymentState === 'Select'")
             ns-add-payment(payment="newPayment" ng-if="paymentState === 'New'")
 
-            button.btn.btn-primary(ng-click="setPaymentState('New')" ng-show="paymentState === 'Select'") Add a New Payment Method
-            button.btn.btn-primary(ng-click="setPaymentState('Select')" ng-show="paymentState !== 'Select'") Back
+            md-button.md-raised(ng-click="setPaymentState('New')" ng-show="paymentState === 'Select'") Add a New Payment Method
+            md-button.md-raised(ng-click="setPaymentState('Select')" ng-show="paymentState !== 'Select'") Back
 
-            input.btn.btn-primary(type="submit" wz-next value="Continue" ng-if="newOrder.paymentMethod | isNotEmpty" ng-click="clearAlert()")
+            md-button.md-raised(type="submit" wz-next ng-if="newOrder.paymentMethod | isNotEmpty" ng-click="clearAlert()") Continue
 
           wz-step(wz-title="Billing")
             h3 Billing Address
@@ -41,10 +41,10 @@ title Secure Checkout
 
             ns-add-address(address="newBillingAddress" cb-func="validateBilling(form, address, errors, submitted)" ng-if="billingState === 'New'")
 
-            button.btn.btn-primary(ng-click="setBillingState('New')" ng-show="(billingState === 'Default') && !sameAsShipping") Add a New Address
-            button.btn.btn-primary(ng-click="setBillingState('Default')" ng-show="billingState !== 'Default'") Back
+            md-button.md-raised(ng-click="setBillingState('New')" ng-show="(billingState === 'Default') && !sameAsShipping") Add a New Address
+            md-button.md-raised(ng-click="setBillingState('Default')" ng-show="billingState !== 'Default'") Back
 
-            input.btn.btn-primary(type="submit" wz-next value="Continue" ng-if="newOrder.billingAddress | isNotEmpty" ng-click="getOrderInfo(newOrder); clearAlert()")
+            md-button.md-raised(type="submit" wz-next ng-if="newOrder.billingAddress | isNotEmpty" ng-click="getOrderInfo(newOrder); clearAlert()") Continue
 
           wz-step(wz-title="Review")
             p Please review all information before finalizing this order

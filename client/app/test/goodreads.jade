@@ -1,0 +1,9 @@
+
+form(name="bookSearchForm" ng-submit="getBooks(bookSearchForm, query)")
+  label Author
+  input(type="text" name="name" ng-model="query.author" required)
+
+  button(type="submit") Submit
+
+ul.list-group
+  li.list-group-item(ng-repeat="book in books") {{book}}

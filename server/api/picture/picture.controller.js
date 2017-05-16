@@ -4,14 +4,14 @@ var _ = require('lodash');
 var fs = require('fs-extra');
 var Picture = require('./picture.model');
 var mkdirp = require('mkdirp');
-var log4js = require('log4js');
+/*var log4js = require('log4js');
 log4js.configure({
   appenders: [
     { type: 'console' },
-    { type: 'file', filename: 'logs/negus.log', category: 'negus' }
+    { type: 'file', filename: 'logs/picture.log', category: 'picture' }
   ]
 });
-var logger = log4js.getLogger('negus');
+var logger = log4js.getLogger('picture');*/
 
 // Get list of pictures
 exports.index = function(req, res) {

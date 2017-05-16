@@ -13,7 +13,7 @@ var order = Factory.define('order')
   .attr('orderNumber', ['id'], function(id) {
     return addLeadingZeroes(id);
   })
-  .attr('subTotal' 1000)
+  .attr('subTotal', 1000)
   .attr('tax', 0.15)
   .attr('shippingCost', 10)
   .attr('shippingAddress')

@@ -9,7 +9,7 @@ var PictureSchema = new Schema({
   contentType: String,
   size: Number,
   path: String,
-  image: Buffer,
+  //image: Buffer,
   displayPicture: {
     type: Boolean,
     default: false

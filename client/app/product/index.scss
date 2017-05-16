@@ -1,4 +1,14 @@
 
+.controls {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: center;
+}
+
+.controls:nth-child(2) {
+	align-self: flex-end;
+}
 
 .product-container-flexbox {
 	display: flex;

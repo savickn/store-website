@@ -27,7 +27,6 @@ mongoose.connection.on('error', function(err) {
 // Populate DB with sample data
 if(config.seedDB) { require('./config/seed'); }
 
-app.use(express.static(__dirname + '/public'));
 
 require('./config/express')(app);
 require('./routes')(app);

@@ -80,8 +80,17 @@
 
 ///////////////////////////////  PAGINATION ///////////////////////////////
 
-
-.controls(layout="row" layout-align="flex-end")
+.controls
+  .pagination
+    dir-pagination-controls(on-page-change="pageChanged(newPageNumber)")
+    .pagination-control
+      label Items per page:
+        .pagination(uib-dropdown)
+          button.btn.btn-default(type="button" uib-dropdown-toggle) {{pageSize}}
+            span.caret
+          ul(uib-dropdown-menu)
+            li(ng-repeat="pageOpt in paginationOptions")
+              a(href="#" ng-click="sizeChanged(pageOpt)") {{pageOpt}}
   .sort-dropdown(uib-dropdown)
     button.btn.btn-default(type="button" uib-dropdown-toggle) Sort
       span.caret
@@ -94,14 +103,3 @@
         a(href="#" ng-click="sortType = 'name'; sortReverse = false") Name: A-Z
       li
         a(href="#" ng-click="sortType = 'name'; sortReverse = true") Name: Z-A
-
-  .pagination
-    dir-pagination-controls(on-page-change="pageChanged(newPageNumber)")
-    .pagination-control
-      label Items per page:
-        .pagination(uib-dropdown)
-          button.btn.btn-default(type="button" uib-dropdown-toggle) {{pageSize}}
-            span.caret
-          ul(uib-dropdown-menu)
-            li(ng-repeat="pageOpt in paginationOptions")
-              a(href="#" ng-click="sizeChanged(pageOpt)") {{pageOpt}}
