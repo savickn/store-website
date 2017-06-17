@@ -39,6 +39,7 @@ title Secure Checkout
               label(for="sameAsShipping") Same as Shipping Address?
               input.form-control(type="checkbox" name="sameAsShipping" ng-model="sameAsShipping" ng-change="setBillingAsShipping(sameAsShipping)")
 
+            ns-select-address(address="newOrder.billingAddress" addresses='billingAddresses' ng-if="billingState === 'Select' && billingAddresses.length > 0")
             ns-add-address(address="newBillingAddress" cb-func="validateBilling(form, address, errors, submitted)" ng-if="billingState === 'New'")
 
             md-button.md-raised(ng-click="setBillingState('New')" ng-show="(billingState === 'Default') && !sameAsShipping") Add a New Address

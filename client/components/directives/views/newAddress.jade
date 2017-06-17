@@ -57,4 +57,4 @@ form.form(name="addressForm" role='form' novalidate)
 		p.help-block(ng-show='addressForm.nickname.$error.required && submitted')
 			| Please enter a nickname to remember this address.
 
-	button.btn.btn-primary(ng-click="handleAddress(addressForm, address, errors, submitted)") Save
+	md-button.md-primary.md-raised(ng-click="handleAddress(addressForm, address, errors, submitted)") Save

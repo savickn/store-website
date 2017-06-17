@@ -7,7 +7,8 @@ angular.module('passportApp')
     $scope.newBillingAddress = {};
     $scope.newPayment = {};
 
-    $scope.billingAddress = Auth.getBillingAddress()[0];
+    //$scope.billingAddress = Auth.getBillingAddress()[0];
+    $scope.billingAddresses = Auth.getBillingAddress();
     $scope.shippingAddresses = Auth.getShippingAddresses();
     $scope.paymentMethods = Auth.getPaymentMethods();
 
@@ -23,7 +24,7 @@ angular.module('passportApp')
 
     $scope.validateBilling = function(form, address, errors, submitted) {
       AddressService.validateAddress(address).then(function() {
-        $scope.billingAddress = address;
+        $scope.billingAddresses.push(address);
         $scope.billingState = 'Select';
         submitted = false;
       }).catch(function(err) {

@@ -140,7 +140,6 @@ OrderSchema.methods = {
       console.log(wishlist);
     });
 	}
-
 };
 
 /*

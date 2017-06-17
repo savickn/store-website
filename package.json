@@ -5,11 +5,8 @@
   "author": "nick-savickas",
   "license": "MIT",
   "dependencies": {
-    "base64-arraybuffer": "^0.1.5",
-    "blob-util": "^1.2.0",
     "bower": "1.6.5",
     "body-parser": "~1.5.0",
-    "chai": "^3.5.0",
     "composable-middleware": "^0.3.0",
     "compression": "~1.0.1",
     "connect-mongo": "^0.8.1",
@@ -26,9 +23,7 @@
     "jade": "~1.2.0",
     "jsonwebtoken": "^5.0.0",
     "lodash": "~2.4.1",
-    "log4js": "^0.6.32",
     "method-override": "~1.0.0",
-    "midijs": "^0.12.0",
     "mkdirp": "^0.5.1",
     "mongoose": "4.6.1",
     "mongoose-schema-extend": "^0.2.2",
@@ -45,8 +40,7 @@
     "pretty-error": "^2.0.0",
     "proxyquire": "^1.7.11",
     "rosie": "^1.6.0",
-    "serve-favicon": "~2.0.1",
-    "sinon": "^1.17.7"
+    "serve-favicon": "~2.0.1"
   },
   "devDependencies": {
     "connect-livereload": "~0.4.0",
@@ -102,6 +96,8 @@
     "karma-requirejs": "~0.2.1",
     "karma-script-launcher": "1.0.0",
     "open": "~0.0.4",
+    "sinon": "^1.17.7",
+    "chai": "^3.5.0",
     "protractor": "^5.1.0",
     "requirejs": "~2.1.11",
     "supertest": "~0.11.0",

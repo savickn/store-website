@@ -6,12 +6,20 @@ var mongoose = require('mongoose'),
 var SaleSchema = new Schema({
 	startDate: {
 		type: Date,
-		required: 'You must choose an end date for this sale.'
+		required: 'You must choose a start date for this sale.'
 	},
 	endDate: {
 		type: Date,
-		required: 'You must choose a start date for this sale.'
+		required: 'You must choose an end date for this sale.'
 	},
+  promotionalCode: {
+    type: String,
+    required: 'You must provide a promotional code.'
+  },
+  validProducts: [{
+    type: String,
+    required: 'You must select applicable categories.'
+  }],
 	discountRate: {
 		type: Number,
 		required: 'You must include a discount rate for this sale.',
@@ -24,6 +32,43 @@ var SaleSchema = new Schema({
 	}
 });
 
+/**
+ * Virtuals
+ */
+
+/**
+* Validations
+*/
+
+/**
+ * PRE and POST Hooks
+ */
+
+/**
+* Instance Methods
+*/
+
+SaleSchema.methods = {
+	isActive: function() {
+    date = Date.now();
+    return (this.startDate <= date && this.endDate >= date) ? true:false;
+	},
+  isApplicable: function(product) {
+    return (product in this.validProducts) ? true:false;
+  }
+};
+
+/*
+* Class Methods
+*/
+
+SaleSchema.statics = {
+  findByPromotionalCode: function(code) {
+    SaleSchema.findOne({code: code}, function(err, sale) {
+      return sale;
+    });
+  }
+}
+
 
 module.exports = mongoose.model('Sale', SaleSchema);
-

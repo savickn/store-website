@@ -45,7 +45,7 @@ var ProductSchema = new Schema({
 		enum: ['In Stock', '2-3 Weeks', 'On Re-Order', 'Unavailable']
 		//required: true
 	},
-	UPC: {
+	SKU: {
 		type: String
 		//required: true
 	},
@@ -90,6 +90,24 @@ ProductSchema.virtual('getPublicFields').get(function() {
 	return obj;
 });
 */
+
+/**
+* Class Methods
+**/
+
+ProductSchema.statics = {
+  getBrands: function() {
+    ProductSchema.distinct('brand', function(err, brands) {
+      return brands;
+    });
+  },
+  getCategories: function() {
+    ProductSchema.distinct('__t', function(err, types) {
+      return types;
+    });
+  }
+};
+
 
 /*
 * Pre and Post Hooks

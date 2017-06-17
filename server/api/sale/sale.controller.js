@@ -2,29 +2,50 @@
 
 var _ = require('lodash');
 var Sale = require('./sale.model');
+var Product = require('../product/product.model');
 
-// Get list of computers
-exports.index = function(req, res) {
-  Sale.find({}, function (err, sales) {
-      if(err) { return handleError(res, err); }
-      return res.status(200).json(sales);
+
+
+exports.new = function() {
+  //await productTypes = Product.getCategories();
+  //await productBrands = Product.getBrands();
+  var state = {
+    categories: [],
+    brands: []
+  };
+
+  Product.getCategories().then(function(categories) {
+    state.categories = categories;
+    Product.getBrands().then(function(brands) {
+      state.brands = brands;
+      return res.status(200).json(state);
+    })
   });
 };
 
-// Get a single computer
-exports.show = function(req, res) {
-  Sale.findById(req.params.id, function (err, sale) {
-    if(err) { return handleError(res, err); }
-    if(!sale) { return res.status(404).send('Not Found'); }
-    return res.json(sale);
-  });
+exports.isSaleApplicable = function(product) {
+  
 };
+
+exports.getSale = function(req, res) {
+  Sale.findByPromotionalCode(req.body.promotionalCode).then(function(sale) {
+    return res.status(200).json(sale);
+  });
+}
 
 // Creates a new computer in the DB.
 exports.create = function(req, res) {
   Sale.create(req.body, function(err, sale) {
     if(err) { return handleError(res, err); }
     return res.status(201).json(sale);
+  });
+};
+
+// Get list of computers
+exports.index = function(req, res) {
+  Sale.find({}, function (err, sales) {
+      if(err) { return handleError(res, err); }
+      return res.status(200).json(sales);
   });
 };
 
@@ -51,3 +72,14 @@ exports.destroy = function(req, res) {
 function handleError(res, err) {
   return res.status(500).send(err);
 }
+
+
+
+// Get a single computer
+/*exports.show = function(req, res) {
+  Sale.findById(req.params.id, function (err, sale) {
+    if(err) { return handleError(res, err); }
+    if(!sale) { return res.status(404).send('Not Found'); }
+    return res.json(sale);
+  });
+};*/

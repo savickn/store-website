@@ -31,7 +31,7 @@ angular.module('passportApp')
         Auth.updateBillingAddress(user.billingAddress);
         $scope.billingAddress = user.billingAddress[0];
         $scope.billingState = 'Default';
-        submitted = false;
+        $scope.submitted = false;
         AlertService.setAlert("Billing Address Updated.", "Success");
       }).catch(function(err) {
         err = err.data;
