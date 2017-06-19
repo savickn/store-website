@@ -294,6 +294,30 @@ angular.module('passportAppDirectives', [])
 		  	}
 			}
 		}
+	})
+	.directive('nsOrderView', function() {
+		return {
+			restrict: 'E',
+			templateUrl: '../components/directives/views/orderInfo.html',
+			scope: {
+				order: '='
+			},
+			link: function(scope, elem, attrs) {
+
+			}
+		}
+	})
+	.directive('nsReviewView', function() {
+		return {
+			restrict: 'E',
+			templateUrl: '../components/directives/views/reviewView.html',
+			scope: {
+				review: '='
+			},
+			link: function(scope, elem, attrs) {
+
+			}
+		}
 	});
 
 

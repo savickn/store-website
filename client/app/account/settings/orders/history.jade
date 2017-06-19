@@ -1,6 +1,12 @@
-h3 Orders
+
+.list-header.flex-row
+  .flex-row-element Order Number
+  //.flex-row-element Items
+  .flex-row-element Price
+  .flex-row-element Date
+  .flex-row-element Status  
 
 ul.list-group
   li.list-group-item(ng-repeat="order in orders")
-    p {{order.orderDate}}
-    p {{order.subTotal}}
+    ns-order-view(order="order")
+    

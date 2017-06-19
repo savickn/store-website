@@ -1,0 +1,22 @@
+
+.container
+  form(name="saleForm")
+    .input-group
+      label(for="startDate") Start Date
+      input.form-control(type="date" name="startDate" placeholder="Enter the sale's start date here." ng-model="newSale.startDate")
+        
+    .input-group
+      label(for="endDate") End Date
+      input.form-control(type="date" name="endDate" placeholder="Enter the sale's end date here." ng-model="newSale.endDate")
+        
+    .input-group
+      label(for="promotionalCode") Promo Code
+      input.form-control(type="text" name="promotionalCode" placeholder="Enter the sale's promo code here." ng-model="newSale.promotionalCode")
+        
+    .input-group
+      label(for="discountRate") Discount Rate
+      input.form-control(type="number" name="discountRate" placeholder="Enter the sale's discount rate here." ng-model="newSale.discountRate" step="0.01" ng-min="0.01" ng-max="0.99")
+  
+    .input-group
+      label(for="applicableProducts") Applicable Products
+      input.form-control(type="select" name="applicableProducts" placeholder="Enter applicable products here." ng-model="newSale.validProducts")

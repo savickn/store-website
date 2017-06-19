@@ -6,11 +6,23 @@ var mongoose = require('mongoose'),
 var SaleSchema = new Schema({
 	startDate: {
 		type: Date,
-		required: 'You must choose a start date for this sale.'
+		required: 'You must choose a start date for this sale.',
+    validate: {
+			validator: function(date) {
+				return date > Date.now();
+			},
+			message: 'The starting date that you specified is already past.'
+		}
 	},
 	endDate: {
 		type: Date,
-		required: 'You must choose an end date for this sale.'
+		required: 'You must choose an end date for this sale.',
+    validate: {
+			validator: function(date) {
+				return date > Date.now();
+			},
+			message: 'The ending date that you specified is not appropriate.'
+		}
 	},
   promotionalCode: {
     type: String,
@@ -53,8 +65,8 @@ SaleSchema.methods = {
     date = Date.now();
     return (this.startDate <= date && this.endDate >= date) ? true:false;
 	},
-  isApplicable: function(product) {
-    return (product in this.validProducts) ? true:false;
+  isApplicable: function(productType) {
+    return (this.validProducts.includes(productType)) ? true:false;
   }
 };
 

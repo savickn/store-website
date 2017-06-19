@@ -15,6 +15,119 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
   -webkit-box-sizing: border-box;
 }
 
+/*
+** FLEX GENERICS
+*/
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+.flex-row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+
+  .flex-row-element {
+    flex: 1;
+    padding: 0px 2px 0px 3px;
+  }
+}
+
+/*
+** FLEX COLUMNS
+*/
+
+//used to create header-body-footer format
+.flex-header-footer-body {
+  @extend .flex-column;
+  padding: 1%;
+
+  .flex-header {
+    flex: 10;
+    padding: 2% 1% 2% 1%;
+  }
+
+  .flex-content {
+    flex: 80;
+    padding: 1%;
+  }
+
+  .flex-footer {
+    flex: 10;
+    padding: 2% 1% 2% 1%;
+  }
+}
+
+//used to create vertical list layout
+.flex-list {
+  @extend .flex-column;
+  justify-content: flex-start;
+
+  .flex-list-element {
+    padding: 5px 0px 5px 0px;
+  }
+}
+
+//used with 'flex-gallery-row' to create a gallery-style layout
+.flex-gallery-column {
+
+}
+
+/*
+** FLEX ROWS
+*/
+
+//used to create a sidebar-content layout
+.flex-sidebar-content {
+  @extend .flex-row;
+  padding: 10px 0px 10px 0px;
+
+  .flex-sidebar {
+    flex: 25;
+    padding: 0px 5px 0px 10px;
+  }
+  .flex-content {
+    flex: 75;
+    padding: 0px 10px 0px 5px;
+  }
+}
+
+//used to create an asymmetrical Forum/post row (e.g. postname, content, misc)
+.flex-post-row {
+  @extend .flex-row;
+
+  .flex-row-element {
+    padding: 0px 5px 0px 5px;
+  }
+
+  .flex-row-element:nth-child(1) {
+    flex: 15;
+  }
+  .flex-row-element:nth-child(2) {
+    flex: 70;
+  }
+  .flex-row-element:nth-child(3) {
+    flex: 15;
+  }
+}
+
+//used with 'flex-gallery-column' to create a gallery-style layout
+.flex-gallery-row {
+
+}
+
+
+/*
+** Miscellaneous
+*/
+
+
 .browsehappy {
     margin: 0.2em 0;
     background: #ccc;

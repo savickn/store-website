@@ -4,11 +4,7 @@ var _ = require('lodash');
 var Sale = require('./sale.model');
 var Product = require('../product/product.model');
 
-
-
 exports.new = function() {
-  //await productTypes = Product.getCategories();
-  //await productBrands = Product.getBrands();
   var state = {
     categories: [],
     brands: []
@@ -23,8 +19,8 @@ exports.new = function() {
   });
 };
 
-exports.isSaleApplicable = function(product) {
-  
+exports.validateSale = function(sale, product) {
+  return (sale.isActive() && sale.isApplicable(product.__t))? true:false;
 };
 
 exports.getSale = function(req, res) {

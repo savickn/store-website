@@ -44,10 +44,10 @@ var OrderSchema = new Schema({
 		type: Number,
 		required: true
 	},
-	promotion: {
+	promotions: [{
 		type: Schema.Types.ObjectId,
 		ref: 'Sale'
-	},
+	}],
 	tax: {
 		type: Number,
 		required: true
@@ -89,7 +89,6 @@ var OrderSchema = new Schema({
 /*
 * Validations
 */
-
 
 
 

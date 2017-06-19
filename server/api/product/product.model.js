@@ -18,13 +18,23 @@ var ProductSchema = new Schema({
 		type: Number,
 		required: 'You must include a price for this product.'
 	},
-	discountPrice: {
-		type: Number
-	},
+  discount: {
+    type: Number,
+		validate: {
+			validator: function(num) {
+				return (num > 0 && num < 1);
+			},
+			message: 'The discount rate you specified is not valid. Please enter a rate between 0 and 1.'
+		}
+  },
 	brand: {
 		type: String,
 		required: 'You must include a brand for this product.'
 	},
+  SKU: {
+    type: String
+    //required: true
+  },
 	reviews: [{
 		type: Schema.Types.ObjectId,
 		ref: 'Review',
@@ -44,14 +54,6 @@ var ProductSchema = new Schema({
 		type: String,
 		enum: ['In Stock', '2-3 Weeks', 'On Re-Order', 'Unavailable']
 		//required: true
-	},
-	SKU: {
-		type: String
-		//required: true
-	},
-	onSale: {
-		type: Boolean,
-		default: false
 	},
 	onlineOnly: {
 		type: Boolean,
@@ -151,10 +153,16 @@ ProductSchema
 ProductSchema
   .virtual('salePrice')
   .get(function() {
-  	if(this.sale) {
-  		var salePrice = this.price * this.sale.discountRate;
+  	if(this.discount) {
+  		var salePrice = this.price * this.discount;
   		return salePrice;
   	}
+});
+
+ProductSchema
+  .virtual('onSale')
+  .get(function() {
+  	return (this.discount && this.discount > 0) ? true:false;
 });
 
 ProductSchema.set('toJSON', {virtuals: true});

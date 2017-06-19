@@ -1,0 +1,8 @@
+.flex-row
+  .flex-row-element {{order.orderNumber}}
+  //.flex-row-element
+    ul(ng-repeat="product in order.products")
+      li {{product.name}}
+  .flex-row-element {{order.totalPrice}}
+  .flex-row-element {{order.orderDate.getDate()}}
+  .flex-row-element {{order.status}}
