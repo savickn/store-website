@@ -19,6 +19,12 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 ** FLEX GENERICS
 */
 
+.flex-container {
+    .row {
+
+    }
+}
+
 .flex-column {
   display: flex;
   flex-direction: column;
@@ -26,11 +32,12 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
   align-items: stretch;
 }
 
+
 .flex-row {
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: stretch;
 
   .flex-row-element {
@@ -80,12 +87,15 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 }
 
 form.form-wrapper {
-  width: 50%;
+  //width: 50%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  padding: 1%;
+
+  .input-group {
+    padding: 1% 0 1% 0;
+  }
 }
 
 /*
@@ -150,6 +160,34 @@ form.form-wrapper {
       height: 100px;
     }
   }
+}
+
+
+/*@media (max-width: 480px) {
+
+}*/
+
+
+.flex-navbar {
+  @extend .flex-row;
+  justify-content: space-between;
+  border: 1px solid #c6c6c6; //dark gray1
+  border-radius: 5px;
+  background-color: #f0f0f0; // light gray1
+
+  .flex-nav-element {
+    padding: 10px;
+    a {
+      color: #747474;
+    }
+    a:hover {
+      color: darken(#747474, 100%);
+    }
+  }
+}
+
+.nav-selected {
+  background-color: darken(#f0f0f0, 50%);
 }
 
 

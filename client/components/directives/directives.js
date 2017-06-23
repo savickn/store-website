@@ -307,7 +307,7 @@ angular.module('passportAppDirectives', [])
 			}
 		}
 	})
-	.directive('nsReviewView', function() {
+	.directive('nsReviewView', function(ReviewService, AlertService, Auth) {
 		return {
 			restrict: 'E',
 			templateUrl: '../components/directives/views/reviewView.html',
@@ -315,7 +315,66 @@ angular.module('passportAppDirectives', [])
 				review: '='
 			},
 			link: function(scope, elem, attrs) {
+				scope.shortExists = scope.review.shortSummary < scope.review.summary;
+				scope.short = scope.shortExists ? true : false;
 
+				scope.setShort = function(val) {
+					scope.short = val;
+				}
+
+				scope.rating = scope.review.rating;
+				scope.isDuplicateLike = isDuplicateLike(scope.review);
+
+				function isDuplicateLike(review) {
+					var userId = Auth.getCurrentUser()._id;
+					var state = false;
+
+					review.upvotes.forEach(function(upvote) {
+						if(upvote.userId === userId) {
+							state = true;
+						}
+					});
+					return state;
+				};
+
+				scope.upvoteReview = function(review) {
+					var user = Auth.getCurrentUser();
+					var newUpvote = {userName: user.name, userId: user._id};
+
+					if(!isDuplicateLike(review)) {
+						ReviewService.upvoteReview(review._id, newUpvote).then(function(review) {
+							scope.review = review;
+							scope.isDuplicateLike = isDuplicateLike(review);
+							AlertService.setAlert("You liked this review!", "Success");
+						}).catch(function(err) {
+							AlertService.setAlert("This review could not be liked.", "Error");
+						});
+					} else {
+						AlertService.setAlert("You have already liked this review once.", "Error");
+					}
+				};
+
+				scope.removeUpvote = function(review) {
+					var idx = -1;
+
+					review.upvotes.forEach(function(upvote, index) {
+						if(upvote.userId === Auth.getCurrentUser()._id) {
+							idx = index;
+						}
+					});
+
+					if(idx >= 0) {
+						review.upvotes.splice(idx, 1);
+						scope.updateReview(review);
+					}
+				};
+
+				scope.updateReview = function(review) {
+		      ReviewService.updateReview(review).then(function(updatedReview) {
+		        scope.review = review;
+		        scope.isDuplicateLike = isDuplicateLike(updatedReview);
+		      });
+		    };
 			}
 		}
 	});

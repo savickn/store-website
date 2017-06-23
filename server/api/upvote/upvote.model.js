@@ -4,17 +4,19 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var UpvoteSchema = new Schema({
-  userName: String,
+  userName: {
+    type: String,
+    required: true
+  },
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'User'
-  },
-  date: Date
-}); 
+  }
+});
 
 /*UpvoteSchema.pre("save", function(next, done) {
   var self = this;
-  mongoose.models["Upvote"].findOne({authorId: self.authorId}, function(err, upvote) {
+  mongoose.model["Upvote"].findOne({authorId: self.authorId}, function(err, upvote) {
     if(err) {
       done(err);
     } else if(upvote) {

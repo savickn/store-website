@@ -50,11 +50,6 @@ var ProductSchema = new Schema({
 		ref: 'Picture'
 	},
 	inventory: [Inventory],
-	availability: {
-		type: String,
-		enum: ['In Stock', '2-3 Weeks', 'On Re-Order', 'Unavailable']
-		//required: true
-	},
 	onlineOnly: {
 		type: Boolean,
 		default: false
@@ -120,7 +115,6 @@ ProductSchema.statics = {
 ProductSchema.pre('remove', function(next) {
 	mongoose.model('Review').remove({product: this._id}).exec();
 	mongoose.model('Picture').remove({product: this._id}).exec();
-
 	next();
 });
 
@@ -145,11 +139,19 @@ ProductSchema
     };
   });
 
+//should probabily be a aync batch task instead for performance
 ProductSchema
-  .virtual('recommended')
+  .virtual('recommendedProducts')
   .get(function() {
 	//refers to products that are frequently bought with this item
+    mongoose.model('Order').find({products: this._id}).populate('products', '_id').exec(function(err, orders) {
+      let productIDs = [];
+      for(let o of orders) {
+        productIDs.concat(o.products);
+      }
+      console.log(productIDs);
 
+    })
 });
 
 ProductSchema
@@ -159,13 +161,32 @@ ProductSchema
   		var salePrice = this.price * this.discount;
   		return salePrice;
   	}
-});
+  });
 
 ProductSchema
   .virtual('onSale')
   .get(function() {
   	return (this.discount && this.discount > 0) ? true:false;
-});
+  });
+
+/*ProductSchema
+  .virtual('availability')
+  .get(function() {
+    switch (expression) {
+      case expression:
+
+        break;
+      default:
+
+    }
+  })
+
+availability: {
+  type: String,
+  enum: ['In Stock', '2-3 Weeks', 'On Re-Order', 'Unavailable']
+  //required: true
+},*/
+
 
 ProductSchema.set('toJSON', {virtuals: true});
 

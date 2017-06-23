@@ -58,7 +58,10 @@ exports.index = function(req, res) {
 
 // Get a single computer
 exports.show = function(req, res) {
-  Computer.findById(req.params.id).populate('reviews').populate('displayPicture pictures', '_id contentType path').exec(function (err, computer) {
+  Computer.findById(req.params.id)
+  .populate({path: 'reviews', populate: {path: 'author'}})
+  .populate('displayPicture pictures', '_id contentType path')
+  .exec(function (err, computer) {
     if(err) { return handleError(res, err); }
     if(!computer) { return res.status(404).send('Not Found'); }
     return res.json(computer);

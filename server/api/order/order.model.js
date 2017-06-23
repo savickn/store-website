@@ -119,7 +119,12 @@ OrderSchema.statics = {
     return this.find({}).sort({orderDate: 'asc'}).exec(function(orders) {
       return orders;
     });
-	}
+	},
+  findOrdersWithProduct: function(productId) {
+    return this.find({products: productId}).exec(function(orders) {
+      return orders;
+    })
+  }
 }
 
 /*

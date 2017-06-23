@@ -42,13 +42,13 @@ PaymentSchema
     switch(this.cardType) {
       case 'MasterCard':
         return cardNumber.toString().match(/^5([0-9]{15})$/);
-
+        break;
       case 'Visa':
         return cardNumber.toString().match(/^4([0-9]{15})$/);
-
+        break;
       case 'American Express':
         return cardNumber.toString().match(/^3([0-9]{15})$/);
-
+        break;
       default:
         return false;
     }

@@ -19,11 +19,19 @@ var ReviewSchema = new Schema({
   	min: 0,
   	max: 10
   },
+  title: {
+    type: String,
+    required: true
+  },
   summary: 	{
     type: String,
   	required: true,
   	minLength: 0,
-    maxLength: 500
+    maxLength: 1000
+  },
+  date: {
+    type: Date,
+    default: Date.now()
   },
   verified: {
     type: Boolean,
@@ -36,13 +44,20 @@ var ReviewSchema = new Schema({
 * Validations
 */
 
-
+//used to prevent user from posting multiple reviews
+ReviewSchema
+  .path('author')
+  .validate(function(author) {
+    console.log(this.author);
+    console.log(this.product);
+    return true;
+  }, 'You have already posted a review for this product.')
 
 /*
 * Pre and POST Hooks
 */
 
-//sets verified field to user, NOT WORKING
+//sets Verified field
 ReviewSchema.pre("save", function(next) {
   let self = this;
   mongoose.model('User').findById(this.author)
@@ -51,11 +66,7 @@ ReviewSchema.pre("save", function(next) {
       if(err) {next(err);}
       for(let order of user.orders) {
         for(let product of order.products) {
-          console.log('######');
-          console.log(product);
-          console.log(self.product);
-          if(product == self.product) {
-            console.log(true);
+          if(product.equals(self.product)) {
             self.verified = true;
             next(self);
           }
@@ -97,12 +108,25 @@ ReviewSchema.virtual('score').get(function() {
 	return this.upvotes.length;
 });
 
-ReviewSchema.virtual('shortForm').get(function() {
+ReviewSchema.virtual('shortSummary').get(function() {
   let arr = this.summary.split(" ");
   arr = arr.slice(0, 25);
   let str = arr.join(" ");
   return str + "...";
 })
+
+/*
+* Class Methods
+*/
+
+ReviewSchema.statics = {
+  findReviewsByAuthor: function(authorId) {
+    return this.find({author: authorId}, function(err, reviews) {
+      if (err) {return err;}
+      return reviews;
+    });
+  }
+}
 
 
 
