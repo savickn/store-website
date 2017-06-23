@@ -48,30 +48,41 @@ title Secure Checkout
             md-button.md-raised(type="submit" wz-next ng-if="newOrder.billingAddress | isNotEmpty" ng-click="getOrderInfo(newOrder); clearAlert()") Continue
 
           wz-step(wz-title="Review")
-            p Please review all information before finalizing this order
+            .flex-sidebar-content
+              .flex-content
+                p Please review all information before finalizing this order
+  
+                h4 Product Info
+                ul.list-group
+                  li.list-group-item(ng-repeat="product in newOrder.products")
+                    p Product: {{product._name}}
+                    p Price: {{product._price}}
+  
+                h4 Payment Method
+                ns-show-payment(payment="newOrder.paymentMethod")
+  
+                h4 Shipping Address
+                ns-show-address(address="newOrder.shippingAddress")
+  
+                h4 Billing Address
+                ns-show-address(address="newOrder.billingAddress")
+                
+              .flex-sidebar
+    
+                h4 Order Info
+                p Subtotal: {{newOrder.subTotal}}
+                p Tax: {{newOrder.tax}}
+                p Shipping Costs: {{newOrder.shippingCost}}
+                p Total: {{newOrder.total}}
+                
+                h4 Promotions
+                form.form-wrapper(role="form" name="promoForm" ng-submit="applyPromotion(promoCode)")
+                  .input-group
+                    label(for="promo") Promo Code
+                    input.form-control(name="promo" ng-model="promoCode")
+                    button.btn.btn-primary(type="submit") Apply
 
-            h4 Product Info
-            ul.list-group
-              li.list-group-item(ng-repeat="product in newOrder.products")
-                p Product: {{product._name}}
-                p Price: {{product._price}}
-
-            h4 Payment Method
-            ns-show-payment(payment="newOrder.paymentMethod")
-
-            h4 Shipping Address
-            ns-show-address(address="newOrder.shippingAddress")
-
-            h4 Billing Address
-            ns-show-address(address="newOrder.billingAddress")
-
-            h4 Order Info
-            p Subtotal: {{newOrder.subTotal}}
-            p Tax: {{newOrder.tax}}
-            p Shipping Costs: {{newOrder.shippingCost}}
-            p Total: {{newOrder.total}}
-
-            button.btn.btn-primary(ng-click="checkout(orderForm, newOrder)") Process Order
+                button.btn.btn-primary(ng-click="checkout(orderForm, newOrder)") Process Order
 
 
 

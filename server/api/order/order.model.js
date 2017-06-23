@@ -6,7 +6,12 @@ var mongoose = require('mongoose'),
     PaymentMethod = require('../payment/payment.model').schema;
 
 var OrderSchema = new Schema({
-	customer: {
+  orderNumber: {
+    type: String,
+    match: /^([0-9]{10})$/,
+    required: true
+  },
+  customer: {
 		type: Schema.Types.ObjectId,
 		ref: 'User',
     required: true
@@ -31,12 +36,10 @@ var OrderSchema = new Schema({
 		enum: ['Awaiting Pre-Auth', 'Pre-Auth Declined', 'Credit Approved', 'Printed', 'On Route', 'Delivered', 'Canceled'],
 		required: true
 	},
-	orderNumber: {
-		type: String,
-    match: /^([0-9]{10})$/,
-    required: true
-	},
-	orderDate: {
+
+
+
+  orderDate: {
 		type: Date,
 		required: true
 	},
@@ -57,7 +60,10 @@ var OrderSchema = new Schema({
 		required: true
 	}, //maybe use API of a shipping company like CanadaPost or UPS
 	//or have Free Shipping on Order > $50, flat rate $10 shipping within North America, $$$ for premium shipping
-	shippingAddress: {
+
+
+
+  shippingAddress: {
 		type: [Address],
 		validate: {
 			validator: function(arr) {
@@ -110,7 +116,9 @@ OrderSchema.pre('save', function(next) {
 OrderSchema.statics = {
 	//sorted by most late
 	getLateOrders: function() {
-
+    return this.find({}).sort({orderDate: 'asc'}).exec(function(orders) {
+      return orders;
+    });
 	}
 }
 
@@ -119,8 +127,17 @@ OrderSchema.statics = {
 */
 
 OrderSchema.methods = {
+  isShipped: function() {
+    return (['On Route', 'Delivered'].contains(this.status)) ? true : false
+  },
 	cancel: function() {
-
+    try {
+      //attempt to remove it from ShippingQueue process
+      this.status = 'Canceled';
+      return true;
+    } catch (e) {
+      return false;
+    }
 	},
 	attemptPreAuth: function() {
 

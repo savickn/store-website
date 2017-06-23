@@ -99,12 +99,14 @@ ProductSchema.virtual('getPublicFields').get(function() {
 
 ProductSchema.statics = {
   getBrands: function() {
-    ProductSchema.distinct('brand', function(err, brands) {
+    return this.distinct('brand', function(err, brands) {
+      if(err) {console.log(err);}
       return brands;
     });
   },
   getCategories: function() {
-    ProductSchema.distinct('__t', function(err, types) {
+    return this.distinct('__t', function(err, types) {
+      if(err) {console.log(err);}
       return types;
     });
   }

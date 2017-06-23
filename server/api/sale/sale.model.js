@@ -6,13 +6,13 @@ var mongoose = require('mongoose'),
 var SaleSchema = new Schema({
 	startDate: {
 		type: Date,
-		required: 'You must choose a start date for this sale.',
+		required: 'You must choose a start date for this sale.' /*,
     validate: {
 			validator: function(date) {
 				return date > Date.now();
 			},
 			message: 'The starting date that you specified is already past.'
-		}
+		}*/
 	},
 	endDate: {
 		type: Date,
@@ -48,6 +48,10 @@ var SaleSchema = new Schema({
  * Virtuals
  */
 
+SaleSchema.virtual('discount').get(function() {
+  return String(this.discountRate*100) + '%';
+})
+
 /**
 * Validations
 */
@@ -76,7 +80,7 @@ SaleSchema.methods = {
 
 SaleSchema.statics = {
   findByPromotionalCode: function(code) {
-    SaleSchema.findOne({code: code}, function(err, sale) {
+    return this.findOne({code: code}, function(err, sale) {
       return sale;
     });
   }

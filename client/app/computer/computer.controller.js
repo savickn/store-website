@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('ComputerCtrl', function ($scope, $stateParams, $timeout, ComputerService, FlashService, 
+  .controller('ComputerCtrl', function ($scope, $stateParams, $timeout, ComputerService, FlashService,
       Auth, ngCart, ReviewService, AlertService, $state) {
     $scope.isAdmin = Auth.isAdmin();
     $scope.isLoggedIn = Auth.isLoggedIn();
@@ -19,6 +19,12 @@ angular.module('passportApp')
     $scope.setViewState = function(s) {
       $scope.viewState = s;
     };
+
+    $scope.isActive = function(viewState) {
+      console.log(viewState);
+      console.log($scope.viewState);
+      return (viewState === $scope.viewState) ? true : false;
+    }
 
     ComputerService.getComputer($stateParams.id).then(function(computer) {
       $scope.currentProduct = computer;
@@ -57,7 +63,7 @@ angular.module('passportApp')
       delete propertiesObj._id;
       delete propertiesObj.__t;
 
-      var propertiesArray = Object.keys(propertiesObj).map(function(val) { return [val] }); 
+      var propertiesArray = Object.keys(propertiesObj).map(function(val) { return [val] });
       return propertiesArray;
     }*/
 
@@ -78,7 +84,7 @@ angular.module('passportApp')
     $scope.setPreviewImage = function(picture) {
       $scope.previewImage = picture;
     }
- 
+
     $scope.setDisplayPicture = function(pictureId) {
       $scope.currentProduct.displayPicture = pictureId;
       $scope.updateDisplayPic = true;
@@ -92,5 +98,5 @@ angular.module('passportApp')
         $scope.currentProduct.reviews.splice(idx, 1);
       });
     };
-  });
 
+  });

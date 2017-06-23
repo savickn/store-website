@@ -1,20 +1,25 @@
 
 .container
   alert-message
+    
+  a(ui-sref="products.computers")
+    span.glyphicon.glyphicon-arrow-left
+  
+  ////////////////////////// IMAGES ///////////////////////////////
 
-  a(ui-sref="products.computers") Back to Computers
-  .row
-    .col-lg-4.col-md-12.col-sm-12
-      img.previewImage.img-rounded(src='{{previewImage.path}}' width='300' height='300' ng-if='previewImage')
-    .col-lg-8.col-md-12.col-sm-12
-      .product-pictures-flexbox
-        .flex-item(ng-repeat='picture in currentProduct.pictures')
-          .gallery-img
-            img.img-rounded(src="{{picture.path}}" ng-click='setPreviewImage(picture)' height="100" width="100")
-            //i.glyphicon.glyphicon-remove.top-right(ng-click="removePicture(picture._id)" ng-if="isAdmin")
-            i.glyphicon.glyphicon-picture.bottom-right(ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin")
-  .row
-    .col-lg-12
+  .flex-sidebar-content
+    .flex-content.flex-wrap-around
+      img(src='{{previewImage.path}}' ng-if='previewImage')
+      .flex-element(ng-repeat='picture in currentProduct.pictures')
+        //.gallery-img
+        img.img-rounded(src="{{picture.path}}" ng-click='setPreviewImage(picture)' height="100" width="100")
+        //i.glyphicon.glyphicon-remove.top-right(ng-click="removePicture(picture._id)" ng-if="isAdmin")
+        i.glyphicon.glyphicon-picture.bottom-right(ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin")
+        
+    ///////////////////////// SIDEBAR ///////////////////////////////
+    
+    .flex-sidebar
+      ngcart-addtocart(id="{{currentProduct._id}}" name="{{currentProduct.name}}" price="{{currentProduct.price}}" quantity="1" quantity-max="30" data="currentProduct") Add to Cart
       toggle-item-wishlist(product-id="{{productId}}" ng-if="isLoggedIn")
 
   ////////////////////////// NAVBAR ///////////////////////////////
@@ -22,15 +27,15 @@
   nav.navbar.navbar-default
     ul.nav.navbar-nav
       li
-        a(href="#" ng-click="setViewState('Specs')") Specifications
+        a(href="#" ng-click="setViewState('Specs')" ng-class='{"active": isViewState("Specs")}') Specifications
       li
-        a(href="#" ng-click="setViewState('Warranty')") Warranty
+        a(href="#" ng-click="setViewState('Warranty')" ng-class='{"active": isViewState("Warranty")}') Warranty
       li
-        a(href="#" ng-click="setViewState('Review')") Reviews
+        a(href="#" ng-click="setViewState('Review')" ng-class='{"active": isViewState("Review")}') Reviews
       li(ng-if="isAdmin")
-        a(href="#" ng-click="setViewState('Edit')") Edit
+        a(href="#" ng-click="setViewState('Edit')" ng-class='{"active": isViewState("Edit")}') Edit
       li(ng-if="isAdmin")
-        a(href="#" ng-click="setViewState('Picture')") Add Pictures
+        a(href="#" ng-click="setViewState('Picture')" ng-class='{"active": isViewState("Picture")}') Add Pictures
 
   ////////////////////////// Product Specs ////////////////////////
 
@@ -100,12 +105,11 @@
 
   .row(ng-show="viewState === 'Review'")
     .col-lg-12
-      h2 Product Reviews:
       ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-if="currentProduct.reviews.length > 0" ng-repeat='review in currentProduct.reviews')
         li
           a(href='#') {{review.rating}} | {{review.score}} | {{review.summary}}
             button.close(type='button', ng-click='removeReview(review)' ng-if="isAdmin") ×
-          a(href='reviews/{{review._id}}') Read the full review...
+          a(href='reviews/{{review._id}}') {{review.shortForm}} Show More
       p(ng-if="currentProduct.reviews.length < 1") There are no reviews for this product.
 
   .row(ng-controller='ReviewsCtrl' ng-if='isLoggedIn' ng-show="viewState === 'Review'")
@@ -147,14 +151,10 @@
 
         button.btn.btn-primary.full-width(href="#" ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin") Set as DP
 
-
-
         ul.nav.nav-tabs.col-md-2(ng-repeat='picture in currentProduct.pictures')
           li
             img.img-rounded(src="{{picture.path}}" ng-click='setPreviewImage(picture)' height="100" width="100")
             button.btn.btn-primary(href="#" ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin") Set as Display Picture
-
-
 
       .alert.alert-success(href="#" ng-if="successMessages") {{successMessages}}
         span.edit-message-close.glyphicon.glyphicon-remove(ng-click="successMessages = ''")

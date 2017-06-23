@@ -1,0 +1,10 @@
+.container
+  h2 Active Sales
+  .flex-list(ng-repeat="sale in activeSales")
+    .flex-item 
+      p {{sale.startDate}}
+      p {{sale.endDate}}
+      p {{sale.discount}}
+      p {{sale.promotionalCode}}
+      p {{sale.applicableProducts}}
+      

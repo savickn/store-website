@@ -1,8 +1,6 @@
 .container
   .row
     .col-sm-12
-      h1 Sign up
-    .col-sm-12
       form.form(name='signupForm' ng-submit='register(signupForm, user)' novalidate)
         .form-group(ng-class='{ "has-success": signupForm.name.$valid && submitted, "has-error": signupForm.name.$invalid && submitted }')
           label Name

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('OrderUploadCtrl', function ($scope, $timeout, Auth, OrderService, AlertService, ngCart, $state, DataService, AddressService) {
+  .controller('OrderUploadCtrl', function ($scope, $timeout, Auth, OrderService, AlertService, ngCart, $state, DataService, AddressService, SaleService) {
     $scope.isAdmin = Auth.isAdmin();
     $scope.newShippingAddress = {};
     $scope.newBillingAddress = {};
@@ -17,7 +17,8 @@ angular.module('passportApp')
       products: ngCart.getItems(),
       shippingAddress: {},
       billingAddress: {},
-      paymentMethod: {}
+      paymentMethod: {},
+      promotions: []
     };
 
     /////////////////////// VALIDATE NEW INFO //////////////////////////
@@ -140,5 +141,20 @@ angular.module('passportApp')
         console.log(err);
       })
     };
+
+    $scope.applyPromotion = function(promoCode) {
+      SaleService.applyPromotion(promoCode).then(function(sale) {
+        console.log(sale);
+        $scope.newOrder.promotions.pushUnique(sale);
+
+
+
+      }).catch(function(err) {
+        console.log(err);
+      })
+    }
+
+
+
 
   });

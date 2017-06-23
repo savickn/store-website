@@ -51,7 +51,11 @@ ReviewSchema.pre("save", function(next) {
       if(err) {next(err);}
       for(let order of user.orders) {
         for(let product of order.products) {
-          if(product === self.product) {
+          console.log('######');
+          console.log(product);
+          console.log(self.product);
+          if(product == self.product) {
+            console.log(true);
             self.verified = true;
             next(self);
           }
@@ -92,6 +96,15 @@ ReviewSchema.pre("remove", function(next) {
 ReviewSchema.virtual('score').get(function() {
 	return this.upvotes.length;
 });
+
+ReviewSchema.virtual('shortForm').get(function() {
+  let arr = this.summary.split(" ");
+  arr = arr.slice(0, 25);
+  let str = arr.join(" ");
+  return str + "...";
+})
+
+
 
 ReviewSchema.set('toJSON', {virtuals: true});
 

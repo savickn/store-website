@@ -1,22 +1,45 @@
 
 .container
-  form(name="saleForm")
-    .input-group
+  form.form-wrapper(role="form" name="saleForm" ng-submit="addSale(saleForm, newSale)" novalidate)
+    .input-group(ng-class='{ "has-success": saleForm.startDate.$valid && submitted, "has-error": saleForm.startDate.$invalid && submitted }')
       label(for="startDate") Start Date
-      input.form-control(type="date" name="startDate" placeholder="Enter the sale's start date here." ng-model="newSale.startDate")
+      input.form-control(type="date" name="startDate" placeholder="Enter the sale's start date here." ng-model="newSale.startDate" mongoose-error required)
+      p.help-block(ng-show='saleForm.startDate.$error.required && submitted')
+        | Please select a starting date.
+      p.help-block(ng-show='saleForm.startDate.$error.mongoose')
+        | {{ errors.startDate }}
         
-    .input-group
+    .input-group(ng-class='{ "has-success": saleForm.endDate.$valid && submitted, "has-error": saleForm.endDate.$invalid && submitted }')
       label(for="endDate") End Date
-      input.form-control(type="date" name="endDate" placeholder="Enter the sale's end date here." ng-model="newSale.endDate")
+      input.form-control(type="date" name="endDate" placeholder="Enter the sale's end date here." ng-model="newSale.endDate" mongoose-error required)
+      p.help-block(ng-show='saleForm.endDate.$error.required && submitted')
+        | Please select an ending date.
+      p.help-block(ng-show='saleForm.endDate.$error.mongoose')
+        | {{ errors.endDate }}
         
-    .input-group
+    .input-group(ng-class='{ "has-success": saleForm.promotionalCode.$valid && submitted, "has-error": saleForm.promotionalCode.$invalid && submitted }')
       label(for="promotionalCode") Promo Code
-      input.form-control(type="text" name="promotionalCode" placeholder="Enter the sale's promo code here." ng-model="newSale.promotionalCode")
+      input.form-control(type="text" name="promotionalCode" placeholder="Enter the sale's promo code here." ng-model="newSale.promotionalCode" mongoose-error required)
+      p.help-block(ng-show='saleForm.promotionalCode.$error.required && submitted')
+        | Please specify a promo code for this sale.
+      p.help-block(ng-show='saleForm.promotionalCode.$error.mongoose')
+        | {{ errors.promotionalCode }}
         
-    .input-group
+    .input-group(ng-class='{ "has-success": saleForm.discountRate.$valid && submitted, "has-error": saleForm.discountRate.$invalid && submitted }')
       label(for="discountRate") Discount Rate
-      input.form-control(type="number" name="discountRate" placeholder="Enter the sale's discount rate here." ng-model="newSale.discountRate" step="0.01" ng-min="0.01" ng-max="0.99")
+      input.form-control(type="number" name="discountRate" placeholder="Enter the sale's discount rate here." ng-model="newSale.discountRate" step="0.01" ng-min="0.01" ng-max="0.99" mongoose-error required)
+      p.help-block(ng-show='saleForm.discountRate.$error.required && submitted')
+        | Please select a discount rate.
+      p.help-block(ng-show='saleForm.discountRate.$error.mongoose')
+        | {{ errors.discountRate }}
   
-    .input-group
+    .input-group(ng-class='{ "has-success": saleForm.applicableProducts.$valid && submitted, "has-error": saleForm.applicableProducts.$invalid && submitted }')
       label(for="applicableProducts") Applicable Products
-      input.form-control(type="select" name="applicableProducts" placeholder="Enter applicable products here." ng-model="newSale.validProducts")
+      select.form-control(name="applicableProducts" placeholder="Please select applicable products." ng-model="newSale.validProducts" mongoose-error required multiple)
+        option(ng-repeat="category in categories" ng-value="category") {{category}}
+      p.help-block(ng-show='saleForm.applicableProducts.$error.required && submitted')
+        | Please select applicable products.
+      p.help-block(ng-show='saleForm.applicableProducts.$error.mongoose')
+        | {{ errors.applicableProducts }}
+        
+    md-button.md-primary.md-raised(type="submit") Create Sale

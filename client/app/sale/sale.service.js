@@ -3,12 +3,26 @@
 angular.module('passportApp')
   .factory('SaleService', function (Restangular) {
 
+    /*var rest =
+      Restangular.withConfig(function(RestangularConfigurer) {
+        RestangularConfigurer.setFullResponse(false);
+      });*/
+
     return {
+      getSaleInfo: function() {
+        return Restangular.all('sales').customGET('new');
+      },
+      /*newSale: function() {
+        return fetch('api/sales/new').then((response) => {
+          console.log(response)
+          response.json();
+        });
+      },*/
+      applyPromotion: function(code) {
+        return Restangular.all('sales').customGET('apply', {promoCode: code});
+      },
       getSales: function() {
         return Restangular.all('sales').getList();
-      },
-      getSale: function(saleId) {
-        return Restangular.one('sales', saleId).get();
       },
       addSale: function(sale) {
         return Restangular.all('sales').post(sale);

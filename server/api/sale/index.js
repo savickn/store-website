@@ -7,7 +7,7 @@ var router = express.Router();
 
 router.get('/', controller.index);
 router.get('/new', controller.new);
-//router.get('/:id', controller.show);
+router.get('/apply', controller.applyPromotion);
 router.post('/', controller.create);
 router.put('/:id', controller.update);
 router.patch('/:id', controller.update);

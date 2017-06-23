@@ -2,32 +2,31 @@
 
 var _ = require('lodash');
 var Sale = require('./sale.model');
-var Product = require('../product/product.model');
+var Product = require('../product/product.model').model;
 
-exports.new = function() {
-  var state = {
-    categories: [],
-    brands: []
-  };
-
+exports.new = function(req, res) {
   Product.getCategories().then(function(categories) {
-    state.categories = categories;
     Product.getBrands().then(function(brands) {
-      state.brands = brands;
-      return res.status(200).json(state);
-    })
+      return res.status(200).json({'categories': categories, 'brands': brands});
+    });
   });
 };
 
-exports.validateSale = function(sale, product) {
-  return (sale.isActive() && sale.isApplicable(product.__t))? true:false;
+function validateSale(sale, product) {
+  return (sale.isActive() && sale.isApplicable(product.__t)) ? true:false;
 };
 
-exports.getSale = function(req, res) {
-  Sale.findByPromotionalCode(req.body.promotionalCode).then(function(sale) {
-    return res.status(200).json(sale);
+exports.applyPromotion = function(req, res) {
+  Sale.findByPromotionalCode(req.query.promoCode).then(function(sale) {
+    if(err) {return handleError(res, err);}
+    if(sale.isActive()) {
+      return res.status(200).json(sale);
+    } else {
+      error = new Error('This sale is no longer active.');
+      return handleError(res, error);
+    }
   });
-}
+};
 
 // Creates a new computer in the DB.
 exports.create = function(req, res) {
@@ -39,7 +38,7 @@ exports.create = function(req, res) {
 
 // Get list of computers
 exports.index = function(req, res) {
-  Sale.find({}, function (err, sales) {
+  Sale.find({endDate: {$gt: Date.now()}}, function (err, sales) {
       if(err) { return handleError(res, err); }
       return res.status(200).json(sales);
   });
