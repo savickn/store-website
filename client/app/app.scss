@@ -15,6 +15,10 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
   -webkit-box-sizing: border-box;
 }
 
+.no-touch {
+	pointer-events: none;
+}
+
 /*
 ** FLEX GENERICS
 */
@@ -75,6 +79,8 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 .flex-list {
   @extend .flex-column;
   justify-content: flex-start;
+  align-items: stretch;
+  width: 100%;
 
   .flex-list-element {
     padding: 5px 0px 5px 0px;
@@ -167,6 +173,15 @@ form.form-wrapper {
 
 }*/
 
+.ns-navbar {
+  padding: 10px;
+  a {
+    color: #747474;
+  }
+  a:hover {
+    color: darken(#747474, 100%);
+  }
+}
 
 .flex-navbar {
   @extend .flex-row;
@@ -175,14 +190,14 @@ form.form-wrapper {
   border-radius: 5px;
   background-color: #f0f0f0; // light gray1
 
+  .flex-nav-header {
+    flex: 20;
+    @extend .ns-navbar;
+  }
+
   .flex-nav-element {
-    padding: 10px;
-    a {
-      color: #747474;
-    }
-    a:hover {
-      color: darken(#747474, 100%);
-    }
+    flex: 10;
+    @extend .ns-navbar;
   }
 }
 
@@ -251,7 +266,6 @@ form.form-wrapper {
 @import 'admin/admin.scss';
 @import 'computer/stylesheets/show.scss';
 @import 'main/main.scss';
-@import 'musescore/musescore.scss';
 @import 'product/index.scss';
 @import 'review/review.scss';
 @import 'test/test.scss';

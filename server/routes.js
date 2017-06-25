@@ -22,7 +22,6 @@ module.exports = function(app) {
   app.use('/api/addresses', require('./api/address'));
   app.use('/api/wishlists', require('./api/wishlist'));
   app.use('/api/sales', require('./api/sale'));
-  app.use('/api/midiscores', require('./api/midi_score'));
   app.use('/api/data', require('./api/data'));
   app.use('/api/payments', require('./api/payment'));
 

@@ -25,16 +25,16 @@
   ////////////////////////// NAVBAR ///////////////////////////////
 
   .flex-navbar
-      .flex-nav-element
-        a(href="#" ng-click="setViewState('Specs')" ng-class='{"active": isViewState("Specs")}') Specifications
-      .flex-nav-element
-        a(href="#" ng-click="setViewState('Warranty')" ng-class='{"active": isViewState("Warranty")}') Warranty
-      .flex-nav-element
-        a(href="#" ng-click="setViewState('Review')" ng-class='{"active": isViewState("Review")}') Reviews
-      .flex-nav-element(ng-if="isAdmin")
-        a(href="#" ng-click="setViewState('Edit')" ng-class='{"active": isViewState("Edit")}') Edit
-      .flex-nav-element(ng-if="isAdmin")
-        a(href="#" ng-click="setViewState('Picture')" ng-class='{"active": isViewState("Picture")}') Add Pictures
+    .flex-nav-element
+      a(href="#" ng-click="setViewState('Specs')" ng-class='{"active": isViewState("Specs")}') Specifications
+    .flex-nav-element
+      a(href="#" ng-click="setViewState('Warranty')" ng-class='{"active": isViewState("Warranty")}') Warranty
+    .flex-nav-element
+      a(href="#" ng-click="setViewState('Review')" ng-class='{"active": isViewState("Review")}') Reviews
+    .flex-nav-element(ng-if="isAdmin")
+      a(href="#" ng-click="setViewState('Edit')" ng-class='{"active": isViewState("Edit")}') Edit
+    .flex-nav-element(ng-if="isAdmin")
+      a(href="#" ng-click="setViewState('Picture')" ng-class='{"active": isViewState("Picture")}') Add Pictures
 
   ////////////////////////// Product Specs ////////////////////////
 
@@ -102,27 +102,25 @@
 
   ///////////////////////// PRODUCT REVIEWS ///////////////////////////////
 
-  .row(ng-show="viewState === 'Review'")
-    .flex-list
-      .flex-list-element(ng-if="currentProduct.reviews.length > 0" ng-repeat='review in currentProduct.reviews')
-        ns-review-view(review="review")
-      .flex-list-element(ng-if="currentProduct.reviews.length < 1") There are no reviews for this product.
+  .flex-list(ng-show="viewState === 'Review'")
+    .flex-list-element(ng-if="currentProduct.reviews.length > 0" ng-repeat='review in currentProduct.reviews')
+      ns-review-view(review="review")
+    .flex-list-element(ng-if="currentProduct.reviews.length < 1") There are no reviews for this product.
 
-  .row(ng-controller='ReviewsCtrl' ng-if='isLoggedIn' ng-show="viewState === 'Review'")
-    form.form-wrapper(name="reviewForm" ng-submit="reviewForm.$valid && addReview(newReview)")
-      label Use this form to create reviews
-      .input-group 
-        label Title:
-        input.form-control(type='text' name="title" placeholder='Enter your title here.' ng-model='newReview.title' ng-minlength="0" ng-maxlength="50" required)
-      .input-group
-        label Review: 
-        input.form-control(type='text' name="review" placeholder='Enter your review here.' ng-model='newReview.summary' ng-minlength="0" ng-maxlength="1000" required)  
-      .input-group(ng-init="rating = star.rating + 1")
-        label Rating:
-          div(class='star-rating' star-rating rating-value="rating" data-max="10" on-rating-selected="setRating(rating)")
-        input.form-control(type='number' name="rating" placeholder='Enter your rating here.' ng-model='newReview.rating' ng-hide="true" min="0" max="10" required)
-      .input-group
-        button.btn.btn-primary(ng-disabled="reviewForm.$invalid" type='submit') Add Review
+  form.form-wrapper(name="reviewForm" ng-submit="reviewForm.$valid && addReview(newReview)" ng-controller='ReviewsCtrl' ng-if='isLoggedIn' ng-show="viewState === 'Review'")
+    label Use this form to create reviews
+    .input-group 
+      label Title:
+      input.form-control(type='text' name="title" placeholder='Enter your title here.' ng-model='newReview.title' ng-minlength="0" ng-maxlength="50" required)
+    .input-group
+      label Review: 
+      input.form-control(type='text' name="review" placeholder='Enter your review here.' ng-model='newReview.summary' ng-minlength="0" ng-maxlength="1000" required)  
+    .input-group(ng-init="rating = star.rating + 1")
+      label Rating:
+        div(class='star-rating' star-rating rating-value="rating" data-max="10" on-rating-selected="setRating(rating)")
+      input.form-control(type='number' name="rating" placeholder='Enter your rating here.' ng-model='newReview.rating' ng-hide="true" min="0" max="10" required)
+    .input-group
+      button.btn.btn-primary(ng-disabled="reviewForm.$invalid" type='submit') Add Review
 
 
   //data:image/png;base64,

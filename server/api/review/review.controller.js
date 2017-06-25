@@ -33,9 +33,13 @@ exports.create = function(req, res) {
 
 // Updates an existing review in the DB.
 exports.update = function(req, res) {
-  Review.findOneAndUpdate({_id: req.params.id}, {$set: req.body}, {new: true})
+  Review.findOneAndUpdate(
+      {_id: req.params.id},
+      {$set: req.body},
+      {runValidators: true, new: true})
     .populate('product author', '_id name')
     .exec(function(err, review) {
+      console.log(err);
       if (err) { return handleError(res, err); }
       return res.status(200).json(review);
     });
@@ -46,8 +50,9 @@ exports.upvote = function(req, res) {
   Review.findOneAndUpdate(
     {_id: req.params.id},
     {$addToSet: {upvotes: req.body.upvote}},
-    {new: true},
-    function(err, review) {
+    {runValidators: true, new: true})
+    .populate('product author', '_id name')
+    .exec(function(err, review) {
       if (err) return handleError(res, err);
       if(!review) return res.status(404).send('Not Found');
       return res.status(200).json(review)

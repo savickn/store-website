@@ -10,24 +10,23 @@ var UpvoteSchema = new Schema({
   },
   userId: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   }
-});
+}, { _id: false });
 
-/*UpvoteSchema.pre("save", function(next, done) {
+//only works if Upvotes are saved separately, e.g. for references
+/*UpvoteSchema.pre("save", function(next) {
   var self = this;
   mongoose.model["Upvote"].findOne({authorId: self.authorId}, function(err, upvote) {
-    if(err) {
-      done(err);
-    } else if(upvote) {
+    if(err) { next(err); }
+    if(upvote) {
       self.invalidate("authorId", "You have already liked this post");
-      done();
+      next(self);
     } else {
-      done();
+      next();
     }
   });
-
-  next();
 });*/
 
 module.exports = mongoose.model('Upvote', UpvoteSchema);

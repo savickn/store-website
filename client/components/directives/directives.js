@@ -325,6 +325,13 @@ angular.module('passportAppDirectives', [])
 				scope.rating = scope.review.rating;
 				scope.isDuplicateLike = isDuplicateLike(scope.review);
 
+				function isDuplicate(review) {
+					var user = Auth.getCurrentUser();
+					var upvote = {userName: user.name, userId: user._id};
+					return review.upvotes.contains(upvote) ? true : false;
+				}
+
+
 				function isDuplicateLike(review) {
 					var userId = Auth.getCurrentUser()._id;
 					var state = false;
@@ -340,8 +347,26 @@ angular.module('passportAppDirectives', [])
 				scope.upvoteReview = function(review) {
 					var user = Auth.getCurrentUser();
 					var newUpvote = {userName: user.name, userId: user._id};
+					/*var r = review.upvotes.push(newUpvote);
 
-					if(!isDuplicateLike(review)) {
+					ReviewService.updateReview(r).then(function(updatedReview) {
+						scope.review = updatedReview;
+						AlertService.setAlert("You liked this review!", "Success");
+					}).catch(function(err) {
+						console.log(err);
+						AlertService.setAlert("This review could not be liked.", "Error");
+					})*/
+
+						ReviewService.upvoteReview(review._id, newUpvote).then(function(updatedReview) {
+							scope.review = updatedReview;
+							scope.isDuplicateLike = isDuplicateLike(updatedReview);
+							AlertService.setAlert("You liked this review!", "Success");
+						}).catch(function(err) {
+							console.log(err);
+							AlertService.setAlert(err.msg, "Error");
+						})
+
+					/*if(!isDuplicateLike(review)) {
 						ReviewService.upvoteReview(review._id, newUpvote).then(function(review) {
 							scope.review = review;
 							scope.isDuplicateLike = isDuplicateLike(review);
@@ -351,7 +376,7 @@ angular.module('passportAppDirectives', [])
 						});
 					} else {
 						AlertService.setAlert("You have already liked this review once.", "Error");
-					}
+					}*/
 				};
 
 				scope.removeUpvote = function(review) {
@@ -371,7 +396,7 @@ angular.module('passportAppDirectives', [])
 
 				scope.updateReview = function(review) {
 		      ReviewService.updateReview(review).then(function(updatedReview) {
-		        scope.review = review;
+		        scope.review = updatedReview;
 		        scope.isDuplicateLike = isDuplicateLike(updatedReview);
 		      });
 		    };

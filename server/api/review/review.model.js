@@ -7,11 +7,13 @@ var mongoose = require('mongoose'),
 var ReviewSchema = new Schema({
   author: 	{
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   },
   product: 	{
     type: Schema.Types.ObjectId,
-  	ref: 'Product'
+  	ref: 'Product',
+    required: true
   },
   rating: 	{
     type: Number,
@@ -44,20 +46,37 @@ var ReviewSchema = new Schema({
 * Validations
 */
 
-//used to prevent user from posting multiple reviews
+//prevents multiple identical upvotes
 ReviewSchema
-  .path('author')
-  .validate(function(author) {
-    console.log(this.author);
-    console.log(this.product);
-    return true;
-  }, 'You have already posted a review for this product.')
+  .path('upvotes')
+  .validate(function(upvotes) {
+    return (new Set(upvotes)).size === upvotes.length ? true : false;
+  }, 'You have already liked this review.')
 
 /*
 * Pre and POST Hooks
 */
 
-//sets Verified field
+// ensures that user does not review a product multiple times
+ReviewSchema.pre("save", function(next) {
+  let self = this;
+  mongoose.model('Review')
+    .findOne({author: this.author, product: this.product})
+    .exec(function(err, review) {
+      console.log(err);
+      console.log(review);
+      if(err) {next(err);}
+      if(review) {
+        console.log('invalid');
+        self.invalidate("author", "You have already reviewed this product.");
+        next(self);
+      } else {
+        next();
+      }
+  });
+});
+
+//sets Verified field, should be performed within 'create' instead
 ReviewSchema.pre("save", function(next) {
   let self = this;
   mongoose.model('User').findById(this.author)
