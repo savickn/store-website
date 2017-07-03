@@ -13,17 +13,12 @@ angular.module('passportApp')
     $scope.previewImage = {};
     $scope.updateDisplayPic = false;
 
-    ngCart.setTaxRate(7.5);
-    ngCart.setShipping(2.99);
-
     $scope.setViewState = function(s) {
       $scope.viewState = s;
     };
 
-    $scope.isActive = function(viewState) {
-      console.log(viewState);
-      console.log($scope.viewState);
-      return (viewState === $scope.viewState) ? true : false;
+    $scope.isViewState = function(viewState) {
+      return viewState === $scope.viewState ? true : false;
     }
 
     ComputerService.getComputer($stateParams.id).then(function(computer) {

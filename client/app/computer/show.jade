@@ -11,10 +11,9 @@
     .flex-content.flex-wrap-around
       img(src='{{previewImage.path}}' ng-if='previewImage')
       .flex-element(ng-repeat='picture in currentProduct.pictures')
-        //.gallery-img
         img.img-rounded(src="{{picture.path}}" ng-click='setPreviewImage(picture)' height="100" width="100")
-        i.glyphicon.glyphicon-remove.top-right(ng-click="removePicture(picture._id)" ng-if="isAdmin")
-        i.glyphicon.glyphicon-picture.bottom-right(ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin")
+        span.glyphicon.glyphicon-remove(ng-click="removePicture(picture._id)" ng-if="isAdmin")
+        span.glyphicon.glyphicon-picture(ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin")
         
     ///////////////////////// SIDEBAR ///////////////////////////////
     
@@ -25,16 +24,16 @@
   ////////////////////////// NAVBAR ///////////////////////////////
 
   .flex-navbar
-    .flex-nav-element
-      a(href="#" ng-click="setViewState('Specs')" ng-class='{"active": isViewState("Specs")}') Specifications
-    .flex-nav-element
-      a(href="#" ng-click="setViewState('Warranty')" ng-class='{"active": isViewState("Warranty")}') Warranty
-    .flex-nav-element
-      a(href="#" ng-click="setViewState('Review')" ng-class='{"active": isViewState("Review")}') Reviews
-    .flex-nav-element(ng-if="isAdmin")
-      a(href="#" ng-click="setViewState('Edit')" ng-class='{"active": isViewState("Edit")}') Edit
-    .flex-nav-element(ng-if="isAdmin")
-      a(href="#" ng-click="setViewState('Picture')" ng-class='{"active": isViewState("Picture")}') Add Pictures
+    .flex-nav-element(ng-class='{"nav-selected": isViewState("Specs")}')
+      a(href="#" ng-click="setViewState('Specs')") Specifications
+    .flex-nav-element(ng-class='{"nav-selected": isViewState("Warranty")}')
+      a(href="#" ng-click="setViewState('Warranty')") Warranty
+    .flex-nav-element(ng-class='{"nav-selected": isViewState("Review")}')
+      a(href="#" ng-click="setViewState('Review')") Reviews
+    .flex-nav-element(ng-if="isAdmin" ng-class='{"nav-selected": isViewState("Edit")}')
+      a(href="#" ng-click="setViewState('Edit')") Edit
+    .flex-nav-element(ng-if="isAdmin" ng-class='{"nav-selected": isViewState("Picture")}')
+      a(href="#" ng-click="setViewState('Picture')") Add Pictures
 
   ////////////////////////// Product Specs ////////////////////////
 
@@ -50,7 +49,7 @@
         li.list-group-item Motherboard: {{currentProduct.motherboard}}
         li.list-group-item Online Only: {{currentProduct.onlineOnly | yesNo }}
         li.list-group-item Featured: {{currentProduct.featured | yesNo }}
-        li.list-group-item On Sale: {{currentProduct.onSale | yesNo }}
+        //li.list-group-item On Sale: {{currentProduct.onSale | yesNo }}
 
   ///////////////////////// Product Warranty and Returns /////////
 
@@ -78,9 +77,9 @@
             input.form-control(type='checkbox', ng-model='currentProduct.onlineOnly')
           label.checkbox-inline Featured?
             input.form-control(type='checkbox', ng-model='currentProduct.featured')
-          label.checkbox-inline On Sale?
+          //label.checkbox-inline On Sale?
             input.form-control(type='checkbox', ng-model='currentProduct.onSale')
-          button.btn.btn-primary(ng-disabled="computerEditForm.$invalid" type='submit') Save changes
+          button.btn.btn-primary(ng-disabled="computerEditForm.$invalid" type='submit') Save Changes
 
   ////////////////////////// PICTURE UPLOAD ////////////////////////////////
 
@@ -104,23 +103,33 @@
 
   .flex-list(ng-show="viewState === 'Review'")
     .flex-list-element(ng-if="currentProduct.reviews.length > 0" ng-repeat='review in currentProduct.reviews')
-      ns-review-view(review="review")
+      ns-review-view(review="review" remove="removeReview(review)")
     .flex-list-element(ng-if="currentProduct.reviews.length < 1") There are no reviews for this product.
 
-  form.form-wrapper(name="reviewForm" ng-submit="reviewForm.$valid && addReview(newReview)" ng-controller='ReviewsCtrl' ng-if='isLoggedIn' ng-show="viewState === 'Review'")
+  form.form-wrapper(name="reviewForm" ng-submit="addReview(reviewForm, newReview)" ng-controller='ReviewsCtrl' ng-if='isLoggedIn' ng-show="viewState === 'Review'" novalidate)
     label Use this form to create reviews
-    .input-group 
+    p.help-block(ng-show='reviewForm.author.$error.mongoose')
+      | {{errors.author}}
+    p.help-block(ng-show='reviewForm.upvotes.$error.mongoose')
+      | {{errors.upvotes}}
+    .input-group(ng-class='{ "has-success": reviewForm.title.$valid && submitted, "has-error": reviewForm.title.$invalid && submitted }')
       label Title:
-      input.form-control(type='text' name="title" placeholder='Enter your title here.' ng-model='newReview.title' ng-minlength="0" ng-maxlength="50" required)
-    .input-group
+      input.form-control(type='text' name="title" placeholder='Enter your title here.' ng-model='newReview.title' ng-maxlength="100" required)
+      p.help-block(ng-show='reviewForm.title.$error.mongoose')
+        | {{errors.title}}
+    .input-group(ng-class='{ "has-success": reviewForm.review.$valid && submitted, "has-error": reviewForm.review.$invalid && submitted }')
       label Review: 
-      input.form-control(type='text' name="review" placeholder='Enter your review here.' ng-model='newReview.summary' ng-minlength="0" ng-maxlength="1000" required)  
+      input.form-control(type='text' name="review" placeholder='Enter your review here.' ng-model='newReview.summary' ng-maxlength="1000" required)  
+      p.help-block(ng-show='reviewForm.review.$error.mongoose')
+        | {{errors.review}}
     .input-group(ng-init="rating = star.rating + 1")
       label Rating:
         div(class='star-rating' star-rating rating-value="rating" data-max="10" on-rating-selected="setRating(rating)")
-      input.form-control(type='number' name="rating" placeholder='Enter your rating here.' ng-model='newReview.rating' ng-hide="true" min="0" max="10" required)
+      input.form-control(type='number' name="rating" ng-model='newReview.rating' ng-hide="true" min="0" max="10" required)
+      p.help-block(ng-show='reviewForm.rating.$error.mongoose')
+        | {{errors.rating}}
     .input-group
-      button.btn.btn-primary(ng-disabled="reviewForm.$invalid" type='submit') Add Review
+      button.btn.btn-primary(type='submit') Add Review
 
 
   //data:image/png;base64,

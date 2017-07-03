@@ -8,28 +8,28 @@ var ReviewSchema = new Schema({
   author: 	{
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: 'This review must have a valid author.'
   },
   product: 	{
     type: Schema.Types.ObjectId,
   	ref: 'Product',
-    required: true
+    required: 'This review must have a valid product.'
   },
   rating: 	{
     type: Number,
-  	required: true,
   	min: 0,
-  	max: 10
+  	max: 10,
+    required: 'You must select a rating for this review.'
   },
   title: {
     type: String,
-    required: true
+    maxLength: 100,
+    required: 'You must enter a title for this review.'
   },
   summary: 	{
     type: String,
-  	required: true,
-  	minLength: 0,
-    maxLength: 1000
+    maxLength: 1000,
+    required: 'You must enter a review for this product.'
   },
   date: {
     type: Date,
@@ -50,6 +50,7 @@ var ReviewSchema = new Schema({
 ReviewSchema
   .path('upvotes')
   .validate(function(upvotes) {
+    console.log('upvote check');
     return (new Set(upvotes)).size === upvotes.length ? true : false;
   }, 'You have already liked this review.')
 
@@ -57,66 +58,71 @@ ReviewSchema
 * Pre and POST Hooks
 */
 
-// ensures that user does not review a product multiple times
-ReviewSchema.pre("save", function(next) {
+// ensures that user does not review a product multiple times, need to use parallel middleware
+ReviewSchema.pre("save", true, function(next, done) {
   let self = this;
   mongoose.model('Review')
     .findOne({author: this.author, product: this.product})
     .exec(function(err, review) {
       console.log(err);
-      console.log(review);
-      if(err) {next(err);}
+      console.log('author check', review);
+      if(err) {done(err);}
       if(review) {
         console.log('invalid');
         self.invalidate("author", "You have already reviewed this product.");
-        next(self);
+        done(self);
       } else {
-        next();
+        done();
       }
   });
+  next();
 });
 
 //sets Verified field, should be performed within 'create' instead
-ReviewSchema.pre("save", function(next) {
+ReviewSchema.pre("save", true, function(next, done) {
   let self = this;
   mongoose.model('User').findById(this.author)
     .populate('orders', 'products')
     .exec(function(err, user) {
-      if(err) {next(err);}
+      if(err) {done(err);}
       for(let order of user.orders) {
         for(let product of order.products) {
           if(product.equals(self.product)) {
             self.verified = true;
-            next(self);
+            done();
           }
         }
       };
-      next();
   });
+  next();
 });
 
 //data consistency with product
-ReviewSchema.pre("save", function(next) {
+ReviewSchema.pre("save", true, function(next, done) {
+  let self = this;
   mongoose.model('Product').findOneAndUpdate(
     {_id: this.product},
     {$addToSet: {reviews: this._id}},
     function(err, product) {
-      if(err) {next(err);}
-      next();
+      if(err) {done(err);}
+      done();
     }
   );
+  next();
 });
 
 //data consistency with product
-ReviewSchema.pre("remove", function(next) {
+ReviewSchema.pre("remove", true, function(next, done) {
+  let self = this;
   mongoose.model('Product').findOneAndUpdate(
     {_id: this.product},
     {$pull: {reviews: this._id}},
     function(err, product) {
-      if(err) {next(err);}
-      next();
+      if(err) {done(err);}
+      done();
     }
   );
+  next();
 });
 
 /*
@@ -129,7 +135,7 @@ ReviewSchema.virtual('score').get(function() {
 
 ReviewSchema.virtual('shortSummary').get(function() {
   let arr = this.summary.split(" ");
-  arr = arr.slice(0, 25);
+  arr = arr.slice(0, 10);
   let str = arr.join(" ");
   return str + "...";
 })

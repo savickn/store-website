@@ -3,21 +3,25 @@
   .flex-list-element.flex-row
     .flex-row-element
       .no-touch(class='star-rating' star-rating rating-value="rating" data-max="10")
-    .flex-row-element {{review.title}}
-    .flex-row-element
-      span.glyphicon.glyphicon-remove(type='button', ng-click='removeReview(review)' ng-if="isAdmin")
+    .flex-row-element 
+      strong {{review.title}}
+    a.flex-row-element(href="#")
+      span.glyphicon.glyphicon-remove(ng-click='removeReview(review)' ng-if="isAdmin")
       
   .flex-list-element.flex-row
     .flex-row-element By: {{review.author.name}}
+    .flex-row-element  
+      span.glyphicon.glyphicon-star(ng-if="review.verified") 
+      span(padding-left="5px") Verified Reviewer
     .flex-row-element Date Posted: {{review.date}}
   
   .flex-list-element
     .short(ng-if="short") {{review.shortSummary}}
-      a(href="#" ng-click="setShort(false)" ng-if="shortExists") Show More
+      a.pad-left(href="#" ng-click="setShort(false)" ng-if="shortExists") Show More
     .long(ng-if="!short") {{review.summary}}
-      a(href="#" ng-click="setShort(true)" ng-if="shortExists") Show Less
+      a.pad-left(href="#" ng-click="setShort(true)" ng-if="shortExists") Show Less
   
-  .flex-list-element {{review.upvotes.length}} people found this review helpful. Was it helpful to you? 
+  .flex-list-element {{review.upvotes.length}} {{people}} found this review helpful. Was it helpful to you? 
     a(href='#', ng-click='upvoteReview(review)' ng-if='!isDuplicateLike')
       span.glyphicon.glyphicon-thumbs-up
     a(href='#', ng-click='removeUpvote(review)' ng-if='isDuplicateLike')

@@ -77,10 +77,11 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 
 //used to create vertical list layout
 .flex-list {
-  @extend .flex-column;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  width: 100%;
 
   .flex-list-element {
     padding: 5px 0px 5px 0px;
@@ -88,8 +89,30 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 }
 
 //used with 'flex-gallery-row' to create a gallery-style layout
-.flex-gallery-column {
+.flex-gallery {
+  @extend .flex-column;
+  justify-content: flex-start;
+  padding: 10px;
 
+  .flex-gallery-row {
+    @extend .flex-row;
+    padding: 1% 0% 1% 0%;
+
+    .flex-row-element {
+      padding: 0px 5px 0px 5px;
+    }
+  }
+}
+
+.flex-gallery-adaptive {
+  padding: 10px;
+  @extend .flex-row;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+
+  .flex-gallery-element {
+    padding: 0px 5px 0px 5px;
+  }
 }
 
 form.form-wrapper {
@@ -103,6 +126,27 @@ form.form-wrapper {
     padding: 1% 0 1% 0;
   }
 }
+
+.flex-navbar-vertical {
+  @extend .flex-column;
+  justify-content: space-around;
+  border: 1px solid #c6c6c6; //dark gray1
+  border-radius: 5px;
+  background-color: #f0f0f0; // light gray1
+
+  .flex-nav-header {
+    flex: 20;
+    @extend .ns-navbar;
+  }
+
+  .flex-nav-element {
+    flex: 10;
+    @extend .ns-navbar;
+  }
+}
+
+
+
 
 /*
 ** FLEX ROWS
@@ -142,10 +186,6 @@ form.form-wrapper {
   }
 }
 
-//used with 'flex-gallery-column' to create a gallery-style layout
-.flex-gallery-row {
-
-}
 
 //used to create layout where multiple smaller images wrap-around a larger image
 .flex-wrap-around {
@@ -185,7 +225,7 @@ form.form-wrapper {
 
 .flex-navbar {
   @extend .flex-row;
-  justify-content: space-between;
+  justify-content: space-around;
   border: 1px solid #c6c6c6; //dark gray1
   border-radius: 5px;
   background-color: #f0f0f0; // light gray1
@@ -202,7 +242,9 @@ form.form-wrapper {
 }
 
 .nav-selected {
-  background-color: darken(#f0f0f0, 50%);
+  background-color: darken(#f0f0f0, 5%);
+  border: 1px solid darken(#f0f0f0, 10%);
+  border-radius: 5px
 }
 
 
@@ -257,6 +299,14 @@ form.form-wrapper {
 
 .highlightOption {
 	border: 1px solid green;
+}
+
+.pad-left {
+  padding: 0px 0px 0px 10px;
+}
+
+.pad-right {
+  padding: 0px 10px 0px 0px;
 }
 
 

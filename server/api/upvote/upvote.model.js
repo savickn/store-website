@@ -15,7 +15,7 @@ var UpvoteSchema = new Schema({
   }
 }, { _id: false });
 
-//only works if Upvotes are saved separately, e.g. for references
+//only works if Upvotes are saved separately, e.g. as references
 /*UpvoteSchema.pre("save", function(next) {
   var self = this;
   mongoose.model["Upvote"].findOne({authorId: self.authorId}, function(err, upvote) {

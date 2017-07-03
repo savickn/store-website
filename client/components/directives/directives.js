@@ -312,11 +312,16 @@ angular.module('passportAppDirectives', [])
 			restrict: 'E',
 			templateUrl: '../components/directives/views/reviewView.html',
 			scope: {
-				review: '='
+				review: '=',
+				remove: '&'
 			},
 			link: function(scope, elem, attrs) {
-				scope.shortExists = scope.review.shortSummary < scope.review.summary;
+				scope.isAdmin = Auth.isAdmin();
+
+				scope.shortExists = scope.review.shortSummary.length < scope.review.summary.length;
 				scope.short = scope.shortExists ? true : false;
+
+				scope.people = scope.review.upvotes.length == 1 ? 'person' : 'people';
 
 				scope.setShort = function(val) {
 					scope.short = val;
@@ -357,16 +362,16 @@ angular.module('passportAppDirectives', [])
 						AlertService.setAlert("This review could not be liked.", "Error");
 					})*/
 
-						ReviewService.upvoteReview(review._id, newUpvote).then(function(updatedReview) {
+						/*ReviewService.upvoteReview(review._id, newUpvote).then(function(updatedReview) {
 							scope.review = updatedReview;
 							scope.isDuplicateLike = isDuplicateLike(updatedReview);
 							AlertService.setAlert("You liked this review!", "Success");
 						}).catch(function(err) {
 							console.log(err);
 							AlertService.setAlert(err.msg, "Error");
-						})
+						})*/
 
-					/*if(!isDuplicateLike(review)) {
+					if(!isDuplicateLike(review)) {
 						ReviewService.upvoteReview(review._id, newUpvote).then(function(review) {
 							scope.review = review;
 							scope.isDuplicateLike = isDuplicateLike(review);
@@ -376,7 +381,7 @@ angular.module('passportAppDirectives', [])
 						});
 					} else {
 						AlertService.setAlert("You have already liked this review once.", "Error");
-					}*/
+					}
 				};
 
 				scope.removeUpvote = function(review) {
@@ -400,6 +405,11 @@ angular.module('passportAppDirectives', [])
 		        scope.isDuplicateLike = isDuplicateLike(updatedReview);
 		      });
 		    };
+
+				scope.removeReview = function(review) {
+					scope.remove(review);
+				}
+
 			}
 		}
 	});
