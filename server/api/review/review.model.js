@@ -50,7 +50,7 @@ var ReviewSchema = new Schema({
 ReviewSchema
   .path('upvotes')
   .validate(function(upvotes) {
-    console.log('upvote check');
+    console.log('upvote check', (new Set(upvotes)).size === upvotes.length ? true : false);
     return (new Set(upvotes)).size === upvotes.length ? true : false;
   }, 'You have already liked this review.')
 
@@ -58,17 +58,14 @@ ReviewSchema
 * Pre and POST Hooks
 */
 
-// ensures that user does not review a product multiple times, need to use parallel middleware
-ReviewSchema.pre("save", true, function(next, done) {
+// ensures that user does not review a product multiple times, WORKING
+/*ReviewSchema.pre("save", true, function(next, done) {
   let self = this;
   mongoose.model('Review')
     .findOne({author: this.author, product: this.product})
     .exec(function(err, review) {
-      console.log(err);
-      console.log('author check', review);
       if(err) {done(err);}
       if(review) {
-        console.log('invalid');
         self.invalidate("author", "You have already reviewed this product.");
         done(self);
       } else {
@@ -76,9 +73,9 @@ ReviewSchema.pre("save", true, function(next, done) {
       }
   });
   next();
-});
+});*/
 
-//sets Verified field, should be performed within 'create' instead
+//sets Verified field, should be performed within 'create' instead, WORKING
 ReviewSchema.pre("save", true, function(next, done) {
   let self = this;
   mongoose.model('User').findById(this.author)
@@ -93,16 +90,16 @@ ReviewSchema.pre("save", true, function(next, done) {
           }
         }
       };
+      done();
   });
   next();
 });
 
 //data consistency with product
 ReviewSchema.pre("save", true, function(next, done) {
-  let self = this;
   mongoose.model('Product').findOneAndUpdate(
     {_id: this.product},
-    {$addToSet: {reviews: this._id}},
+    {$addToSet: {reviews: this._id}, $inc: {aggregateRating: this.rating, reviewCount: 1}},
     function(err, product) {
       if(err) {done(err);}
       done();
@@ -113,10 +110,9 @@ ReviewSchema.pre("save", true, function(next, done) {
 
 //data consistency with product
 ReviewSchema.pre("remove", true, function(next, done) {
-  let self = this;
   mongoose.model('Product').findOneAndUpdate(
     {_id: this.product},
-    {$pull: {reviews: this._id}},
+    {$pull: {reviews: this._id}, $inc: {aggregateRating: -this.rating, reviewCount: -1}},
     function(err, product) {
       if(err) {done(err);}
       done();

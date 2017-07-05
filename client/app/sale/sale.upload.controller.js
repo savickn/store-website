@@ -22,7 +22,6 @@ angular.module('passportApp')
       if(form.$valid && Auth.isAdmin()) {
         SaleService.addSale(newSale).then(function(sale) {
           $scope.submitted = false;
-          console.log(sale);
           AlertService.setAlert('Sale Created!','Success');
     			$scope.newSale = {};
     		}).catch(function(err) {

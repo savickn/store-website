@@ -28,8 +28,9 @@ angular.module('passportApp')
         $scope.errors = {};
 
         angular.forEach(err.errors, function(error, field) {
+          //$scope.$parent.reviewForm[field].$setValidity('mongoose', false);
           //form[field].$setValidity('mongoose', false);
-          $scope.reviewForm[field].$setValidity('mongoose', false);
+          //$scope.reviewForm[field].$setValidity('mongoose', false);
           $scope.errors[field] = error.message;
         });
         AlertService.setAlert("Review could not be saved. Please try again.", "Warning");

@@ -3,6 +3,21 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
+
+
+
+function encrypt(buffer, algorithm){
+  var cipher = crypto.createCipher(algorithm,password)
+  var crypted = Buffer.concat([cipher.update(buffer),cipher.final()]);
+  return crypted;
+}
+ 
+function decrypt(buffer){
+  var decipher = crypto.createDecipher(algorithm,password)
+  var dec = Buffer.concat([decipher.update(buffer) , decipher.final()]);
+  return dec;
+}
+
 var PaymentSchema = new Schema({
   user: 	{
     type: Schema.Types.ObjectId,
@@ -24,6 +39,12 @@ var PaymentSchema = new Schema({
   expiryDate: {
     type: Date,
     required: "You must provide your credit card's expiry date"
+  },
+  hashedPassword: {
+    type: String
+  },
+  salt: {
+    type: String
   }
 });
 
@@ -93,6 +114,12 @@ PaymentSchema.pre('remove', function(next) {
 PaymentSchema.methods = {
   isExpired: function() {
     return (Date.now() > this.expiryDate) ? true : false;
+  },
+  validateCard: function() {
+
+  },
+  hashCardNumber: function() {
+
   }
 }
 
@@ -117,7 +144,7 @@ PaymentSchema
 PaymentSchema
   .virtual('expiryYear')
   .get(function() {
-    return this.expiryDate.getYear();
+    return this.expiryDate.getFullYear();
   })
 
 PaymentSchema.set('toJSON', {virtuals: true});

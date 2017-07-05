@@ -90,6 +90,7 @@ UserSchema
     return this.orders.length;
   })
 
+//maybe make this a separate DB field
 UserSchema
   .virtual('amountSpent')
   .get(function() {

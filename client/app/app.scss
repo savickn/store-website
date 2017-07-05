@@ -302,11 +302,25 @@ form.form-wrapper {
 }
 
 .pad-left {
-  padding: 0px 0px 0px 10px;
+  padding: 0px 0px 0px 8px;
 }
 
 .pad-right {
-  padding: 0px 10px 0px 0px;
+  padding: 0px 8px 0px 0px;
+}
+
+.line-through {
+  text-decoration: line-through;
+}
+
+.on-sale-text {
+  font-weight: bold;
+  color: red;
+}
+
+.bordered {
+  border: 1px solid lighten(grey, 25%);
+  border-radius: 5px;
 }
 
 

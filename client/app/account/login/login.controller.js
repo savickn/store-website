@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('LoginController', function ($scope, $state, Auth, $location, $window, FlashService, AlertService) {
+  .controller('LoginController', function ($scope, $state, Auth, $window, FlashService, AlertService) {
     $scope.user = {};
     $scope.errors = {};
 

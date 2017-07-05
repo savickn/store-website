@@ -3,10 +3,17 @@
 var _ = require('lodash');
 var Product = require('./product.model');
 
+exports.getRecommendedProducts = function(req, res) {
+
+
+
+
+}
+
 exports.search = function(req, res) {
   var search = JSON.parse(req.query.search);
   var pagination = JSON.parse(req.query.pagination);
-  console.log(search);
+  //console.log(search);
 
   var searchObj = {
     __t: search.__t,
@@ -22,7 +29,7 @@ exports.search = function(req, res) {
   if(search.cpu && search.cpu.length > 0) { searchObj.cpu = {$in: search.cpu}; }
   if(search.gpu && search.gpu.length > 0) { searchObj.gpu = {$in: search.gpu}; }
 
-  console.log(searchObj);
+  //console.log(searchObj);
 
   Product.model.count(searchObj, function(err, count) {
     if(err) { return handleError(res, err); }

@@ -4,6 +4,7 @@ var _ = require('lodash');
 var Sale = require('./sale.model');
 var Product = require('../product/product.model').model;
 
+//populates necessary data when creating a new sale.
 exports.new = function(req, res) {
   Product.getCategories().then(function(categories) {
     Product.getBrands().then(function(brands) {
@@ -12,23 +13,18 @@ exports.new = function(req, res) {
   });
 };
 
-function validateSale(sale, product) {
-  return (sale.isActive() && sale.isApplicable(product.__t)) ? true:false;
-};
-
+//returns an active sale if it exists
 exports.applyPromotion = function(req, res) {
   Sale.findByPromotionalCode(req.query.promoCode).then(function(sale) {
-    if(err) {return handleError(res, err);}
-    if(sale.isActive()) {
-      return res.status(200).json(sale);
-    } else {
-      error = new Error('This sale is no longer active.');
-      return handleError(res, error);
-    }
+    //console.log('sale', sale);
+    return sale.isActive() ? res.status(200).json(sale) : res.status(500).send(new Error('This sale is no longer active.'));
+  }).catch(function(err) {
+    //console.log('err', err);
+    return res.status(500).send(err);
   });
 };
 
-// Creates a new computer in the DB.
+// Creates a new sale.
 exports.create = function(req, res) {
   Sale.create(req.body, function(err, sale) {
     if(err) { return handleError(res, err); }
@@ -36,7 +32,7 @@ exports.create = function(req, res) {
   });
 };
 
-// Get list of computers
+// Get list of active sales
 exports.index = function(req, res) {
   Sale.find({endDate: {$gt: Date.now()}}, function (err, sales) {
       if(err) { return handleError(res, err); }
@@ -44,7 +40,7 @@ exports.index = function(req, res) {
   });
 };
 
-// Updates an existing computer in the DB.
+// Updates a sale.
 exports.update = function(req, res) {
   Sale.findOneAndUpdate({_id: req.params.id}, {$set: req.body}, function(err, sale) {
     if (err) { return handleError(res, err); }
@@ -52,7 +48,7 @@ exports.update = function(req, res) {
   });
 };
 
-// Deletes a computer from the DB.
+// Deletes a sale.
 exports.destroy = function(req, res) {
   Sale.findById(req.params.id, function (err, sale) {
     if(err) { return handleError(res, err); }

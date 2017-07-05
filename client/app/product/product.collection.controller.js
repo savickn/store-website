@@ -51,6 +51,7 @@ angular.module('passportApp')
         $scope.availableProducts = response.data.plain();
         $scope.totalProducts = response.headers('total-Products');
         getProductInfo(response.data);
+        console.log(response.data);
       }).catch(function(err) {
         console.log(err);
       })

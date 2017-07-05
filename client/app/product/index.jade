@@ -70,9 +70,12 @@
         img(src='{{product.displayPicture.path}}' width='150' height='150' ng-if='product.displayPicture')
         img(src='no_image.jpg' width='150' height='150' ng-if='!product.displayPicture')
       .flex-item
+        .no-touch(class='star-rating' display-stars rating-value="{{product.averageRating}}" max-stars="10")
+      .flex-item
         a(ui-sref="show{{pageType}}({id: product._id})") {{product.name}}
       .flex-item
-        p Price: {{product.price}}
+        span(ng-class='{"line-through": product.onSale}') Price: {{product.price}}
+        span.pad-left.on-sale-text(ng-if="product.onSale") Now: {{product.salePrice}}
       .flex-item
         ngcart-addtocart(id="{{product._id}}" name="{{product.name}}" price="{{product.price}}" quantity="1" quantity-max="30" data="product") Add to Cart
   p(ng-show="availableProducts.length < 1") There are no products matching that query.

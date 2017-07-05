@@ -6,7 +6,10 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var ProductSchema = new Schema({
-	name: {
+
+  // GENERAL
+
+  name: {
 		type: String,
 		required: 'You must include a name for this product.'
 	},
@@ -14,7 +17,18 @@ var ProductSchema = new Schema({
 		type: String,
 		required: 'You must include a description for this product.'
 	},
-	price: {
+	brand: {
+		type: String,
+		required: 'You must include a brand for this product.'
+	},
+  SKU: {
+    type: String,
+    default: 'N/A'
+  },
+
+  // PRICING
+
+  price: {
 		type: Number,
 		required: 'You must include a price for this product.'
 	},
@@ -22,24 +36,30 @@ var ProductSchema = new Schema({
     type: Number,
 		validate: {
 			validator: function(num) {
-				return (num > 0 && num < 1);
+				return (num >= 0 && num <= 1);
 			},
 			message: 'The discount rate you specified is not valid. Please enter a rate between 0 and 1.'
 		}
   },
-	brand: {
-		type: String,
-		required: 'You must include a brand for this product.'
-	},
-  SKU: {
-    type: String
-    //required: true
-  },
+
+  // REVIEWS
+
 	reviews: [{
 		type: Schema.Types.ObjectId,
 		ref: 'Review',
 		index: true
 	}],
+  aggregateRating: {
+    type: Number,
+    default: 0
+  },
+  reviewCount: {
+    type: Number,
+    default: 0
+  },
+
+  // PICTURES
+
 	pictures: [{
 		type: Schema.Types.ObjectId,
 		ref: 'Picture',
@@ -49,6 +69,9 @@ var ProductSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'Picture'
 	},
+
+  // MISC
+
 	inventory: [Inventory],
 	onlineOnly: {
 		type: Boolean,
@@ -93,20 +116,19 @@ ProductSchema.virtual('getPublicFields').get(function() {
 **/
 
 ProductSchema.statics = {
-  getBrands: function() {
+  getBrands: function() { //working
     return this.distinct('brand', function(err, brands) {
-      if(err) {console.log(err);}
+      if(err) {return err;}
       return brands;
     });
   },
-  getCategories: function() {
+  getCategories: function() { //working
     return this.distinct('__t', function(err, types) {
-      if(err) {console.log(err);}
+      if(err) {return err;}
       return types;
     });
   }
 };
-
 
 /*
 * Pre and Post Hooks
@@ -145,12 +167,15 @@ ProductSchema
   .get(function() {
 	//refers to products that are frequently bought with this item
     mongoose.model('Order').find({products: this._id}).populate('products', '_id').exec(function(err, orders) {
+      //console.log('recommended err', err);
+      //console.log('recommended orders', orders);
+
       let productIDs = [];
       for(let o of orders) {
+        //console.log(o.products);
         productIDs.concat(o.products);
       }
-      console.log(productIDs);
-
+      //console.log('recommended productIDs', productIDs);
     })
 });
 
@@ -168,6 +193,28 @@ ProductSchema
   .get(function() {
   	return (this.discount && this.discount > 0) ? true:false;
   });
+
+ProductSchema
+  .virtual('averageRating')
+  .get(function() {
+    return (this.reviewCount === 0) ? 0 : this.aggregateRating / this.reviewCount;
+  })
+
+
+//maybe make this into a separate field
+/*ProductSchema
+  .virtual('averageRating')
+  .get(function() {
+    let score = 0;
+    let iterations = 0;
+    mongoose.model('Review').find({product: this._id}, function(err, reviews) {
+      for(let review of reviews) {
+        score += review.rating;
+        iterations += 1;
+      }
+      return iterations > 0 ? Math.ceil(score/iterations) : score;
+    })
+  })*/
 
 /*ProductSchema
   .virtual('availability')

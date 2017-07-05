@@ -144,8 +144,11 @@ angular.module('passportApp')
 
     $scope.applyPromotion = function(promoCode) {
       SaleService.applyPromotion(promoCode).then(function(sale) {
-        console.log(sale);
         $scope.newOrder.promotions.pushUnique(sale);
+        for(let p of $scope.newOrder.products) {
+          console.log(p);
+
+        }
 
 
 

@@ -1,5 +1,5 @@
 
-.flex-list(ng-class='{"verified": review.verified}')
+.flex-list.bordered(ng-class='{"verified": review.verified}')
   .flex-list-element.flex-row
     .flex-row-element
       .no-touch(class='star-rating' star-rating rating-value="rating" data-max="10")
@@ -10,8 +10,8 @@
       
   .flex-list-element.flex-row
     .flex-row-element By: {{review.author.name}}
-    .flex-row-element  
-      span.glyphicon.glyphicon-star(ng-if="review.verified") 
+    .flex-row-element(ng-show="review.verified") 
+      span.glyphicon.glyphicon-star
       span(padding-left="5px") Verified Reviewer
     .flex-row-element Date Posted: {{review.date}}
   

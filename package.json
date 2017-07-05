@@ -5,8 +5,8 @@
   "author": "nick-savickas",
   "license": "MIT",
   "dependencies": {
-    "bower": "1.6.5",
     "body-parser": "~1.5.0",
+    "bower": "1.6.5",
     "composable-middleware": "^0.3.0",
     "compression": "~1.0.1",
     "connect-mongo": "^0.8.1",
@@ -26,6 +26,7 @@
     "method-override": "~1.0.0",
     "mkdirp": "^0.5.1",
     "mongoose": "4.6.1",
+    "mongoose-fill": "^1.6.0",
     "mongoose-schema-extend": "^0.2.2",
     "morgan": "~1.0.0",
     "multer": "^1.1.0",

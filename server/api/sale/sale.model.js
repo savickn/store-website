@@ -6,13 +6,14 @@ var mongoose = require('mongoose'),
 var SaleSchema = new Schema({
 	startDate: {
 		type: Date,
-		required: 'You must choose a start date for this sale.' /*,
+		required: 'You must choose a start date for this sale.',
     validate: {
 			validator: function(date) {
-				return date > Date.now();
+        let n = new Date();
+        return date.getDate() >= n.getDate() && (date.getMonth() === n.getMonth() && date.getFullYear() === n.getFullYear());
 			},
 			message: 'The starting date that you specified is already past.'
-		}*/
+		}
 	},
 	endDate: {
 		type: Date,
@@ -65,12 +66,18 @@ SaleSchema.virtual('discount').get(function() {
 */
 
 SaleSchema.methods = {
-	isActive: function() {
-    date = Date.now();
+	isActive: function() { //working
+    let date = Date.now();
     return (this.startDate <= date && this.endDate >= date) ? true:false;
 	},
-  isApplicable: function(productType) {
-    return (this.validProducts.includes(productType)) ? true:false;
+  isApplicable: function(productTypes) {
+    for(let t of productTypes) {
+      if(this.validProducts.includes(t)) {
+        return true
+      }
+    }
+    return false
+    //return (this.validProducts.includes(productType)) ? true:false;
   }
 };
 
@@ -79,12 +86,21 @@ SaleSchema.methods = {
 */
 
 SaleSchema.statics = {
-  findByPromotionalCode: function(code) {
-    return this.findOne({code: code}, function(err, sale) {
+  findByPromotionalCode: function(code) { //working
+    return this.findOne({promotionalCode: code}).sort({startDate: 'desc'}).exec(function(err, sale) {
+      if(err) {return err;}
       return sale;
     });
   }
 }
+
+
+/*findByPromotionalCode: function(code, cb) {
+  return this.findOne({code: code}, function(err, sale) {
+    if(err) {return err;}
+    return sale;
+  });
+}*/
 
 
 module.exports = mongoose.model('Sale', SaleSchema);

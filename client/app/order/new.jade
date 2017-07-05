@@ -75,12 +75,19 @@ title Secure Checkout
                 p Shipping Costs: {{newOrder.shippingCost}}
                 p Total: {{newOrder.total}}
                 
+                h4 Gift Cards
+                .form-wrapper(name="giftCardForm")
+                  .input-group
+                    label(for="giftCard") Promo Code
+                    input.form-control(name="giftCard" ng-model="giftCard")
+                    button.btn.btn-primary(ng-click="applyGiftCard(giftCard)") Apply Gift Card
+                
                 h4 Promotions
-                form.form-wrapper(role="form" name="promoForm" ng-submit="applyPromotion(promoCode)")
+                .form-wrapper(name="promoForm")
                   .input-group
                     label(for="promo") Promo Code
                     input.form-control(name="promo" ng-model="promoCode")
-                    button.btn.btn-primary(type="submit") Apply
+                    button.btn.btn-primary(ng-click="applyPromotion(promoCode)") Apply Promotion
 
                 button.btn.btn-primary(ng-click="checkout(orderForm, newOrder)") Process Order
 

@@ -49,6 +49,31 @@ angular.module('passportAppDirectives', [])
 			}
 		};
 	})
+	.directive('displayStars', function() {
+		return {
+			restrict : 'A',
+			template : '<ul class="rating">'
+			   + ' <li ng-repeat="star in stars" ng-class="star">'
+			   + '  <i class="fa fa-star-o"></i>'
+			   + ' </li>'
+			   + '</ul>',
+			scope : {
+				ratingValue : '@',
+				maxStars : '@'
+			},
+			link : function(scope, elem, attrs) {
+				console.log(scope.ratingValue);
+				(function updateStars() {
+		  		scope.stars = [];
+		  		for ( var i = 0; i < scope.maxStars; i++) {
+		   			scope.stars.push({
+		    			filled : i < scope.ratingValue
+		   			});
+		  		}
+			 	}) ();
+			}
+		};
+	})
 	.directive('toggleClass', function() {
 	    return {
 	      restrict: 'A',
@@ -409,6 +434,16 @@ angular.module('passportAppDirectives', [])
 				scope.removeReview = function(review) {
 					scope.remove(review);
 				}
+
+			}
+		}
+	})
+	.directive('nsSidebarExpandable', function() {
+		return {
+			restrict: 'E',
+			templateUrl: '../components/directives/views/sidebarTab.html',
+			scope: {},
+			link: function(scope, elem, attrs) {
 
 			}
 		}

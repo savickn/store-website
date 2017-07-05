@@ -57,19 +57,34 @@ function addLeadingZeroes(number) {
   return num;
 };
 
+function applySaleToProduct(sale, product) {
+  return sale.isApplicable([product.__t, product.brand]) ? true:false;
+};
+
 // Creates a new order in the DB. Req must provide tax/shipping cost/subtotal
 exports.create = function(req, res) {
   var defaultObj = {
     status: 'Awaiting Pre-Auth',
-    orderDate: Date.now()
+    orderDate: new Date()
   };
+
+  let subtotal = 0;
+  for(let sale of req.body.promotions) {
+    for(let product of res.body.products) {
+      let price = product.price;
+
+      if(applySaleToProduct(sale, product)) {
+        
+      }
+
+    }
+  }
 
   Order.count({}, function(err, count) {
     var number = count + 1;
     defaultObj.orderNumber = addLeadingZeroes(number);
 
     var order = _.merge(defaultObj, req.body);
-    console.log(order);
     Order.create(order, function(err, order) {
       if(err) { return handleError(res, err); }
       return res.status(201).json(order);
