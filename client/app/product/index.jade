@@ -59,9 +59,11 @@
               span.glyphicon.glyphicon-unchecked(ng-if="!onlineOnlyTag" ng-value="filterExpr.onlineOnly = false")
               span.glyphicon.glyphicon-check(ng-if="onlineOnlyTag" ng-value="filterExpr.onlineOnly = true")
 
+  //ns-sidebar-expandable(title="Product Name")
+    input.form-control(type='text' placeholder='Enter the name here.' ng-model='filterExpr.name' ng-click="$event.stopPropagation()")
 
 
-        /////////////////////////////// PRODUCTS DISPLAY ///////////////////////////////
+  /////////////////////////////// PRODUCTS DISPLAY ///////////////////////////////
 
   .product-container-flexbox(ng-show="availableProducts.length > 0")
     .product-flexbox(dir-paginate="product in availableProducts | priceFilter : priceExpr | productFilter : filterExpr | orderBy : sortType : sortReverse | itemsPerPage: pageSize"

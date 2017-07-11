@@ -26,5 +26,18 @@ ComputerSchema
 		return ['Brand', 'CPU', 'GPU', 'Motherboard'];
 	})
 
+ComputerSchema
+  .virtual('publicProperties')
+  .get(function() {
+		//let publicProps = this.publicProperties || {};
+		let computerProps = {
+			'cpu': this.cpu,
+			'gpu': this.gpu,
+			'motherboard': this.motherboard
+		};
+		return computerProps;
+		//return Object.assign(publicProps, computerProps);
+	});
+
 
 module.exports = mongoose.model('Computer', ComputerSchema);

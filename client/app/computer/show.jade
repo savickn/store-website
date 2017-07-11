@@ -9,7 +9,6 @@
 
   .flex-sidebar-content
     .flex-content.flex-wrap-around
-      img(src='{{previewImage.path}}' ng-if='previewImage')
       .flex-element(ng-repeat='picture in currentProduct.pictures')
         img.img-rounded(src="{{picture.path}}" ng-click='setPreviewImage(picture)' height="100" width="100")
         span.glyphicon.glyphicon-remove(ng-click="removePicture(picture._id)" ng-if="isAdmin")
@@ -18,8 +17,26 @@
     ///////////////////////// SIDEBAR ///////////////////////////////
     
     .flex-sidebar
+      img(src='{{previewImage.path}}' width='300' height='300' ng-if='previewImage')
+      img(src='no_image.jpg' width='300' height='300' ng-if='!previewImage')
       ngcart-addtocart(id="{{currentProduct._id}}" name="{{currentProduct.name}}" price="{{currentProduct.price}}" quantity="1" quantity-max="30" data="currentProduct") Add to Cart
       toggle-item-wishlist(product-id="{{productId}}" ng-if="isLoggedIn")
+        
+    /////////////////////// RECOMMENDED PRODUCTS ////////////////////////
+  
+  h4 Frequency Purchased With:
+  .flex-three-tab-row
+    .arrow-left
+      span.glyphicon.glyphicon-chevron-left
+    .flex-row-element(ng-repeat="product in recommendedProducts")
+      .flex-product
+        img(src='{{product.displayPicture.path}}' width='150' height='150' ng-if='product.displayPicture')
+        img(src='no_image.jpg' width='150' height='150' ng-if='!product.displayPicture')
+        .no-touch(class='star-rating' display-stars rating-value="{{product.averageRating}}" max-stars="10")
+        a(ui-sref="show{{product.__t}}({id: product._id})") {{product.name}}
+    .arrow-right
+      span.glyphicon.glyphicon-chevron-right
+      
 
   ////////////////////////// NAVBAR ///////////////////////////////
 
@@ -39,6 +56,9 @@
 
   .row(ng-show="viewState === 'Specs'")
     .col-lg-12
+      //ul.list-group(ng-repeat="cat in categories")
+        li.list-group-item {{cat | capitalize}} : {{currentProduct.publicProperties[cat]}}
+      
       ul.list-group
         li.list-group-item Name: {{currentProduct.name}}
         li.list-group-item Description: {{currentProduct.description}}
@@ -49,7 +69,7 @@
         li.list-group-item Motherboard: {{currentProduct.motherboard}}
         li.list-group-item Online Only: {{currentProduct.onlineOnly | yesNo }}
         li.list-group-item Featured: {{currentProduct.featured | yesNo }}
-        //li.list-group-item On Sale: {{currentProduct.onSale | yesNo }}
+        li.list-group-item On Sale: {{currentProduct.onSale | yesNo }}
 
   ///////////////////////// Product Warranty and Returns /////////
 
@@ -176,3 +196,35 @@
 
                 toggle-item-wishlist(product-id="{{currentProduct._id}}" wishlist-id="{{wishlist._id}}" wishlist="wishlist" state="{{wishlist.contains(currentProduct._id)}}")
         li.list-group-item {{wishlist._id}}
+        
+  ////////////////////////// IMAGES ///////////////////////////////
+
+    .flex-sidebar-content
+      .flex-content.flex-wrap-around
+        img(src='{{previewImage.path}}' ng-if='previewImage')
+        .flex-element(ng-repeat='picture in currentProduct.pictures')
+          img.img-rounded(src="{{picture.path}}" ng-click='setPreviewImage(picture)' height="100" width="100")
+          span.glyphicon.glyphicon-remove(ng-click="removePicture(picture._id)" ng-if="isAdmin")
+          span.glyphicon.glyphicon-picture(ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin")
+          
+  ///////////////////////// SIDEBAR ///////////////////////////////
+  
+    .flex-sidebar
+      img(src='{{previewImage.path}}' ng-if='previewImage')
+      img(src='no_image.jpg' width='300' height='300' ng-if='!previewImage')
+      ngcart-addtocart(id="{{currentProduct._id}}" name="{{currentProduct.name}}" price="{{currentProduct.price}}" quantity="1" quantity-max="30" data="currentProduct") Add to Cart
+      toggle-item-wishlist(product-id="{{productId}}" ng-if="isLoggedIn")
+        
+        .row(ng-show="viewState === 'Specs'")
+          .col-lg-12
+            ul.list-group
+              li.list-group-item Name: {{currentProduct.name}}
+              li.list-group-item Description: {{currentProduct.description}}
+              li.list-group-item Brand: {{currentProduct.brand}}
+              li.list-group-item Price: {{currentProduct.price}}
+              li.list-group-item CPU: {{currentProduct.cpu}}
+              li.list-group-item GPU: {{currentProduct.gpu}}
+              li.list-group-item Motherboard: {{currentProduct.motherboard}}
+              li.list-group-item Online Only: {{currentProduct.onlineOnly | yesNo }}
+              li.list-group-item Featured: {{currentProduct.featured | yesNo }}
+              li.list-group-item On Sale: {{currentProduct.onSale | yesNo }}

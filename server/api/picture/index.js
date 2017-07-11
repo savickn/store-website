@@ -22,12 +22,11 @@ var upload = multer({
 }).single('file');*/
 
 
-router.get('/', controller.index);
 router.get('/:id', controller.show);
-router.post('/', multipartyMiddleware, controller.create);
-//router.post('/', upload, controller.create);
-router.put('/:id', controller.update);
-router.patch('/:id', controller.update);
+router.post('/', multipartyMiddleware, controller.createLocal);
+router.post('/', multipartyMiddleware, controller.createS3);
 router.delete('/:id', controller.destroy);
+
+//router.post('/', upload, controller.create);
 
 module.exports = router;

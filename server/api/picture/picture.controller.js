@@ -4,22 +4,7 @@ var _ = require('lodash');
 var fs = require('fs-extra');
 var Picture = require('./picture.model');
 var mkdirp = require('mkdirp');
-/*var log4js = require('log4js');
-log4js.configure({
-  appenders: [
-    { type: 'console' },
-    { type: 'file', filename: 'logs/picture.log', category: 'picture' }
-  ]
-});
-var logger = log4js.getLogger('picture');*/
 
-// Get list of pictures
-exports.index = function(req, res) {
-  Picture.find({}, '_id contentType path', function (err, pictures) {
-    if(err) { return handleError(res, err); }
-    return res.status(200).json(pictures);
-  });
-};
 
 // Get a single picture
 exports.show = function(req, res) {
@@ -33,7 +18,7 @@ exports.show = function(req, res) {
 };
 
 // Creates a new picture in the DB.
-exports.create = function(req, res) {
+exports.createLocal = function(req, res) {
   var productType = req.body.productType.toLowerCase();
   var path = req.files.file.path;
   var destination = 'server/public/' + productType;
@@ -61,19 +46,9 @@ exports.create = function(req, res) {
   });
 };
 
-// Updates an existing picture in the DB.
-exports.update = function(req, res) {
-  if(req.body._id) { delete req.body._id; }
-  Picture.findById(req.params.id, function (err, picture) {
-    if (err) { return handleError(res, err); }
-    if(!picture) { return res.status(404).send('Not Found'); }
-    var updated = _.merge(picture, req.body);
-    updated.save(function (err) {
-      if (err) { return handleError(res, err); }
-      return res.status(200).json(picture);
-    });
-  });
-};
+exports.createS3 = function(req, res) {
+  return res
+}
 
 // Deletes a picture from the DB.
 exports.destroy = function(req, res) {
@@ -118,3 +93,12 @@ function handleError(res, err) {
       res.json(200, file);
     });
   });*/
+
+  /*var log4js = require('log4js');
+  log4js.configure({
+    appenders: [
+      { type: 'console' },
+      { type: 'file', filename: 'logs/picture.log', category: 'picture' }
+    ]
+  });
+  var logger = log4js.getLogger('picture');*/

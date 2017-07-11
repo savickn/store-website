@@ -84,31 +84,12 @@ var ProductSchema = new Schema({
 }, {collection: 'products'});
 
 /*
-	sale: {
-		type: [Sale],
-		validate: {
-			validator: function(arr) {
-				return arr.length === 1;
-			},
-			message: 'Only one sale can be active at a time.'
-		}
-	},
-
 ProductSchema
   .virtual('searchableCategories')
   .get(function() {
     	return _.extend(this.searchableCategories, ['featured', 'onlineOnly', 'onSale', 'brand'])
     };
   });
-
-ProductSchema.virtual('getPublicFields').get(function() {
-	var obj = {};
-	var self = this;
-	self.publicFields.forEach(function(field) {
-		obj[field] = self.field;
-	})
-	return obj;
-});
 */
 
 /**
@@ -148,36 +129,28 @@ ProductSchema.pre('remove', function(next) {
 ProductSchema
   .virtual('publicProperties')
   .get(function() {
-    return {
+    //let publicProps = this.publicProperties || {};
+		let productProps = {
       'name': this.name,
       'description': this.description,
       'price': this.price,
       'brand': this.brand,
-      'onSale': this.onSale,
-      'onlineOnly': this.onlineOnly,
-      'cpu': this.cpu,
-      'gpu': this.gpu,
-      'motherboard': this.motherboard
-    };
+      'onlineOnly': this.onlineOnly
+		};
+    return productProps;
+    //let props = Object.assign(publicProps, productProps);
+
+    /*return {
+      'name': this.name,
+      'description': this.description,
+      'price': this.price,
+      'brand': this.brand,
+      'onlineOnly': this.onlineOnly//,
+      //'cpu': this.cpu,
+      //'gpu': this.gpu,
+      //'motherboard': this.motherboard
+    };*/
   });
-
-//should probabily be a aync batch task instead for performance
-ProductSchema
-  .virtual('recommendedProducts')
-  .get(function() {
-	//refers to products that are frequently bought with this item
-    mongoose.model('Order').find({products: this._id}).populate('products', '_id').exec(function(err, orders) {
-      //console.log('recommended err', err);
-      //console.log('recommended orders', orders);
-
-      let productIDs = [];
-      for(let o of orders) {
-        //console.log(o.products);
-        productIDs.concat(o.products);
-      }
-      //console.log('recommended productIDs', productIDs);
-    })
-});
 
 ProductSchema
   .virtual('salePrice')

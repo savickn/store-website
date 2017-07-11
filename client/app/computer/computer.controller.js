@@ -2,8 +2,8 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('ComputerCtrl', function ($scope, $stateParams, $timeout, ComputerService, FlashService,
-      Auth, ngCart, ReviewService, AlertService, $state) {
+  .controller('ComputerCtrl', function ($scope, $state, $stateParams, ComputerService, ProductService, ReviewService,
+    AlertService, Auth, PaginationCache) {
     $scope.isAdmin = Auth.isAdmin();
     $scope.isLoggedIn = Auth.isLoggedIn();
     $scope.viewState = 'Specs';
@@ -13,6 +13,9 @@ angular.module('passportApp')
     $scope.previewImage = {};
     $scope.updateDisplayPic = false;
 
+    $scope.recommendedProducts = [];
+    $scope.recommendedOffset = 0;
+
     $scope.setViewState = function(s) {
       $scope.viewState = s;
     };
@@ -21,47 +24,36 @@ angular.module('passportApp')
       return viewState === $scope.viewState ? true : false;
     }
 
+    $scope.changeOffset = function(inc) {
+      $scope.recommendedOffset += inc;
+      if($scope.recommendedOffset < 0) {$scope.recommendedOffset = 0;}
+      if(offset != cache.offset) {
+        getRecommended($scope.currentProduct._id);
+      }
+    }
+
+    function getRecommended(productId) {
+      ProductService.getRecommended(productId, $scope.recommendedOffset).then(function(products) {
+        console.log('recommendedProducts', products);
+        $scope.recommendedProducts = products;
+      }).catch(function(err) {
+        console.log(err);
+      })
+    }
+
     ComputerService.getComputer($stateParams.id).then(function(computer) {
+      console.log('computer', computer);
       $scope.currentProduct = computer;
       $scope.previewImage = computer.displayPicture;
+      getRecommended(computer._id);
 
-      /*var publicProperties = getPublicProperties(computer);
-      var keyNames = Object.keys(publicProperties);
-
-      for(var x in publicProperties) {
-        //console.log(x);
-      }
-
-      for(var x in keyNames) {
-        //console.log(x);
-      }
-
-      $scope.currentProduct.publicProperties = keyNames.map(function(value, index) {
-        return {
-          key: value,
-          value: publicProperties[index]
-        }
-      });*/
+      //$scope.categories = Object.keys(computer.publicProperties);
 
     }).catch(function(err) {
       console.log(err);
-
+      AlertService.setAlert("This product no longer exists!", "Error");
       $state.go('/');
     });
-
-    /*var getPublicProperties = function(obj) {
-      var propertiesObj = obj;
-      for(var x in propertiesObj) {
-        console.log(x);
-      }
-
-      delete propertiesObj._id;
-      delete propertiesObj.__t;
-
-      var propertiesArray = Object.keys(propertiesObj).map(function(val) { return [val] });
-      return propertiesArray;
-    }*/
-
 
     $scope.updateComputer = function() {
       ComputerService.updateComputer($scope.currentProduct).then(function(newComputer) {

@@ -442,12 +442,23 @@ angular.module('passportAppDirectives', [])
 		return {
 			restrict: 'E',
 			templateUrl: '../components/directives/views/sidebarTab.html',
-			scope: {},
+			transclude: true,
+			scope: {
+				title: '@'
+			},
 			link: function(scope, elem, attrs) {
+				scope.showTab = false;
 
 			}
 		}
 	});
+	/*.directive('nsMaskCardNumber', function() {
+		return {
+			restrict: 'A',
+			templateUrl: ''
+		};
+	})*/
+
 
 
 

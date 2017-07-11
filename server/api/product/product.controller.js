@@ -2,12 +2,34 @@
 
 var _ = require('lodash');
 var Product = require('./product.model');
+var Order = require('../order/order.model');
 
 exports.getRecommendedProducts = function(req, res) {
+  Order.find({products: {$in: [req.params.id]}}).sort({orderDate: 'desc'}).limit(100).exec(function(err, orders) {
+    if(err) { return res.status(501).send(err); }
+
+    console.log('recommended err', err);
+    console.log('recommended orders', orders);
+
+    let pCount = {};
+    for(let o of orders) {
+      for(let p of o.products) {
+        pCount[p] = (pCount[p] || 0) + 1;
+      }
+    }
+    console.log('recommended products', pCount);
+    let sortedArr = Object.keys(pCount).sort(function(a,b) { return pCount[a] - pCount[b] })
+    let sliced = sortedArr.slice(0, 3);
 
 
+    console.log('sorted products', sortedArr);
+    console.log('slice', sliced);
 
-
+    Product.model.find({_id: {$in: sliced}}).select('-reviews -pictures -inventory').populate('displayPicture').exec(function(err, products) {
+      if(err) { return res.status(501).send(err); }
+      return res.status(200).json(products);
+    })
+  })
 }
 
 exports.search = function(req, res) {
