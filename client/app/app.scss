@@ -15,10 +15,6 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
   -webkit-box-sizing: border-box;
 }
 
-.no-touch {
-	pointer-events: none;
-}
-
 /*
 ** FLEX GENERICS
 */
@@ -29,7 +25,6 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
   justify-content: space-between;
   align-items: stretch;
 }
-
 
 .flex-row {
   width: 100%;
@@ -54,6 +49,10 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.flex-absolute-position {
+  position: relative;
 }
 
 /*
@@ -272,20 +271,6 @@ form.form-wrapper {
 ** Miscellaneous
 */
 
-
-.top-right {
-	position: absolute;
-	right: 5px;
-	top: 5px;
-}
-
-.bottom-right {
-	position: absolute;
-	right: 5px;
-	bottom: 5px;
-}
-
-
 .flex-row {
   display: flex;
   flex-direction: row;
@@ -348,6 +333,28 @@ form.form-wrapper {
   background-color: darken(#f0f0f0, 5%);
   border: 1px solid darken(#f0f0f0, 10%);
   border-radius: 5px
+}
+
+.no-touch {
+	pointer-events: none;
+}
+
+.top-right-abs {
+	position: absolute;
+	right: 5px;
+	top: 5px;
+}
+
+.top-left-abs {
+	position: absolute;
+	left: 5px;
+	top: 5px;
+}
+
+.bottom-right-abs {
+	position: absolute;
+	right: 5px;
+	bottom: 5px;
 }
 
 // Component styles are injected through grunt

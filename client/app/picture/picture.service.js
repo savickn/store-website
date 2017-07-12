@@ -3,16 +3,9 @@
 
 angular.module('passportApp')
   .factory('PictureService', function (Restangular) {
-
-    var restAngular = 
-      Restangular.withConfig(function(RestangularConfigurer) {
-        RestangularConfigurer.setFullResponse(true);
-        //.setBaseUrl('api');
-      }); 
-
-    var service = {
+    return {
       getPictures: function() {
-        return Restangular.all('pictures').getList(); 
+        return Restangular.all('pictures').getList();
       },
       getPicture: function(pictureId) {
         return Restangular.one('pictures', pictureId).get();
@@ -21,6 +14,4 @@ angular.module('passportApp')
         return Restangular.one('pictures', pictureId).remove();
       }
     };
-    
-    return service;
   });

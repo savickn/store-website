@@ -14,10 +14,21 @@ angular.module('passportApp')
     $scope.updateDisplayPic = false;
 
     $scope.recommendedProducts = [];
-    $scope.recommendedOffset = 0;
+    $scope.recommendedOffset = PaginationCache.get($stateParams.id) || 0;
 
-    $scope.setViewState = function(s) {
-      $scope.viewState = s;
+    function getRecommended(productId) {
+      ProductService.getRecommended(productId, $scope.recommendedOffset).then(function(products) {
+        console.log('recommendedProducts', products);
+        $scope.recommendedProducts = products;
+        PaginationCache.put($stateParams.id, $scope.recommendedOffset);
+        console.log('offset', $scope.recommendedOffset);
+      }).catch(function(err) {
+        console.log(err);
+      })
+    }
+
+    $scope.setViewState = function(state) {
+      $scope.viewState = state;
     };
 
     $scope.isViewState = function(viewState) {
@@ -27,24 +38,16 @@ angular.module('passportApp')
     $scope.changeOffset = function(inc) {
       $scope.recommendedOffset += inc;
       if($scope.recommendedOffset < 0) {$scope.recommendedOffset = 0;}
-      if(offset != cache.offset) {
+      if($scope.recommendedOffset != PaginationCache.get($stateParams.id)) {
         getRecommended($scope.currentProduct._id);
       }
-    }
-
-    function getRecommended(productId) {
-      ProductService.getRecommended(productId, $scope.recommendedOffset).then(function(products) {
-        console.log('recommendedProducts', products);
-        $scope.recommendedProducts = products;
-      }).catch(function(err) {
-        console.log(err);
-      })
     }
 
     ComputerService.getComputer($stateParams.id).then(function(computer) {
       console.log('computer', computer);
       $scope.currentProduct = computer;
       $scope.previewImage = computer.displayPicture;
+
       getRecommended(computer._id);
 
       //$scope.categories = Object.keys(computer.publicProperties);
@@ -79,10 +82,16 @@ angular.module('passportApp')
     }
 
     $scope.removeReview = function(review) {
-      var idx = $scope.currentProduct.reviews.indexOf(review);
-
+      let idx = $scope.currentProduct.reviews.indexOf(review);
       ReviewService.removeReview(review._id).then(function() {
         $scope.currentProduct.reviews.splice(idx, 1);
+      });
+    };
+
+    $scope.removePicture = function(picture) {
+      let idx = $scope.currentProduct.pictures.indexOf(picture);
+      PictureService.removePicture(picture._id).then(function() {
+        $scope.currentProduct.pictures.splice(idx, 1);
       });
     };
 

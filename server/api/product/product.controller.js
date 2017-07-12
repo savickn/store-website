@@ -19,8 +19,7 @@ exports.getRecommendedProducts = function(req, res) {
     }
     console.log('recommended products', pCount);
     let sortedArr = Object.keys(pCount).sort(function(a,b) { return pCount[a] - pCount[b] })
-    let sliced = sortedArr.slice(0, 3);
-
+    let sliced = sortedArr.slice(req.query.offset, req.query.offset + 3);
 
     console.log('sorted products', sortedArr);
     console.log('slice', sliced);

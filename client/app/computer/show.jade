@@ -9,10 +9,10 @@
 
   .flex-sidebar-content
     .flex-content.flex-wrap-around
-      .flex-element(ng-repeat='picture in currentProduct.pictures')
+      .flex-element.flex-absolute-position(ng-repeat='picture in currentProduct.pictures')
         img.img-rounded(src="{{picture.path}}" ng-click='setPreviewImage(picture)' height="100" width="100")
-        span.glyphicon.glyphicon-remove(ng-click="removePicture(picture._id)" ng-if="isAdmin")
-        span.glyphicon.glyphicon-picture(ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin")
+        span.glyphicon.glyphicon-remove.top-left-abs(ng-click="removePicture(picture)" ng-if="isAdmin")
+        span.glyphicon.glyphicon-picture.top-right-abs(ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin")
         
     ///////////////////////// SIDEBAR ///////////////////////////////
     
@@ -24,19 +24,20 @@
         
     /////////////////////// RECOMMENDED PRODUCTS ////////////////////////
   
-  h4 Frequency Purchased With:
-  .flex-three-tab-row
-    .arrow-left
-      span.glyphicon.glyphicon-chevron-left
-    .flex-row-element(ng-repeat="product in recommendedProducts")
-      .flex-product
-        img(src='{{product.displayPicture.path}}' width='150' height='150' ng-if='product.displayPicture')
-        img(src='no_image.jpg' width='150' height='150' ng-if='!product.displayPicture')
-        .no-touch(class='star-rating' display-stars rating-value="{{product.averageRating}}" max-stars="10")
-        a(ui-sref="show{{product.__t}}({id: product._id})") {{product.name}}
-    .arrow-right
-      span.glyphicon.glyphicon-chevron-right
-      
+  div(ng-if="recommendedProducts.length > 0")
+    h4 Frequency Purchased With:
+    .flex-three-tab-row
+      .arrow-left
+        span.glyphicon.glyphicon-chevron-left(ng-click="changeOffset(-3)")
+      .flex-row-element(ng-repeat="product in recommendedProducts")
+        .flex-product
+          img(src='{{product.displayPicture.path}}' width='150' height='150' ng-if='product.displayPicture')
+          img(src='no_image.jpg' width='150' height='150' ng-if='!product.displayPicture')
+          .no-touch(class='star-rating' display-stars rating-value="{{product.averageRating}}" max-stars="10")
+          a(ui-sref="show{{product.__t}}({id: product._id})") {{product.name}}
+      .arrow-right
+        span.glyphicon.glyphicon-chevron-right(ng-click="changeOffset(3)")
+        
 
   ////////////////////////// NAVBAR ///////////////////////////////
 

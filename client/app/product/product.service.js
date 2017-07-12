@@ -11,8 +11,8 @@ angular.module('passportApp')
       getFeatured: function() {
         return Restangular.all('products').customGET('featured');
       },
-      getRecommended: function(productId) {
-        return Restangular.one('products', productId).customGET('recommended');
+      getRecommended: function(productId, offset) {
+        return Restangular.one('products', productId).customGET('recommended', {offset: offset});
       },
       addProduct: function(product) {
       	return Restangular.all('products').post(product);
