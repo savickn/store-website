@@ -17,7 +17,7 @@ exports.show = function(req, res) {
   });
 };
 
-// Creates a new picture in the DB.
+// Creates a DB entry for a Picture and saves the image file locally, WORKING
 exports.createLocal = function(req, res) {
   var productType = req.body.productType.toLowerCase();
   var path = req.files.file.path;
@@ -47,18 +47,16 @@ exports.createLocal = function(req, res) {
 };
 
 exports.createS3 = function(req, res) {
-  return res
+  return res;
 }
 
-// Deletes a picture from the DB.
+
+// Deletes a picture from the DB, WORKING
 exports.destroy = function(req, res) {
-  Picture.findById(req.params.id, function (err, picture) {
+  Picture.findByIdAndRemove(req.params.id, function (err, picture) {
     if(err) { return handleError(res, err); }
-    if(!picture) { return res.status(404).send('Not Found'); }
-    picture.remove(function(err) {
-      if(err) { return handleError(res, err); }
-      return res.status(204).send('No Content');
-    });
+    fs.unlinkSync('server/public/' + picture.path);
+    return res.status(204).send('No Content');
   });
 };
 

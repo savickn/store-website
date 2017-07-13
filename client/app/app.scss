@@ -110,13 +110,13 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 }
 
 .flex-gallery-adaptive {
-  padding: 10px;
+  padding: 5px;
   @extend .flex-row;
   justify-content: flex-start;
   flex-wrap: wrap;
 
   .flex-gallery-element {
-    padding: 0px 5px 0px 5px;
+    padding: 5px;
   }
 }
 
@@ -208,27 +208,6 @@ form.form-wrapper {
     flex: 2;
     @extend .flex-vertical-center;
     font-size: 20pt;
-  }
-}
-
-//used to create layout where multiple smaller images wrap-around a larger image
-.flex-wrap-around {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: stretch;
-  align-content: flex-start;
-
-  img:first-child {
-    width: 300px;
-    height: 300px;
-  }
-  .flex-element {
-    img {
-      width: 100px;
-      height: 100px;
-    }
   }
 }
 
@@ -354,6 +333,12 @@ form.form-wrapper {
 .bottom-right-abs {
 	position: absolute;
 	right: 5px;
+	bottom: 5px;
+}
+
+.bottom-left-abs {
+	position: absolute;
+	left: 5px;
 	bottom: 5px;
 }
 

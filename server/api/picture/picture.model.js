@@ -19,7 +19,18 @@ var PictureSchema = new Schema({
   }
 });
 
+/**
+** VALIDATIONS
+**/
 
+
+
+
+/**
+** PRE && POST HOOKS
+**/
+
+//used to update DisplayPicture field of Product if necessary
 PictureSchema.pre('save', function(next) {
 	if(this.displayPicture === true) {
     mongoose.model('Product').findOneAndUpdate({'_id': this.product}, {$set: {displayPicture: this._id}, $push: {pictures: this._id}}).exec();
@@ -29,12 +40,11 @@ PictureSchema.pre('save', function(next) {
 	next();
 });
 
+//data consistency with Product entry
 PictureSchema.pre('remove', function(next) {
-  fs.unlinkSync('server/public/' + this.path)
   mongoose.model('Product').update({'_id': this.product}, {$pop: {pictures: this._id}}).exec();
   next();
 });
-
 
 
 module.exports = mongoose.model('Picture', PictureSchema);

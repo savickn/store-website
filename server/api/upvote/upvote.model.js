@@ -13,7 +13,7 @@ var UpvoteSchema = new Schema({
     ref: 'User',
     required: true
   }
-}, { _id: false });
+}, { _id: false }); //having no '_id' helps prevent duplicate likes
 
 //only works if Upvotes are saved separately, e.g. as references
 /*UpvoteSchema.pre("save", function(next) {
@@ -22,7 +22,7 @@ var UpvoteSchema = new Schema({
     if(err) { next(err); }
     if(upvote) {
       self.invalidate("authorId", "You have already liked this post");
-      next(self);
+      next(new Error("You have already reviewed this review."));
     } else {
       next();
     }

@@ -58,7 +58,7 @@ ReviewSchema
 * Pre and POST Hooks
 */
 
-// ensures that user does not review a product multiple times, WORKING
+// ensures that user does not review a product multiple times, NOT WORKING
 /*ReviewSchema.pre("save", true, function(next, done) {
   let self = this;
   mongoose.model('Review')
@@ -67,7 +67,7 @@ ReviewSchema
       if(err) {done(err);}
       if(review) {
         self.invalidate("author", "You have already reviewed this product.");
-        done(self);
+        done(new Error("You have already reviews this product."));
       } else {
         done();
       }
@@ -129,6 +129,7 @@ ReviewSchema.virtual('score').get(function() {
 	return this.upvotes.length;
 });
 
+//allows client to view shortened version, WORKING
 ReviewSchema.virtual('shortSummary').get(function() {
   let arr = this.summary.split(" ");
   arr = arr.slice(0, 10);

@@ -29,7 +29,7 @@ angular.module('passportApp')
 
         angular.forEach(err.errors, function(error, field) {
           //$scope.$parent.reviewForm[field].$setValidity('mongoose', false);
-          //form[field].$setValidity('mongoose', false);
+          form[field].$setValidity('mongoose', false);
           //$scope.reviewForm[field].$setValidity('mongoose', false);
           $scope.errors[field] = error.message;
         });

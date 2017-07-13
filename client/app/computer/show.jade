@@ -8,8 +8,8 @@
   ////////////////////////// IMAGES ///////////////////////////////
 
   .flex-sidebar-content
-    .flex-content.flex-wrap-around
-      .flex-element.flex-absolute-position(ng-repeat='picture in currentProduct.pictures')
+    .flex-content.flex-gallery-adaptive
+      .flex-gallery-element.flex-absolute-position(ng-repeat='picture in currentProduct.pictures')
         img.img-rounded(src="{{picture.path}}" ng-click='setPreviewImage(picture)' height="100" width="100")
         span.glyphicon.glyphicon-remove.top-left-abs(ng-click="removePicture(picture)" ng-if="isAdmin")
         span.glyphicon.glyphicon-picture.top-right-abs(ng-click="setDisplayPicture(picture._id)" ng-if="isAdmin")
@@ -17,10 +17,11 @@
     ///////////////////////// SIDEBAR ///////////////////////////////
     
     .flex-sidebar
-      img(src='{{previewImage.path}}' width='300' height='300' ng-if='previewImage')
-      img(src='no_image.jpg' width='300' height='300' ng-if='!previewImage')
-      ngcart-addtocart(id="{{currentProduct._id}}" name="{{currentProduct.name}}" price="{{currentProduct.price}}" quantity="1" quantity-max="30" data="currentProduct") Add to Cart
-      toggle-item-wishlist(product-id="{{productId}}" ng-if="isLoggedIn")
+      .flex-product
+        img(src='{{previewImage.path}}' width='300' height='300' ng-if='previewImage')
+        img(src='no_image.jpg' width='300' height='300' ng-if='!previewImage')
+        ngcart-addtocart(id="{{currentProduct._id}}" name="{{currentProduct.name}}" price="{{currentProduct.price}}" quantity="1" quantity-max="30" data="currentProduct") Add to Cart
+        toggle-item-wishlist(product-id="{{productId}}" ng-if="isLoggedIn")
         
     /////////////////////// RECOMMENDED PRODUCTS ////////////////////////
   
@@ -28,7 +29,7 @@
     h4 Frequency Purchased With:
     .flex-three-tab-row
       .arrow-left
-        span.glyphicon.glyphicon-chevron-left(ng-click="changeOffset(-3)")
+        span.glyphicon.glyphicon-chevron-left(ng-click="changeOffset(-3)" ng-if="recommendedOffset > 0")
       .flex-row-element(ng-repeat="product in recommendedProducts")
         .flex-product
           img(src='{{product.displayPicture.path}}' width='150' height='150' ng-if='product.displayPicture')
@@ -36,7 +37,7 @@
           .no-touch(class='star-rating' display-stars rating-value="{{product.averageRating}}" max-stars="10")
           a(ui-sref="show{{product.__t}}({id: product._id})") {{product.name}}
       .arrow-right
-        span.glyphicon.glyphicon-chevron-right(ng-click="changeOffset(3)")
+        span.glyphicon.glyphicon-chevron-right(ng-click="changeOffset(3)" ng-if="moreProducts")
         
 
   ////////////////////////// NAVBAR ///////////////////////////////
@@ -76,7 +77,7 @@
 
   .row(ng-show="viewState === 'Warranty'")
     .col-lg-12
-      p Warranty and Return Policy
+      p Integer mollis libero vel mi dapibus aliquam. Nunc augue augue, laoreet id mauris ut, pellentesque tempus mauris. Curabitur eget ultrices tellus. Phasellus id luctus leo, vitae viverra lectus. Duis vel bibendum sapien. Nam nec maximus nunc, ut mattis tellus. Vestibulum mattis nisi quis tincidunt iaculis. Morbi condimentum sed velit ac condimentum. Cras vehicula lacus non justo dapibus porta. Aliquam ultricies faucibus turpis at pellentesque. Ut eu erat lacus. Sed venenatis vulputate augue in ornare. 
 
   /////////////////////////// EDIT PRODUCT ////////////////////////////////
 
@@ -123,36 +124,37 @@
 
   ///////////////////////// PRODUCT REVIEWS ///////////////////////////////
 
-  .flex-list(ng-show="viewState === 'Review'")
-    .flex-list-element(ng-if="currentProduct.reviews.length > 0" ng-repeat='review in currentProduct.reviews')
-      ns-review-view(review="review" remove="removeReview(review)")
-    .flex-list-element(ng-if="currentProduct.reviews.length < 1") There are no reviews for this product.
+  .review-section(ng-show="viewState === 'Review'")
+    .flex-list(ng-show="viewState === 'Review'")
+      .flex-list-element(ng-if="currentProduct.reviews.length > 0" ng-repeat='review in currentProduct.reviews')
+        ns-review-view(review="review" remove="removeReview(review)")
+      .flex-list-element(ng-if="currentProduct.reviews.length < 1") There are no reviews for this product.
 
-  .review-form-section(ng-controller='ReviewsCtrl')
-    form.form-wrapper(name="reviewForm" ng-submit="addReview(reviewForm, newReview)" ng-if='isLoggedIn' ng-show="viewState === 'Review'" novalidate)
-      label Use this form to create reviews
-      p.help-block(ng-show='reviewForm.author.$error.mongoose')
-        | {{errors.author}}
-      p.help-block(ng-show='reviewForm.upvotes.$error.mongoose')
-        | {{errors.upvotes}}
-      .input-group(ng-class='{ "has-success": reviewForm.title.$valid && submitted, "has-error": reviewForm.title.$invalid && submitted }')
-        label Title:
-        input.form-control(type='text' name="title" placeholder='Enter your title here.' ng-model='newReview.title' mongoose-error required)
-        p.help-block(ng-show='reviewForm.title.$error.mongoose')
-          | {{errors.title}}
-      .input-group(ng-class='{ "has-success": reviewForm.summary.$valid && submitted, "has-error": reviewForm.summary.$invalid && submitted }')
-        label Review: 
-        input.form-control(type='text' name="summary" placeholder='Enter your review here.' ng-model='newReview.summary' mongoose-error required)  
-        p.help-block(ng-show='reviewForm.summary.$error.mongoose')
-          | {{errors.review}}
-      .input-group(ng-init="rating = star.rating + 1")
-        label Rating:
-          div(class='star-rating' star-rating rating-value="rating" data-max="10" on-rating-selected="setRating(rating)")
-        input.form-control(type='number' name="rating" ng-model='newReview.rating' ng-hide="true" min="0" max="10" mongoose-error required)
-        p.help-block(ng-show='reviewForm.rating.$error.mongoose')
-          | {{errors.rating}}
-      .input-group
-        button.btn.btn-primary(type='submit') Add Review
+    .review-form(ng-controller='ReviewsCtrl' ng-if='isLoggedIn')
+      form.form-wrapper(name="reviewForm" ng-submit="addReview(reviewForm, newReview)" novalidate)
+        label Use this form to create reviews
+        .input-group(ng-class='{ "has-success": reviewForm.author.$valid && submitted, "has-error": reviewForm.author.$invalid && submitted }')
+          input.form-control(type="hidden" name="author" ng-model="newReview.author" mongoose-error)
+          p.help-block(ng-show='reviewForm.author.$error.mongoose')
+            | {{errors.author}}
+        .input-group(ng-class='{ "has-success": reviewForm.title.$valid && submitted, "has-error": reviewForm.title.$invalid && submitted }')
+          label Title:
+          input.form-control(type='text' name="title" placeholder='Enter your title here.' ng-model='newReview.title' mongoose-error required)
+          p.help-block(ng-show='reviewForm.title.$error.mongoose')
+            | {{errors.title}}
+        .input-group(ng-class='{ "has-success": reviewForm.summary.$valid && submitted, "has-error": reviewForm.summary.$invalid && submitted }')
+          label Review: 
+          input.form-control(type='text' name="summary" placeholder='Enter your review here.' ng-model='newReview.summary' mongoose-error required)  
+          p.help-block(ng-show='reviewForm.summary.$error.mongoose')
+            | {{errors.summary}}
+        .input-group(ng-init="rating = star.rating + 1" ng-class='{ "has-success": reviewForm.rating.$valid && submitted, "has-error": reviewForm.rating.$invalid && submitted }')
+          label Rating:
+            div(class='star-rating' star-rating rating-value="rating" data-max="10" on-rating-selected="setRating(rating)")
+          input.form-control(type='number' name="rating" ng-model='newReview.rating' ng-hide="true" min="0" max="10" mongoose-error required)
+          p.help-block(ng-show='reviewForm.rating.$error.mongoose')
+            | {{errors.rating}}
+        .input-group
+          button.btn.btn-primary(type='submit') Add Review
 
 
   //data:image/png;base64,

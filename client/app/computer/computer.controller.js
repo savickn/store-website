@@ -3,25 +3,26 @@
 
 angular.module('passportApp')
   .controller('ComputerCtrl', function ($scope, $state, $stateParams, ComputerService, ProductService, ReviewService,
-    AlertService, Auth, PaginationCache) {
+    AlertService, Auth, PaginationCache, PictureService) {
     $scope.isAdmin = Auth.isAdmin();
     $scope.isLoggedIn = Auth.isLoggedIn();
     $scope.viewState = 'Specs';
+    $scope.moreProducts = true;
 
     $scope.currentProduct = {};
-    $scope.productId = $stateParams.id;
     $scope.previewImage = {};
+    $scope.productId = $stateParams.id;
     $scope.updateDisplayPic = false;
 
     $scope.recommendedProducts = [];
     $scope.recommendedOffset = PaginationCache.get($stateParams.id) || 0;
 
     function getRecommended(productId) {
-      ProductService.getRecommended(productId, $scope.recommendedOffset).then(function(products) {
-        console.log('recommendedProducts', products);
-        $scope.recommendedProducts = products;
+      ProductService.getRecommended(productId, $scope.recommendedOffset).then(function(response) {
+        console.log(response);
+        $scope.recommendedProducts = response.products;
+        $scope.moreProducts = response.moreProducts;
         PaginationCache.put($stateParams.id, $scope.recommendedOffset);
-        console.log('offset', $scope.recommendedOffset);
       }).catch(function(err) {
         console.log(err);
       })
@@ -44,11 +45,13 @@ angular.module('passportApp')
     }
 
     ComputerService.getComputer($stateParams.id).then(function(computer) {
-      console.log('computer', computer);
+      //console.log('computer', computer);
       $scope.currentProduct = computer;
       $scope.previewImage = computer.displayPicture;
 
-      getRecommended(computer._id);
+      if($scope.recommendedOffset != PaginationCache.get($stateParams.id) || $scope.recommendedProducts.length < 1) {
+        getRecommended(computer._id);
+      }
 
       //$scope.categories = Object.keys(computer.publicProperties);
 

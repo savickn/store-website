@@ -8,8 +8,8 @@ exports.getRecommendedProducts = function(req, res) {
   Order.find({products: {$in: [req.params.id]}}).sort({orderDate: 'desc'}).limit(100).exec(function(err, orders) {
     if(err) { return res.status(501).send(err); }
 
-    console.log('recommended err', err);
-    console.log('recommended orders', orders);
+    //console.log('recommended err', err);
+    //console.log('recommended orders', orders);
 
     let pCount = {};
     for(let o of orders) {
@@ -17,16 +17,21 @@ exports.getRecommendedProducts = function(req, res) {
         pCount[p] = (pCount[p] || 0) + 1;
       }
     }
-    console.log('recommended products', pCount);
-    let sortedArr = Object.keys(pCount).sort(function(a,b) { return pCount[a] - pCount[b] })
+    //console.log('recommended products', pCount);
+
+    let sortedArr = Object.keys(pCount).sort(function(a,b) { return pCount[b] - pCount[a] })
+    let idx = sortedArr.indexOf(req.params.id);
+    sortedArr.splice(idx, 1);
     let sliced = sortedArr.slice(req.query.offset, req.query.offset + 3);
 
-    console.log('sorted products', sortedArr);
-    console.log('slice', sliced);
+    //console.log('sorted products', sortedArr);
+    //console.log('slice', sliced);
+
+    let moreProducts = sortedArr.length > req.query.offset + 3 ? true : false;
 
     Product.model.find({_id: {$in: sliced}}).select('-reviews -pictures -inventory').populate('displayPicture').exec(function(err, products) {
       if(err) { return res.status(501).send(err); }
-      return res.status(200).json(products);
+      return res.status(200).json({products: products, moreProducts: moreProducts});
     })
   })
 }
