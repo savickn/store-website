@@ -16,10 +16,10 @@ exports.new = function(req, res) {
 //returns an active sale if it exists
 exports.applyPromotion = function(req, res) {
   Sale.findByPromotionalCode(req.query.promoCode).then(function(sale) {
-    //console.log('sale', sale);
+    console.log('sale', sale);
     return sale.isActive() ? res.status(200).json(sale) : res.status(500).send(new Error('This sale is no longer active.'));
   }).catch(function(err) {
-    //console.log('err', err);
+    console.log('err', err);
     return res.status(500).send(err);
   });
 };

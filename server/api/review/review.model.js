@@ -58,7 +58,7 @@ ReviewSchema
 * Pre and POST Hooks
 */
 
-// ensures that user does not review a product multiple times, NOT WORKING
+// ensures that user does not review a product multiple times, WORKING (but not sending error to client)
 /*ReviewSchema.pre("save", true, function(next, done) {
   let self = this;
   mongoose.model('Review')

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('ProductCollectionCtrl', function ($scope, $state, $timeout, $location, Auth, ProductService, ngCart) {
+  .controller('ProductCollectionCtrl', function ($scope, $state, $timeout, $location, Auth, ProductService, ngCart, PaginationCache) {
     $scope.sidebarOpen = true;
 
     $scope.isAdmin = Auth.isAdmin();
@@ -12,9 +12,12 @@ angular.module('passportApp')
 
     //////////////////////////// PAGINATION /////////////////////////////////////
 
+    let cache = PaginationCache.get($state.params.type) || {page: 1, pSize: 10};
+    console.log('cache', cache);
+
     $scope.paginationOptions = [1, 10, 25, 50];
-    $scope.currentPage = 1;
-    $scope.pageSize = 10;
+    $scope.currentPage = cache.page;
+    $scope.pageSize = cache.pSize;
     $scope.totalProducts = 0;
 
     $scope.pageChanged = function(newPage) {

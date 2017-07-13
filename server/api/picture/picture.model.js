@@ -5,17 +5,32 @@ var mongoose = require('mongoose'),
     fs = require('fs-extra');
 
 var PictureSchema = new Schema({
-  filename: String,
-  contentType: String,
-  size: Number,
-  path: String,
   //image: Buffer,
+  filename: {
+    type: String,
+    required: true
+  },
+  contentType: {
+    type: String,
+    match: [/image\/(jpeg|jpg|png)/, "This file's format is incorrect."],
+    required: true
+  },
+  size: {
+    type: Number,
+    max: 4000000, //4 MB
+    required: true
+  },
+  path: { //can either be a local path or S3 path
+    type: String,
+    required: true
+  },
   displayPicture: {
     type: Boolean,
     default: false
   },
   product: 	{
-  	type: Schema.Types.ObjectId
+  	type: Schema.Types.ObjectId,
+    required: true
   }
 });
 

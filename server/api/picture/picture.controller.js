@@ -29,9 +29,9 @@ exports.createLocal = function(req, res) {
       .pipe(fs.createWriteStream(destination + '/' + req.body.filename));
 
     rstream.on('finish', function () {
-      var body = {image: image, filename: req.body.filename, product: req.body.product,
+      var body = {filename: req.body.filename, product: req.body.product,
         displayPicture: req.body.displayPicture, size: req.body.size, contentType: req.body.contentType,
-        path: productType + '/' + req.body.filename};
+        path: productType + '/' + req.body.filename}; //can also save binary data with 'image: image'
       Picture.create(body, function(err, picture) {
         if(err) { return handleError(res, err); }
 
@@ -46,10 +46,10 @@ exports.createLocal = function(req, res) {
   });
 };
 
+// Creates a DB entry for a Picture and saves the image file to Amazon S3, NOT WORKING
 exports.createS3 = function(req, res) {
   return res;
 }
-
 
 // Deletes a picture from the DB, WORKING
 exports.destroy = function(req, res) {
