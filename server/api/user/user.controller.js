@@ -73,25 +73,32 @@ exports.search = function(req, res) {
  * Creates a new user
  */
 exports.create = function (req, res) {
-  var userObj = {
-    provider: 'local',
-    role: 'user'
-  };
-  var newUser = _.merge(userObj, req.body);
-
-  User.create(newUser, function(err, user) {
+  User.count(function(err, count) {
     if (err) return validationError(res, err);
+    var userObj = {
+      provider: 'local',
+      role: 'user'
+    };
+    if(count < 1) {
+      userObj.role = 'admin'
+      console.log('admin true');
+    }
+    var newUser = _.merge(userObj, req.body);
 
-    Wishlist.create({user: user._id}, function(err, wishlist) {
-      if(err) return res.status(500).send(err);
+    User.create(newUser, function(err, user) {
+      if (err) return validationError(res, err);
 
-      sendWelcomeEmail(req, res, function(err, info) {
+      Wishlist.create({user: user._id}, function(err, wishlist) {
         if(err) return res.status(500).send(err);
-        var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
-        return res.json({ token: token });
-      });
-    })
-  });
+
+        sendWelcomeEmail(req, res, function(err, info) {
+          if(err) return res.status(500).send(err);
+          var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
+          return res.json({ token: token });
+        });
+      })
+    });
+  })
 };
 
 /**

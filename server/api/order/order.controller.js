@@ -74,7 +74,7 @@ exports.create = function(req, res) {
       let price = product.price;
 
       if(applySaleToProduct(sale, product)) {
-        
+
       }
 
     }
@@ -85,6 +85,7 @@ exports.create = function(req, res) {
     defaultObj.orderNumber = addLeadingZeroes(number);
 
     var order = _.merge(defaultObj, req.body);
+    console.log('order', order);
     Order.create(order, function(err, order) {
       if(err) { return handleError(res, err); }
       return res.status(201).json(order);

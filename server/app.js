@@ -10,11 +10,13 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 var express = require('express');
 var mongoose = require('mongoose');
 var config = require('./config/environment');
-
+var http = require('http');
+var https = require('https');
 
 // Setup server
 var app = express();
-var server = require('http').createServer(app);
+//var server = config.env === 'production' ? https.createServer({key: '', cert: ''}, app) : http.createServer(app);
+var server = http.createServer(app);
 
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
