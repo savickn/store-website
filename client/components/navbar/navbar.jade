@@ -37,7 +37,7 @@ nav.navbar.navbar-default.navbar-static-top(ng-controller='NavbarCtrl' style='ma
         li(ng-show='isAdmin()' ng-class='{active: isActive("/admin")}')
           a(href='/admin') Admin
 
-        li(ng-show='isLoggedIn()' style='width: 40%')
+        li(style='width: 40%')
           a(href='/cart' style='padding: 5px 0 0 0;')
             ngcart-summary
 

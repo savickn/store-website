@@ -150,8 +150,6 @@ angular.module('passportApp')
 
         }
 
-
-
       }).catch(function(err) {
         console.log(err);
       })

@@ -25,15 +25,7 @@ var SaleSchema = new Schema({
 			message: 'The ending date that you specified is not appropriate.'
 		}
 	},
-  promotionalCode: {
-    type: String,
-    required: 'You must provide a promotional code.'
-  },
-  validProducts: [{
-    type: String,
-    required: 'You must select applicable categories.'
-  }],
-	discountRate: {
+  discountRate: {
 		type: Number,
 		required: 'You must include a discount rate for this sale.',
 		validate: {
@@ -42,7 +34,23 @@ var SaleSchema = new Schema({
 			},
 			message: 'The discount rate you specified is not valid. Please enter a rate between 0 and 1.'
 		}
-	}
+	},
+  promotionalCode: {
+    type: String,
+    required: 'You must provide a promotional code.'
+  },
+  validProducts: [{
+    type: String,
+    required: 'You must select applicable categories.'
+  }],
+  appliesToDiscountedProducts: { // used to determine if this promotion can be used on discounted Products
+    type: Boolean,
+    default: false
+  },
+  stackable: { // used to determine if this promotion can be combined with other Promotions
+    type: Boolean,
+    default: false
+  }
 });
 
 /**

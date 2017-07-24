@@ -57,34 +57,78 @@ function addLeadingZeroes(number) {
   return num;
 };
 
-function applySaleToProduct(sale, product) {
-  return sale.isApplicable([product.__t, product.brand]) ? true:false;
-};
+// should return the final price of the product
+// should check:
+//    product matches Brand
+//    product is onSale
+//    sale is Stackable
+//    product already has promotion applied
+function calcSalePrice(product, sales) {
+  let salePrice = product.price;
+  let mainPromo = null;
+  let stackables = [];
+
+  for(let s of sales) {
+    // skips iteration if Product is discounted and Sale does not apply to discounted Products
+    if(!s.appliesToDiscountedProducts && product.discount > 0) {
+      continue;
+    }
+    // adds Sale if stackable
+    if(s.stackable && !stackables.includes(s)) {
+      stackables.push(s);
+    } else {
+      // handles primary Sales
+      if(!mainPromo || s.discountRate > mainPromo.discountRate) {
+        mainPromo = s;
+      }
+    }
+  };
+  // applies primary Sale
+  if(mainPromo) {
+    salePrice *= (1 - mainPromo.discountRate);
+  }
+  // applies stackables
+  for(let s of stackables) {
+    salePrice *= (1 - promo.discountRate);
+  }
+  return salePrice;
+}
 
 // Creates a new order in the DB. Req must provide tax/shipping cost/subtotal
 exports.create = function(req, res) {
-  var defaultObj = {
+  let defaultObj = {
     status: 'Awaiting Pre-Auth',
     orderDate: new Date()
   };
 
-  let subtotal = 0;
-  for(let sale of req.body.promotions) {
-    for(let product of res.body.products) {
-      let price = product.price;
+  // used to keep track of price changes for product
+  let productPromotions = {};
 
-      if(applySaleToProduct(sale, product)) {
-
+  for(let product of req.body.products) {
+    console.log('order product', product);
+    productPromotions[product] = {
+      'promos': [],
+      'price': product.price
+    };
+    for(let sale of res.body.promotions) {
+      if(sale.isApplicable([product.__t, product.brand])) {
+        productPromotions[product].promos.push(sale);
       }
-
     }
+    productPromotions[product].price = calcSalePrice(product, productPromotions[product].promos);
+  }
+
+  let subtotal = 0;
+  for(let p in productPrices) {
+    subtotal += p.price;
   }
 
   Order.count({}, function(err, count) {
-    var number = count + 1;
+    let number = count + 1;
     defaultObj.orderNumber = addLeadingZeroes(number);
 
-    var order = _.merge(defaultObj, req.body);
+    let order = _.merge(defaultObj, req.body);
+    order.subTotal = subtotal;
     console.log('order', order);
     Order.create(order, function(err, order) {
       if(err) { return handleError(res, err); }
@@ -129,3 +173,18 @@ function handleError(res, err) {
     return addLeadingZeroes(number);
   })
 }*/
+
+/*
+function isStackable(sale, activePromos) {
+  if(sale.stackable) {
+    for(let promo of activePromos) {
+      if(!promo.stackable) {
+        return false;
+      }
+    }
+  } else {
+    return false;
+  }
+  return true;
+}
+*/

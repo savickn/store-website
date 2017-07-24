@@ -44,7 +44,39 @@ var sendWelcomeEmail = function(req, res, cb) {
 };
 
 var sendResetEmail = function(req, res, cb) {
+  var smtpString = 'smtps://' + env.HOME_EMAIL + ':' + env.PASSWORD + '@smtp.gmail.com';
+  var transporter = nodemailer.createTransport(smtpString);
 
+  var templateDir = path.join(__dirname, '..', '..', 'templates', 'reset-email');
+  var resetEmail = new EmailTemplate(templateDir);
+
+  var data = {name: req.body.name};
+
+  resetEmail.render(data, function (err, result) {
+    if(err) cb(err);
+    var mailOptions = {
+      from: env.HOME_EMAIL,
+      to: env.RECEIVER_EMAIL,
+      //to: req.body.email,
+      subject: 'Reset Your Password',
+      text: result.text,
+      html: result.html
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if(error) cb(error);
+      cb(null, info);
+    });
+  });
+}
+
+var sendActivationEmail = function(req, res, cb) {
+
+}
+
+
+exports.activateAccount = function(req, res) {
+  
 }
 
 exports.search = function(req, res) {
@@ -128,6 +160,14 @@ exports.destroy = function(req, res) {
 */
 
 exports.resetPassword = function(req, res) {
+
+}
+
+/*
+* Send a new activation email
+*/
+
+exports.sendActivationEmail = function(req, res) {
 
 }
 

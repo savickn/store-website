@@ -71,6 +71,10 @@ var UserSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Reward'
   },
+  active: {
+    type: Boolean,
+    default: false
+  },
   hashedPassword: String,
   provider: String,
   salt: String,
@@ -246,6 +250,8 @@ UserSchema.methods = {
     var salt = new Buffer(this.salt, 'base64');
     return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
   }
+
+
 };
 
 module.exports = mongoose.model('User', UserSchema);

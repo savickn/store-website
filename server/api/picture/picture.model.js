@@ -40,7 +40,6 @@ var PictureSchema = new Schema({
 
 
 
-
 /**
 ** PRE && POST HOOKS
 **/
