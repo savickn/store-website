@@ -25,12 +25,23 @@ module.exports = function(app) {
   app.use('/api/data', require('./api/data'));
   app.use('/api/payments', require('./api/payment'));
 
-
   app.use('/auth', require('./auth'));
 
   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app|bower_components|assets)/*')
    .get(errors[404]);
+
+  // used to render Reset Password form after clicking Reset Email link 
+  app.route('/reset/:id/:hash')
+    .get(function(req, res) {
+
+    });
+
+  // used for account activation
+  app.route('/activate/:id/:hash')
+    .get(function(req, res) {
+
+    })
 
   // All other routes should redirect to the index.html
   app.route('/*')

@@ -17,7 +17,7 @@ var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
 
-var sendWelcomeEmail = function(req, res, cb) {
+var welcomeEmail = function(req, res, cb) {
   var smtpString = 'smtps://' + env.HOME_EMAIL + ':' + env.PASSWORD + '@smtp.gmail.com';
   var transporter = nodemailer.createTransport(smtpString);
 
@@ -43,7 +43,41 @@ var sendWelcomeEmail = function(req, res, cb) {
   });
 };
 
-var sendResetEmail = function(req, res, cb) {
+var generateResetHash = function() {
+
+}
+
+var resetEmail = function(req, res, cb) {
+  var smtpString = 'smtps://' + env.HOME_EMAIL + ':' + env.PASSWORD + '@smtp.gmail.com';
+  var transporter = nodemailer.createTransport(smtpString);
+
+  var templateDir = path.join(__dirname, '..', '..', 'templates', 'reset-email');
+  var resetEmail = new EmailTemplate(templateDir);
+
+  console.log('reset headers', req.headers);
+
+  var hash = generateResetHash(req.body.id);
+  var data = {name: req.body.name, userId: req.body.id, host: req.headers.host, hash: hash};
+
+  resetEmail.render(data, function (err, result) {
+    if(err) cb(err);
+    var mailOptions = {
+      from: env.HOME_EMAIL,
+      to: env.RECEIVER_EMAIL,
+      //to: req.body.email,
+      subject: 'Reset Your Password',
+      text: result.text,
+      html: result.html
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if(error) cb(error);
+      cb(null, info);
+    });
+  });
+}
+
+var activationEmail = function(req, res, cb) {
   var smtpString = 'smtps://' + env.HOME_EMAIL + ':' + env.PASSWORD + '@smtp.gmail.com';
   var transporter = nodemailer.createTransport(smtpString);
 
@@ -70,13 +104,9 @@ var sendResetEmail = function(req, res, cb) {
   });
 }
 
-var sendActivationEmail = function(req, res, cb) {
-
-}
-
 
 exports.activateAccount = function(req, res) {
-  
+
 }
 
 exports.search = function(req, res) {
@@ -123,7 +153,7 @@ exports.create = function (req, res) {
       Wishlist.create({user: user._id}, function(err, wishlist) {
         if(err) return res.status(500).send(err);
 
-        sendWelcomeEmail(req, res, function(err, info) {
+        welcomeEmail(req, res, function(err, info) {
           if(err) return res.status(500).send(err);
           var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
           return res.json({ token: token });
@@ -159,8 +189,11 @@ exports.destroy = function(req, res) {
 * Send a reset password email
 */
 
-exports.resetPassword = function(req, res) {
-
+exports.sendResetEmail = function(req, res) {
+  resetEmail(req, res, function(err, info) {
+    if(err) return res.status(500).send(err);
+    return res.json({ msg: 'Please check your email to reset your password.' });
+  });
 }
 
 /*
@@ -171,11 +204,19 @@ exports.sendActivationEmail = function(req, res) {
 
 }
 
+
+exports.resetPassword = function(req, res) {
+  User.findByIdAndUpdate(req.body.password, {runValidators: true, new: true}, function(err, user) {
+    if (err) return validationError(res, err);
+    res.status(200).json(user);
+  })
+}
+
 /**
  * Change a users password
  */
 exports.changePassword = function(req, res) {
-  var userId = req.user._id;
+  var userId = req.params.id; //req.user._id;
   var oldPass = String(req.body.oldPassword);
   var newPass = String(req.body.newPassword);
 

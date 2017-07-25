@@ -35,6 +35,21 @@ function isAuthenticated() {
     });
 }
 
+
+function verifyActivationEmail() {
+  return compose()
+    // Attach user to request
+    .use(function(req, res, next) {
+      User.findById(req.user._id, function (err, user) {
+        if (err) return next(err);
+        if (!user) return res.status(401).send('Unauthorized');
+
+        req.user = user;
+        next();
+      });
+    });
+}
+
 // used to check if currentUser is the author of the accessed material
 function correctUser(className) {
   if (!className) throw new Error('Class name needs to be set');
@@ -98,3 +113,4 @@ exports.hasRole = hasRole;
 exports.signToken = signToken;
 exports.setTokenCookie = setTokenCookie;
 exports.correctUser = correctUser;
+exports.verifyActivationEmail = verifyActivationEmail;
