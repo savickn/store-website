@@ -36,10 +36,11 @@ function isAuthenticated() {
 }
 
 
-function verifyActivationEmail() {
+/*function verifyActivationRequest() {
   return compose()
-    // Attach user to request
     .use(function(req, res, next) {
+      let hash = req.params.hash;
+
       User.findById(req.user._id, function (err, user) {
         if (err) return next(err);
         if (!user) return res.status(401).send('Unauthorized');
@@ -49,6 +50,22 @@ function verifyActivationEmail() {
       });
     });
 }
+
+function verifyResetRequest() {
+  return compose()
+    .use(function(req, res, next) {
+      let hash = req.params.hash;
+
+      User.findById(req.user._id, function (err, user) {
+        if (err) return next(err);
+        if (!user) return res.status(401).send('Unauthorized');
+
+        req.user = user;
+        next();
+      });
+    });
+}*/
+
 
 // used to check if currentUser is the author of the accessed material
 function correctUser(className) {
@@ -113,4 +130,5 @@ exports.hasRole = hasRole;
 exports.signToken = signToken;
 exports.setTokenCookie = setTokenCookie;
 exports.correctUser = correctUser;
-exports.verifyActivationEmail = verifyActivationEmail;
+//exports.verifyActivationRequest = verifyActivationRequest;
+//exports.verifyResetRequest = verifyResetRequest;

@@ -11,7 +11,7 @@ function encrypt(buffer, algorithm){
   var crypted = Buffer.concat([cipher.update(buffer),cipher.final()]);
   return crypted;
 }
- 
+
 function decrypt(buffer){
   var decipher = crypto.createDecipher(algorithm,password)
   var dec = Buffer.concat([decipher.update(buffer) , decipher.final()]);
@@ -32,7 +32,7 @@ var PaymentSchema = new Schema({
     type: String,
     required: 'You must provide the name on your credit card.'
   },
-  cardNumber: {
+  cardNumber: { //should be encrypted
     type: Number,
     required: 'You must provide a credit card number.'
   },
@@ -40,7 +40,7 @@ var PaymentSchema = new Schema({
     type: Date,
     required: "You must provide your credit card's expiry date"
   },
-  hashedPassword: {
+  hashedCardNumber: {
     type: String
   },
   salt: {
@@ -118,7 +118,7 @@ PaymentSchema.methods = {
   validateCard: function() {
 
   },
-  hashCardNumber: function() {
+  encryptCard: function() {
 
   }
 }
@@ -145,6 +145,12 @@ PaymentSchema
   .virtual('expiryYear')
   .get(function() {
     return this.expiryDate.getFullYear();
+  })
+
+PaymentSchema
+  .virtual('maskedNumber')
+  .get(function() {
+    return;
   })
 
 PaymentSchema.set('toJSON', {virtuals: true});

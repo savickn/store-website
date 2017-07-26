@@ -31,17 +31,16 @@ module.exports = function(app) {
   app.route('/:url(api|auth|components|app|bower_components|assets)/*')
    .get(errors[404]);
 
-  // used to render Reset Password form after clicking Reset Email link 
+  // used to render Reset Password form after clicking Reset Email link
   app.route('/reset/:id/:hash')
     .get(function(req, res) {
-
+      let viewFilePath = 'resetPassword';
+      res.status(200);
+      res.render(viewFilePath, function (err) {
+        if (err) { return res.status(500).json(err); }
+        res.render(viewFilePath);
+      });
     });
-
-  // used for account activation
-  app.route('/activate/:id/:hash')
-    .get(function(req, res) {
-
-    })
 
   // All other routes should redirect to the index.html
   app.route('/*')

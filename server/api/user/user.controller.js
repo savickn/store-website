@@ -5,6 +5,7 @@ var Wishlist = require('../wishlist/wishlist.model');
 var Reward = require('../reward/reward.model');
 var config = require('../../config/environment');
 var env = require('../../config/local.env.js');
+var crypto = require('crypto');
 
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
@@ -43,9 +44,29 @@ var welcomeEmail = function(req, res, cb) {
   });
 };
 
-var generateResetHash = function() {
+/*var resetEncryption = function(id) {
+  let idLength = id.length;
 
-}
+  let date = new Date();
+  let salt = crypto.randomBytes(id.length).toString('base64');
+
+  console.log('date', date);
+  console.log('id', id);
+  console.log('salt', salt);
+
+  let idArr = id.split("");
+  let saltArr = salt.split("");
+  //let dateArr = [date.getFullYear(), date.getMonth(), date.getDate()];
+
+  let hashString = date.getMonth() + date.getFullYear() + date.getDate();
+  for(let x = 0; x < idLength; x++) {
+    hashString += idArr[x] + saltArr[x];
+  }
+};
+
+var resetDecryption = function(hash) {
+
+};*/
 
 var resetEmail = function(req, res, cb) {
   var smtpString = 'smtps://' + env.HOME_EMAIL + ':' + env.PASSWORD + '@smtp.gmail.com';
@@ -56,7 +77,7 @@ var resetEmail = function(req, res, cb) {
 
   console.log('reset headers', req.headers);
 
-  var hash = generateResetHash(req.body.id);
+  var hash = generateResetHash(req.body.id, env.EMAIL_SALT);
   var data = {name: req.body.name, userId: req.body.id, host: req.headers.host, hash: hash};
 
   resetEmail.render(data, function (err, result) {
@@ -81,12 +102,12 @@ var activationEmail = function(req, res, cb) {
   var smtpString = 'smtps://' + env.HOME_EMAIL + ':' + env.PASSWORD + '@smtp.gmail.com';
   var transporter = nodemailer.createTransport(smtpString);
 
-  var templateDir = path.join(__dirname, '..', '..', 'templates', 'reset-email');
-  var resetEmail = new EmailTemplate(templateDir);
+  var templateDir = path.join(__dirname, '..', '..', 'templates', 'activation-email');
+  var activationEmail = new EmailTemplate(templateDir);
 
   var data = {name: req.body.name};
 
-  resetEmail.render(data, function (err, result) {
+  activationEmail.render(data, function (err, result) {
     if(err) cb(err);
     var mailOptions = {
       from: env.HOME_EMAIL,
@@ -103,7 +124,6 @@ var activationEmail = function(req, res, cb) {
     });
   });
 }
-
 
 exports.activateAccount = function(req, res) {
 
@@ -201,7 +221,10 @@ exports.sendResetEmail = function(req, res) {
 */
 
 exports.sendActivationEmail = function(req, res) {
-
+  activationEmail(req, res, function(err, info) {
+    if(err) return res.status(500).send(err);
+    return res.json({ msg: 'Please check your email to activate your account.' });
+  });
 }
 
 

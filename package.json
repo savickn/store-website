@@ -5,6 +5,9 @@
   "author": "nick-savickas",
   "license": "MIT",
   "dependencies": {
+    "activator": "^3.0.1",
+    "async": "^2.5.0",
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.5.0",
     "bower": "1.6.5",
     "composable-middleware": "^0.3.0",
