@@ -35,10 +35,15 @@ angular.module('passportApp')
       changePassword: function(userId, newPass) {
         return Restangular.one('users', userId).customPUT(newPass, 'password');
       },
-      requestReset: function(userId) {
-        return Restangular.one('users', userId).customGET('reset');
+      resetPassword: function(userId, password) {
+        return;
       },
-      
+      requestReset: function(userId) {
+        return Restangular.one('users', userId).customGET('resetEmail');
+      },
+      requestActivation: function(userId) {
+        return Restangular.one('users', userId).customGET('activationEmail');
+      },
       sendEmail: function(data) {
         return Restangular.all('users').customGET('email', data);
       }

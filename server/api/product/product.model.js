@@ -1,7 +1,6 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    Sale = require('../sale/sale.model').schema,
     Inventory = require('../inventory/inventory.model').schema,
     Schema = mongoose.Schema;
 

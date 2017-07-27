@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('SignupController', function ($scope, $timeout, $location, $window, Auth, FlashService) {
+  .controller('SignupController', function ($scope, $timeout, $location, $window, Auth, FlashService, AlertService) {
     $scope.user = {};
     $scope.errors = {};
     $scope.submitted = false;
@@ -18,15 +18,21 @@ angular.module('passportApp')
           FlashService.setMessage('You have successfully created an account.', 'Success');
           $location.path('/');
         }).catch(function(err) {
+          console.log(err);
           err = err.data;
           $scope.errors = {};
 
-          // Update validity of form fields that match the mongoose errors
-          angular.forEach(err.errors, function(error, field) {
-            form[field].$setValidity('mongoose', false);
-            $scope.errors[field] = error.message;
-            $timeout()
-          });
+          if(err.msg) {
+            AlertService.setAlert(err.msg, "Error");
+          }
+
+          if(err.errors) {
+            angular.forEach(err.errors, function(error, field) {
+              form[field].$setValidity('mongoose', false);
+              $scope.errors[field] = error.message;
+              $timeout()
+            });
+          }
         });
       }
     };

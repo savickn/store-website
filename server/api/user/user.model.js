@@ -157,7 +157,7 @@ UserSchema
 UserSchema
   .path('email')
   .validate(function(email) {
-    if (authTypes.indexOf(this.provider) !== -1) return true;
+    //if (authTypes.indexOf(this.provider) !== -1) return true;
     return email.length;
   }, 'Email cannot be blank');
 
@@ -172,18 +172,17 @@ UserSchema
 // Validate email is not taken
 UserSchema
   .path('email')
-  .validate(function(email, respond) {
+  .validate(function(email, next) {
     var self = this;
+
     mongoose.model('User').findOne({email: email}, function(err, user) {
       if(err) throw err;
       if(user) {
-        if(self._id === user._id) return respond(true);
-        return respond(false);
+        return self._id.equals(user._id) ? next(true) : next(false);
       }
-      respond(true);
+      next(true);
     });
 }, 'The specified email address is already in use.');
-
 
 var validatePresenceOf = function(value) {
   return value && value.length;
@@ -250,8 +249,6 @@ UserSchema.methods = {
     var salt = new Buffer(this.salt, 'base64');
     return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
   }
-
-
 };
 
 module.exports = mongoose.model('User', UserSchema);

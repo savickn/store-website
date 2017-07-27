@@ -36,16 +36,14 @@ function isAuthenticated() {
 }
 
 
-/*function verifyActivationRequest() {
+function verifyActivationRequest() {
   return compose()
     .use(function(req, res, next) {
-      let hash = req.params.hash;
+      let activationToken = req.session.activation;
 
-      User.findById(req.user._id, function (err, user) {
-        if (err) return next(err);
-        if (!user) return res.status(401).send('Unauthorized');
-
-        req.user = user;
+      jwt.verify(req.query.activationToken, config.secrets.session, {maxAge: '1 day'}, function(err, token) {
+        if(err) return next(err);
+        if(token !== activationToken) return res.status(401).send('Unauthorized');
         next();
       });
     });
@@ -54,17 +52,15 @@ function isAuthenticated() {
 function verifyResetRequest() {
   return compose()
     .use(function(req, res, next) {
-      let hash = req.params.hash;
+      let resetToken = req.session.reset;
 
-      User.findById(req.user._id, function (err, user) {
-        if (err) return next(err);
-        if (!user) return res.status(401).send('Unauthorized');
-
-        req.user = user;
+      jwt.verify(req.body.resetToken, config.secrets.session, {maxAge: '1 day'}, function(err, token) {
+        if(err) return next(err);
+        if(token !== resetToken) return res.status(401).send('Unauthorized');
         next();
       });
     });
-}*/
+}
 
 
 // used to check if currentUser is the author of the accessed material
@@ -125,10 +121,14 @@ function setTokenCookie(req, res) {
 }
 
 
+
+
+
+
 exports.isAuthenticated = isAuthenticated;
 exports.hasRole = hasRole;
 exports.signToken = signToken;
 exports.setTokenCookie = setTokenCookie;
 exports.correctUser = correctUser;
-//exports.verifyActivationRequest = verifyActivationRequest;
-//exports.verifyResetRequest = verifyResetRequest;
+exports.verifyActivationRequest = verifyActivationRequest;
+exports.verifyResetRequest = verifyResetRequest;

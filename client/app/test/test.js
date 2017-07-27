@@ -24,5 +24,13 @@ angular.module('passportApp')
       .state('test.gr', {
       	url: '/goodreads',
       	templateUrl: 'app/test/goodreads.html'
+      })
+      .state('test.reset', {
+        url: '/reset',
+        templateUrl: 'app/test/resetEmail.html'
+      })
+      .state('test.activate', {
+        url: '/activate',
+        templateUrl: 'app/test/activationEmail.html'
       });
   });

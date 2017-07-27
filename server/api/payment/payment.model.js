@@ -115,11 +115,16 @@ PaymentSchema.methods = {
   isExpired: function() {
     return (Date.now() > this.expiryDate) ? true : false;
   },
-  validateCard: function() {
-
+  makeSalt: function() {
+    return crypto.randomBytes(16).toString('base64');
   },
-  encryptCard: function() {
-
+  validateCard: function(plainText) {
+    return this.encryptCard(plainText) === this.hashedPassword;
+  },
+  encryptCard: function(cardNumber) {
+    if (!cardNumber || !this.salt) return '';
+    var salt = new Buffer(this.salt, 'base64');
+    return crypto.pbkdf2Sync(cardNumber, salt, 10000, 64).toString('base64');
   }
 }
 

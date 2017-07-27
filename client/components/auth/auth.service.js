@@ -214,6 +214,10 @@ angular.module('passportApp')
         return currentUser.role === 'admin';
       },
 
+      isActive: function() {
+        return currentUser.active;
+      },
+
       isOwner: function(userId) {
         return (userId === currentUser._id) ? true : false;
       },

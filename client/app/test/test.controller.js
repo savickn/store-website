@@ -2,7 +2,32 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('TestCtrl', function ($scope, $timeout, UserService, ComputerService) {
+  .controller('TestCtrl', function ($scope, $timeout, UserService, ComputerService, Auth, AlertService) {
+    $scope.isActive = Auth.isActive();
+    $scope.isLoggedIn = Auth.isLoggedIn();
+
+    $scope.sendActivationEmail = function() {
+      UserService.requestActivation(Auth.getCurrentUser()._id).then(function(response) {
+        AlertService.setAlert(response.msg, "Warning");
+      }).catch(function(err) {
+        console.log(err);
+        //AlertService.setAlert(err, "Error");
+      })
+    };
+
+    $scope.sendResetEmail = function() {
+      UserService.requestReset(Auth.getCurrentUser()._id).then(function(response) {
+        AlertService.setAlert(response.msg, "Warning");
+      }).catch(function(err) {
+        console.log(err);
+        //AlertService.setAlert(err, "Error");
+      })
+    };
+
+    $scope.isActive = Auth.isActive();
+    $scope.isLoggedIn = Auth.isLoggedIn();
+
+
   	$scope.email = {};
 
     $scope.errors = {};

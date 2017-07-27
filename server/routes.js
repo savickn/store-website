@@ -32,7 +32,7 @@ module.exports = function(app) {
    .get(errors[404]);
 
   // used to render Reset Password form after clicking Reset Email link
-  app.route('/reset/:id/:hash')
+  app.route('/reset/:id')
     .get(function(req, res) {
       let viewFilePath = 'resetPassword';
       res.status(200);

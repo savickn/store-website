@@ -43,9 +43,9 @@ angular.module('passportApp')
     $scope.changePassword = function(form) {
       $scope.submitted = true;
       if(form.$valid) {
-        Auth.changePassword($scope.user.oldPassword, $scope.user.newPassword, $scope.user.confirmPassword).then(function() {
+        Auth.changePassword($scope.user.oldPassword, $scope.user.newPassword, $scope.user.confirmPassword).then(function(user) {
           $scope.message = 'Password successfully changed.';
-        }).catch(function() {
+        }).catch(function(err) {
           form.password.$setValidity('mongoose', false);
           $scope.errors.other = 'Incorrect password';
           $scope.message = '';
