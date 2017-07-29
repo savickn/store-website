@@ -73,7 +73,7 @@ PaymentSchema
       default:
         return false;
     }
-  }, "The card number you provided is incorrect.")
+  }, `The card number you provided does not match the card type you specified.`) //error msg not working, convert to PRE hook
 
 //"The card number you provided is incorrect. ${payment.cardType} numbers start with ${cardValidation[this.cardType]}"
 

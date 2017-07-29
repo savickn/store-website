@@ -40,10 +40,14 @@ function verifyActivationRequest() {
   return compose()
     .use(function(req, res, next) {
       let activationToken = req.session.activation;
+      console.log('verifying');
+      console.log('session key', activationToken);
+      console.log('url key', req.query.activationToken);
 
       jwt.verify(req.query.activationToken, config.secrets.session, {maxAge: '1 day'}, function(err, token) {
+        console.log('verify', err, token);
         if(err) return next(err);
-        if(token !== activationToken) return res.status(401).send('Unauthorized');
+        if(token.key !== activationToken.key || token.id !== activationToken.id) return res.status(401).send('Unauthorized');
         next();
       });
     });

@@ -1,22 +1,22 @@
 'use strict';
 
-var User = require('./user.model');
-var Wishlist = require('../wishlist/wishlist.model');
-var Reward = require('../reward/reward.model');
-var config = require('../../config/environment');
-var env = require('../../config/local.env.js');
-var crypto = require('crypto');
+const User = require('./user.model');
+const Wishlist = require('../wishlist/wishlist.model');
+const Reward = require('../reward/reward.model');
+const config = require('../../config/environment');
+const env = require('../../config/local.env.js');
+const crypto = require('crypto');
 
-var jwt = require('jsonwebtoken');
-var passport = require('passport');
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
 
-var nodemailer = require('nodemailer');
-var smtpTransport = require('nodemailer-smtp-transport');
-var EmailTemplate = require('email-templates-v2').EmailTemplate;
+const nodemailer = require('nodemailer');
+const smtpTransport = require('nodemailer-smtp-transport');
+const EmailTemplate = require('email-templates-v2').EmailTemplate;
 
-var _ = require('lodash');
-var fs = require('fs');
-var path = require('path');
+const _ = require('lodash');
+const fs = require('fs');
+const path = require('path');
 
 var welcomeEmail = function(req, res, cb) {
   //var smtpString = 'smtps://' + env.HOME_EMAIL + ':' + env.PASSWORD + '@smtp.gmail.com';
@@ -119,9 +119,6 @@ var resetEmail = function(req, res, cb) {
 }
 
 var activationEmail = function(req, res, cb) {
-  //var smtpString = 'smtps://' + env.HOME_EMAIL + ':' + env.PASSWORD + '@smtp.gmail.com';
-  //var transporter = nodemailer.createTransport(smtpString);
-
   var transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
@@ -135,8 +132,9 @@ var activationEmail = function(req, res, cb) {
   var templateDir = path.join(__dirname, '..', '..', 'templates', 'activation-email');
   var activationEmail = new EmailTemplate(templateDir);
 
+  var activationKey = crypto.randomBytes(64).toString('hex');
   var activationRequest = {
-    activation: true,
+    key: activationKey,
     id: req.user._id
   };
 
@@ -145,12 +143,14 @@ var activationEmail = function(req, res, cb) {
   console.log('session', req.session);
 
   var token = jwt.sign(req.session.activation, config.secrets.session, { expiresInMinutes: 60*24 }); // activation token lasts for 24 hours
-  var data = {name: req.user.name, userId: req.user._id, host: req.headers.host, token: token};
+  var url = `${req.headers.host}/api/users/${req.user._id}/activate?activationToken=${token}`;
+
+  var data = {name: req.user.name, url: url};
 
   console.log('data', data);
 
   activationEmail.render(data, function (err, result) {
-    console.log('render', err, result);
+    console.log('render', result);
     if(err) return cb(err);
     var mailOptions = {
       from: env.HOME_EMAIL,
@@ -162,7 +162,7 @@ var activationEmail = function(req, res, cb) {
     };
 
     transporter.sendMail(mailOptions, function(error, info){
-      console.log('sendmail', error, info);
+      //console.log('sendmail', error, info);
       if(error) return cb(error);
       return cb(null, info);
     });
@@ -264,8 +264,8 @@ exports.sendResetEmail = function(req, res) {
 */
 
 exports.sendActivationEmail = function(req, res) {
-  welcomeEmail(req, res, function(err, info) {
-    console.log('cb', err, info);
+  activationEmail(req, res, function(err, info) {
+    //console.log('cb', err, info);
     if(err) return res.status(500).send(err);
     return res.status(200).json({ msg: 'Please check your email to activate your account.' });
   });
@@ -278,7 +278,7 @@ exports.sendActivationEmail = function(req, res) {
 exports.activateAccount = function(req, res) {
   User.findByIdAndUpdate(req.params.id, {$set: {active: true}}, {new: true}, function(err, user) {
     if(err) return validationError(res, err);
-    res.status(200).json(user);
+    res.status(200).send('Account Activated!');
   });
 }
 
