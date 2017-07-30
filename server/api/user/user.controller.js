@@ -56,51 +56,35 @@ var welcomeEmail = function(req, res, cb) {
   });
 };
 
-/*var resetEncryption = function(id) {
-  let idLength = id.length;
-
-  let date = new Date();
-  let salt = crypto.randomBytes(id.length).toString('base64');
-
-  console.log('date', date);
-  console.log('id', id);
-  console.log('salt', salt);
-
-  let idArr = id.split("");
-  let saltArr = salt.split("");
-  //let dateArr = [date.getFullYear(), date.getMonth(), date.getDate()];
-
-  let hashString = date.getMonth() + date.getFullYear() + date.getDate();
-  for(let x = 0; x < idLength; x++) {
-    hashString += idArr[x] + saltArr[x];
-  }
-};
-
-var resetDecryption = function(hash) {
-
-};*/
-
+// WORKING
 var resetEmail = function(req, res, cb) {
-  var smtpString = 'smtps://' + env.HOME_EMAIL + ':' + env.PASSWORD + '@smtp.gmail.com';
-  var transporter = nodemailer.createTransport(smtpString);
+  var transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // secure:true for port 465, secure:false for port 587
+    auth: {
+        user: env.HOME_EMAIL,
+        pass: env.PASSWORD
+    }
+  });
 
   var templateDir = path.join(__dirname, '..', '..', 'templates', 'reset-email');
   var resetEmail = new EmailTemplate(templateDir);
 
-  console.log('reset headers', req.headers);
-
-  //var hash = generateResetHash(req.body.id, env.EMAIL_SALT);
-
+  var resetKey = crypto.randomBytes(64).toString('hex');
   var resetRequest = {
-    reset: true,
+    key: resetKey,
     id: req.user._id
   };
 
   req.session.reset = resetRequest;
+
   var token = jwt.sign(resetRequest, config.secrets.session, { expiresInMinutes: 60*24 }); // reset token lasts for 24 hours
-  var data = {name: req.body.name, userId: req.body.id, host: req.headers.host, token: token};
+  var url = `http://${req.headers.host}/reset/${req.user._id}?resetToken=${token}`;
+  var data = {name: req.user.name, url: url};
 
   resetEmail.render(data, function (err, result) {
+    console.log('reset email render', result);
     if(err) return cb(err);
     var mailOptions = {
       from: env.HOME_EMAIL,
@@ -118,6 +102,7 @@ var resetEmail = function(req, res, cb) {
   });
 }
 
+// WORKING
 var activationEmail = function(req, res, cb) {
   var transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -140,17 +125,12 @@ var activationEmail = function(req, res, cb) {
 
   req.session.activation = activationRequest;
 
-  console.log('session', req.session);
-
-  var token = jwt.sign(req.session.activation, config.secrets.session, { expiresInMinutes: 60*24 }); // activation token lasts for 24 hours
-  var url = `${req.headers.host}/api/users/${req.user._id}/activate?activationToken=${token}`;
-
+  var token = jwt.sign(activationRequest, config.secrets.session, { expiresInMinutes: 60*24 }); // activation token lasts for 24 hours
+  var url = `http://${req.headers.host}/api/users/${req.user._id}/activate?activationToken=${token}`;
   var data = {name: req.user.name, url: url};
 
-  console.log('data', data);
-
   activationEmail.render(data, function (err, result) {
-    console.log('render', result);
+    console.log('activation email render', result);
     if(err) return cb(err);
     var mailOptions = {
       from: env.HOME_EMAIL,
@@ -162,7 +142,6 @@ var activationEmail = function(req, res, cb) {
     };
 
     transporter.sendMail(mailOptions, function(error, info){
-      //console.log('sendmail', error, info);
       if(error) return cb(error);
       return cb(null, info);
     });
@@ -260,19 +239,18 @@ exports.sendResetEmail = function(req, res) {
 }
 
 /*
-* Send a new activation email
+* Send a new activation email, WORKING
 */
 
 exports.sendActivationEmail = function(req, res) {
   activationEmail(req, res, function(err, info) {
-    //console.log('cb', err, info);
     if(err) return res.status(500).send(err);
     return res.status(200).json({ msg: 'Please check your email to activate your account.' });
   });
 }
 
 /*
-* Activates a user's account
+* Activates a user's account, WORKING
 */
 
 exports.activateAccount = function(req, res) {
@@ -426,4 +404,28 @@ exports.changeEmail = function(req, res) {
     if(err) return res.status(500).send(err);
     return res.status(200).json(users);
   });
+};*/
+
+/*var resetEncryption = function(id) {
+  let idLength = id.length;
+
+  let date = new Date();
+  let salt = crypto.randomBytes(id.length).toString('base64');
+
+  console.log('date', date);
+  console.log('id', id);
+  console.log('salt', salt);
+
+  let idArr = id.split("");
+  let saltArr = salt.split("");
+  //let dateArr = [date.getFullYear(), date.getMonth(), date.getDate()];
+
+  let hashString = date.getMonth() + date.getFullYear() + date.getDate();
+  for(let x = 0; x < idLength; x++) {
+    hashString += idArr[x] + saltArr[x];
+  }
+};
+
+var resetDecryption = function(hash) {
+
 };*/

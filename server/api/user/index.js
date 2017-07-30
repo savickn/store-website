@@ -9,9 +9,10 @@ var router = express.Router();
 
 //router.get('/email', auth.hasRole('admin'), controller.email); //used to test email functionality
 //router.get('/', auth.hasRole('admin'), controller.index);
+//router.get('/:id/resetForm', auth.verifyResetRequest(), controller.renderResetForm);
 
 router.get('/:id/resetEmail', auth.isAuthenticated(), controller.sendResetEmail); // used to send Reset Email
-router.put('/:id/reset', auth.verifyResetRequest(), controller.resetPassword); //used to update password in MongoDB
+router.put('/:id/reset', auth.verifyResetRequest(), controller.resetPassword); // used to update password in MongoDB
 
 router.get('/:id/activationEmail', auth.isAuthenticated(), controller.sendActivationEmail); //used to send Activation Email
 router.get('/:id/activate', auth.verifyActivationRequest(), controller.activateAccount); //used to activate account

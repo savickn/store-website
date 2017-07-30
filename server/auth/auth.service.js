@@ -46,7 +46,7 @@ function verifyActivationRequest() {
 
       jwt.verify(req.query.activationToken, config.secrets.session, {maxAge: '1 day'}, function(err, token) {
         console.log('verify', err, token);
-        if(err) return next(err);
+        if(err) return res.status(401).send('This link has expired!');
         if(token.key !== activationToken.key || token.id !== activationToken.id) return res.status(401).send('Unauthorized');
         next();
       });
@@ -57,10 +57,14 @@ function verifyResetRequest() {
   return compose()
     .use(function(req, res, next) {
       let resetToken = req.session.reset;
+      console.log('verifying');
+      console.log('session key', activationToken);
+      console.log('url key', req.query.activationToken);
 
       jwt.verify(req.body.resetToken, config.secrets.session, {maxAge: '1 day'}, function(err, token) {
-        if(err) return next(err);
-        if(token !== resetToken) return res.status(401).send('Unauthorized');
+        console.log('verify', err, token);
+        if(err) return res.status(401).send('This link has expired!');
+        if(token.key !== resetToken.key || token.id !== resetToken.id) return res.status(401).send('Unauthorized');
         next();
       });
     });

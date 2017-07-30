@@ -36,10 +36,15 @@ module.exports = function(app) {
     .get(function(req, res) {
       let viewFilePath = 'resetPassword';
       res.status(200);
-      res.render(viewFilePath, function (err) {
+      res.render(viewFilePath, {data: {token: req.query.resetToken}});
+
+      /*res.render(viewFilePath, {data: {token: req.query.resetToken}}, function (err, result) {
+        console.log('render err', err);
+        console.log('render result', result);
+        //console.log('res', res);
         if (err) { return res.status(500).json(err); }
-        res.render(viewFilePath);
-      });
+        return res;
+      });*/
     });
 
   // All other routes should redirect to the index.html
