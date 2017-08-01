@@ -43,6 +43,11 @@ function verifyActivationRequest() {
       console.log('verifying');
       console.log('session key', activationToken);
       console.log('url key', req.query.activationToken);
+      console.log('req.user', req.user);
+
+      /*if(req.user.active) {
+        return res.status(401).send('Your account is already active!');
+      }*/
 
       jwt.verify(req.query.activationToken, config.secrets.session, {maxAge: '1 day'}, function(err, token) {
         console.log('verify', err, token);

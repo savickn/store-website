@@ -32,5 +32,9 @@ angular.module('passportApp')
       .state('test.activate', {
         url: '/activate',
         templateUrl: 'app/test/activationEmail.html'
+      })
+      .state('test.alerts', {
+        url: '/alerts',
+        templateUrl: 'app/test/alerts.html'
       });
   });

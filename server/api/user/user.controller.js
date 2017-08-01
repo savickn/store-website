@@ -18,43 +18,6 @@ const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 
-var welcomeEmail = function(req, res, cb) {
-  //var smtpString = 'smtps://' + env.HOME_EMAIL + ':' + env.PASSWORD + '@smtp.gmail.com';
-  //var transporter = nodemailer.createTransport(smtpString);
-
-  var transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // secure:true for port 465, secure:false for port 587
-    auth: {
-        user: env.HOME_EMAIL,
-        pass: env.PASSWORD
-    }
-  });
-
-  console.log('transport', transporter);
-
-  var templateDir = path.join(__dirname, '..', '..', 'templates', 'welcome-email');
-  var welcomeEmail = new EmailTemplate(templateDir);
-  var data = {name: req.body.name};
-
-  welcomeEmail.render(data, function (err, result) {
-    if(err) return cb(err);
-    var mailOptions = {
-      from: env.HOME_EMAIL,
-      to: env.RECEIVER_EMAIL,
-      //to: req.body.email,
-      subject: 'Welcome',
-      text: result.text,
-      html: result.html
-    };
-
-    transporter.sendMail(mailOptions, function(error, info){
-      if(error) return cb(error);
-      return cb(null, info);
-    });
-  });
-};
 
 // WORKING
 var resetEmail = function(req, res, cb) {
@@ -125,8 +88,11 @@ var activationEmail = function(req, res, cb) {
 
   req.session.activation = activationRequest;
 
+  console.log('session', req.session.activation);
+
   var token = jwt.sign(activationRequest, config.secrets.session, { expiresInMinutes: 60*24 }); // activation token lasts for 24 hours
-  var url = `http://${req.headers.host}/api/users/${req.user._id}/activate?activationToken=${token}`;
+  //var url = `http://${req.headers.host}/api/users/${req.user._id}/activate?activationToken=${token}`;
+  var url = `http://${req.headers.host}/activate/${req.user._id}?activationToken=${token}`;
   var data = {name: req.user.name, url: url};
 
   activationEmail.render(data, function (err, result) {
@@ -192,14 +158,11 @@ exports.create = function (req, res) {
 
       Wishlist.create({user: user._id}, function(err, wishlist) {
         if(err) return rollbackUser(res, err, user._id);
-        //welcomeEmail(req, res, function(err, info) {
-          //if(err) return res.status(500).send(err);
           activationEmail(req, res, function(err, info) {
             if(err) return rollbackUser(res, err, user._id);
             var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
             return res.json({ token: token });
           });
-        //});
       });
     });
   });
@@ -243,6 +206,10 @@ exports.sendResetEmail = function(req, res) {
 */
 
 exports.sendActivationEmail = function(req, res) {
+  if(req.user.active) {
+    return res.status(304).json({ msg: 'Your account is already active.' });
+  }
+
   activationEmail(req, res, function(err, info) {
     if(err) return res.status(500).send(err);
     return res.status(200).json({ msg: 'Please check your email to activate your account.' });
@@ -256,7 +223,8 @@ exports.sendActivationEmail = function(req, res) {
 exports.activateAccount = function(req, res) {
   User.findByIdAndUpdate(req.params.id, {$set: {active: true}}, {new: true}, function(err, user) {
     if(err) return validationError(res, err);
-    res.status(200).send('Account Activated!');
+    return res.status(200).send('You have successfully activated your account!');
+    //res.sendFile(path.resolve(app.get('appPath') + '/index.html'));
   });
 }
 
@@ -267,7 +235,7 @@ exports.activateAccount = function(req, res) {
 exports.resetPassword = function(req, res) {
   User.findByIdAndUpdate(req.params.id, {$set: {password: req.body.password}}, {runValidators: true, new: true}, function(err, user) {
     if (err) return validationError(res, err);
-    res.status(200).json(user);
+    return res.status(200).json(user);
   })
 }
 
@@ -429,3 +397,43 @@ exports.changeEmail = function(req, res) {
 var resetDecryption = function(hash) {
 
 };*/
+
+
+/*var welcomeEmail = function(req, res, cb) {
+  //var smtpString = 'smtps://' + env.HOME_EMAIL + ':' + env.PASSWORD + '@smtp.gmail.com';
+  //var transporter = nodemailer.createTransport(smtpString);
+
+  var transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // secure:true for port 465, secure:false for port 587
+    auth: {
+        user: env.HOME_EMAIL,
+        pass: env.PASSWORD
+    }
+  });
+
+  console.log('transport', transporter);
+
+  var templateDir = path.join(__dirname, '..', '..', 'templates', 'welcome-email');
+  var welcomeEmail = new EmailTemplate(templateDir);
+  var data = {name: req.body.name};
+
+  welcomeEmail.render(data, function (err, result) {
+    if(err) return cb(err);
+    var mailOptions = {
+      from: env.HOME_EMAIL,
+      to: env.RECEIVER_EMAIL,
+      //to: req.body.email,
+      subject: 'Welcome',
+      text: result.text,
+      html: result.html
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if(error) return cb(error);
+      return cb(null, info);
+    });
+  });
+};
+*/

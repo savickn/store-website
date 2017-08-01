@@ -10,6 +10,9 @@ angular.module('passportApp')
       });
 
     return {
+      getMe: function() {
+        return Restangular.one('users', 'me').get();
+      },
       searchUsers: function(query) {
         return Restangular.all('users').customGET('search', query);
       },
@@ -29,23 +32,20 @@ angular.module('passportApp')
         return Restangular.one('users', userId).remove();
       },
 
-      getMe: function() {
-        return Restangular.one('users', 'me').get();
-      },
       changePassword: function(userId, newPass) {
         return Restangular.one('users', userId).customPUT(newPass, 'password');
       },
-      resetPassword: function(userId, password) {
-        return;
+      resetPassword: function(userId, data) {
+        return Restangular.one('users', userId).customPUT(data, 'reset');
+      },
+      activateAccount: function(userId, token) {
+        return Restangular.one('users', userId).customGET('activate', {activationToken: token})
       },
       requestReset: function(userId) {
         return Restangular.one('users', userId).customGET('resetEmail');
       },
       requestActivation: function(userId) {
         return Restangular.one('users', userId).customGET('activationEmail');
-      },
-      sendEmail: function(data) {
-        return Restangular.all('users').customGET('email', data);
       }
     };
   });
@@ -53,6 +53,12 @@ angular.module('passportApp')
 
 
 /*
+
+,
+sendEmail: function(data) {
+  return Restangular.all('users').customGET('email', data);
+}
+
       changeEmail: function(userId, newEmail) {
         return Restangular.one('users', userId).customPUT(newEmail, 'email');
       },*/

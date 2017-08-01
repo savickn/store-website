@@ -66,6 +66,11 @@ angular.module('passportApp')
       };
     };
 
+    $scope.setAlert = function(msg, type) {
+      AlertService.setAlert(msg, type);
+    }
+
+
   });
 
 

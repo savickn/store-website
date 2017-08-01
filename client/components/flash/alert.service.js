@@ -8,12 +8,12 @@ angular.module('passportApp')
     getAlert: function() {
       return alert;
     },
-    setAlert: function(message, type) {
+    setAlert: function(message, type, duration = 10000) {
       alert.message = message;
       alert.type = type;
       $timeout(() => {
         this.clearAlert();
-      }, 10000);
+      }, duration);
     },
     clearAlert: function() {
       alert = {};

@@ -1,0 +1,7 @@
+.container(ng-controller="InfoCtrl")
+  p(ng-if="!isActive && isLoggedIn") You have not activated your account. Click 
+    span(ng-click="sendActivationEmail()") 
+      b  here 
+    span  to activate your account.
+
+  alert-message
