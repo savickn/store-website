@@ -44,11 +44,11 @@ angular.module('passportApp')
       $scope.submitted = true;
       if(form.$valid) {
         Auth.changePassword($scope.user.oldPassword, $scope.user.newPassword, $scope.user.confirmPassword).then(function(user) {
-          $scope.message = 'Password successfully changed.';
+          AlertService.setAlert('Password successfully changed.', 'Success');
         }).catch(function(err) {
           form.password.$setValidity('mongoose', false);
           $scope.errors.other = 'Incorrect password';
-          $scope.message = '';
+          AlertService.setAlert('Password could not be changed. Please check error messages for details.', 'Error');
         });
       }
     };

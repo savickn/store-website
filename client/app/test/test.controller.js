@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('TestCtrl', function ($scope, $timeout, UserService, ComputerService, Auth, AlertService) {
+  .controller('TestCtrl', function ($scope, $state, $timeout, UserService, ComputerService, Auth, AlertService, FlashService) {
     $scope.isActive = Auth.isActive();
     $scope.isLoggedIn = Auth.isLoggedIn();
 
@@ -10,8 +10,8 @@ angular.module('passportApp')
       UserService.requestActivation(Auth.getCurrentUser()._id).then(function(response) {
         AlertService.setAlert(response.msg, "Warning");
       }).catch(function(err) {
+        AlertService.setAlert(err.data.msg, "Error");
         console.log(err);
-        //AlertService.setAlert(err, "Error");
       })
     };
 
@@ -68,7 +68,14 @@ angular.module('passportApp')
 
     $scope.setAlert = function(msg, type) {
       AlertService.setAlert(msg, type);
-    }
+    };
+
+    $scope.setFlash = function(msg, type) {
+      FlashService.setMessage(msg, type);
+      $timeout(() => {
+        $state.go('login');
+      }, 2000)
+    };
 
 
   });

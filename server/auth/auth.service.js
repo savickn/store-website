@@ -15,16 +15,13 @@ var validateJwt = expressJwt({ secret: config.secrets.session });
  */
 function isAuthenticated() {
   return compose()
-    // Validate jwt
-    .use(function(req, res, next) {
-      // allow access_token to be passed through query parameter as well
-      if(req.query && req.query.hasOwnProperty('access_token')) {
+    .use(function(req, res, next) { // used to validate jwt of user session
+      if(req.query && req.query.hasOwnProperty('access_token')) { // allows 'access_token' to be passed through 'req.query' if necessary
         req.headers.authorization = 'Bearer ' + req.query.access_token;
       }
       validateJwt(req, res, next);
     })
-    // Attach user to request
-    .use(function(req, res, next) {
+    .use(function(req, res, next) { //used to attach 'user' to 'req'
       User.findById(req.user._id, function (err, user) {
         if (err) return next(err);
         if (!user) return res.status(401).send('Unauthorized');
@@ -35,23 +32,15 @@ function isAuthenticated() {
     });
 }
 
-
+/*
+** used to verify that an activation request contains the necessary token
+*/
 function verifyActivationRequest() {
   return compose()
     .use(function(req, res, next) {
       let activationToken = req.session.activation;
-      console.log('verifying');
-      console.log('session key', activationToken);
-      console.log('url key', req.query.activationToken);
-      console.log('req.user', req.user);
-
-      /*if(req.user.active) {
-        return res.status(401).send('Your account is already active!');
-      }*/
-
       jwt.verify(req.query.activationToken, config.secrets.session, {maxAge: '1 day'}, function(err, token) {
-        console.log('verify', err, token);
-        if(err) return res.status(401).send('This link has expired!');
+        if(err) return res.status(403).send('This link has expired!');
         if(token.key !== activationToken.key || token.id !== activationToken.id) return res.status(401).send('Unauthorized');
         next();
       });
@@ -62,21 +51,30 @@ function verifyResetRequest() {
   return compose()
     .use(function(req, res, next) {
       let resetToken = req.session.reset;
-      console.log('verifying');
-      console.log('session key', activationToken);
-      console.log('url key', req.query.activationToken);
-
       jwt.verify(req.body.resetToken, config.secrets.session, {maxAge: '1 day'}, function(err, token) {
-        console.log('verify', err, token);
-        if(err) return res.status(401).send('This link has expired!');
+        if(err) return res.status(403).send('This link has expired!');
         if(token.key !== resetToken.key || token.id !== resetToken.id) return res.status(401).send('Unauthorized');
         next();
       });
     });
 }
 
+function verifyOldPassword() {
+  return compose()
+    .use(function(req, res, next) {
+      if(req.user.authenticate(req.body.oldPass)) {
+        next();
+      } else {
+        let err = new Error("Your current password is incorrect!");
+        return res.status(403).send(err);
+      }
+    });
+}
 
-// used to check if currentUser is the author of the accessed material
+
+/*
+** used to check if currentUser is the author of the accessed material
+*/
 function correctUser(className) {
   if (!className) throw new Error('Class name needs to be set');
   var objUser = '';
@@ -134,10 +132,6 @@ function setTokenCookie(req, res) {
 }
 
 
-
-
-
-
 exports.isAuthenticated = isAuthenticated;
 exports.hasRole = hasRole;
 exports.signToken = signToken;
@@ -145,3 +139,4 @@ exports.setTokenCookie = setTokenCookie;
 exports.correctUser = correctUser;
 exports.verifyActivationRequest = verifyActivationRequest;
 exports.verifyResetRequest = verifyResetRequest;
+exports.verifyOldPassword = verifyOldPassword;

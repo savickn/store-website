@@ -17,15 +17,15 @@ angular.module('passportApp')
         url: '/activate/:id?activationToken',
         templateUrl: 'app/account/activation/activate.html',
         controller: 'ActivationController'
-      });
-      /*.state('forgotPassword', {
+      })
+      .state('forgotPassword', {
         url: '/forgotPassword',
         templateUrl: 'app/account/reset/forgotPassword.html',
         controller: 'ResetController'
       })
       .state('resetPassword', {
-        url: '/resetPassword',
-        templateUrl: 'app/account/reset/reset.html',
+        url: '/resetPassword/:id?resetToken',
+        templateUrl: 'app/account/reset/resetPassword.html',
         controller: 'ResetController'
-      });*/
+      });
   });

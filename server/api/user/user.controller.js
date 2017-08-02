@@ -43,7 +43,7 @@ var resetEmail = function(req, res, cb) {
   req.session.reset = resetRequest;
 
   var token = jwt.sign(resetRequest, config.secrets.session, { expiresInMinutes: 60*24 }); // reset token lasts for 24 hours
-  var url = `http://${req.headers.host}/reset/${req.user._id}?resetToken=${token}`;
+  var url = `http://${req.headers.host}/resetPassword/${req.user._id}?resetToken=${token}`;
   var data = {name: req.user.name, url: url};
 
   resetEmail.render(data, function (err, result) {
@@ -52,7 +52,7 @@ var resetEmail = function(req, res, cb) {
     var mailOptions = {
       from: env.HOME_EMAIL,
       to: env.RECEIVER_EMAIL,
-      //to: req.body.email,
+      //to: req.user.email,
       subject: 'Reset Your Password',
       text: result.text,
       html: result.html
@@ -88,21 +88,17 @@ var activationEmail = function(req, res, cb) {
 
   req.session.activation = activationRequest;
 
-  console.log('session', req.session.activation);
-
   var token = jwt.sign(activationRequest, config.secrets.session, { expiresInMinutes: 60*24 }); // activation token lasts for 24 hours
-  //var url = `http://${req.headers.host}/api/users/${req.user._id}/activate?activationToken=${token}`;
   var url = `http://${req.headers.host}/activate/${req.user._id}?activationToken=${token}`;
   var data = {name: req.user.name, url: url};
 
   activationEmail.render(data, function (err, result) {
-    console.log('activation email render', result);
     if(err) return cb(err);
     var mailOptions = {
       from: env.HOME_EMAIL,
       to: env.RECEIVER_EMAIL,
-      //to: req.body.email,
-      subject: 'Activation Your Account',
+      //to: req.user.email,
+      subject: 'Activate Your Account',
       text: result.text,
       html: result.html
     };
@@ -174,7 +170,7 @@ exports.create = function (req, res) {
 exports.show = function (req, res, next) {
   User.findById(req.params.id, function (err, user) {
     if (err) return next(err);
-    if (!user) return res.status(401).send('Unauthorized');
+    if (!user) return res.status(501).send('User does not exist!');
     return res.json(user.profile);
   });
 };
@@ -195,10 +191,17 @@ exports.destroy = function(req, res) {
 */
 
 exports.sendResetEmail = function(req, res) {
-  resetEmail(req, res, function(err, info) {
+  User.findOne({email: req.query.email}, function(err, user) {
     if(err) return res.status(500).send(err);
-    return res.status(200).json({ msg: 'Please check your email to reset your password.' });
-  });
+    if(!user) return res.status().send('User could not be found.');
+
+    req.user = user;
+    console.log('user', req.user);
+    resetEmail(req, res, function(err, info) {
+      if(err) return res.status(500).send(err);
+      return res.status(200).json({ msg: 'Please check your email to reset your password.' });
+    });
+  })
 }
 
 /*
@@ -207,9 +210,8 @@ exports.sendResetEmail = function(req, res) {
 
 exports.sendActivationEmail = function(req, res) {
   if(req.user.active) {
-    return res.status(304).json({ msg: 'Your account is already active.' });
+    return res.status(403).json({ msg: 'Your account is already active.' });
   }
-
   activationEmail(req, res, function(err, info) {
     if(err) return res.status(500).send(err);
     return res.status(200).json({ msg: 'Please check your email to activate your account.' });
@@ -233,31 +235,39 @@ exports.activateAccount = function(req, res) {
 */
 
 exports.resetPassword = function(req, res) {
-  User.findByIdAndUpdate(req.params.id, {$set: {password: req.body.password}}, {runValidators: true, new: true}, function(err, user) {
+  User.findById(req.params.id, function(err, user) {
     if (err) return validationError(res, err);
-    return res.status(200).json(user);
+    user.password = req.body.newPassword;
+    user.save(function(err) {
+      if (err) return validationError(res, err);
+      return res.status(200).send('OK');
+    })
   })
 }
+
+//{$set: {password: req.body.newPassword}}, {runValidators: true, new: true},
 
 /**
  * Change a users password
  */
 exports.changePassword = function(req, res) {
-  var userId = req.params.id; //req.user._id;
-  var oldPass = String(req.body.oldPassword);
-  var newPass = String(req.body.newPassword);
+  let userId = req.params.id; //req.user._id;
+  let newPass = req.body.newPassword;
+  let confirmPass = req.body.confirmPassword;
 
-  User.findById(userId, function (err, user) {
-    if(user.authenticate(oldPass)) {
+  if(newPass === confirmPass) {
+    User.findById(userId, function (err, user) {
+      if (err) return validationError(res, err);
       user.password = newPass;
       user.save(function(err) {
         if (err) return validationError(res, err);
         res.status(200).send('OK');
       });
-    } else {
-      res.status(403).send('Forbidden');
-    }
-  });
+    });
+  } else {
+    let err = new Error("Passwords do not match!");
+    res.status(403).send(err)
+  }
 };
 
 /**
@@ -265,17 +275,18 @@ exports.changePassword = function(req, res) {
 **/
 
 exports.update = function(req, res) {
-  console.log(req.body);
+  console.log('update body', req.body);
 
-  User.findOneAndUpdate(
-    {_id: req.params.id},
+  User.findByIdAndUpdate(
+    req.params.id,
     {$set: req.body},
     {runValidators: true, new: true}
   )
   .select('-salt -hashedPassword')
   .populate('reward wishlist orders paymentMethods')
   .exec(function(err, user) {
-    console.log(err, user);
+    console.log('update error', err);
+    console.log('updated user', user);
     if (err) { return validationError(res, err); }
     return res.status(200).json(user);
   });
@@ -318,6 +329,25 @@ var rollbackUser = function(res, error, id) {
 
 
 /* working
+
+exports.changePassword = function(req, res) {
+  var userId = req.params.id; //req.user._id;
+  var oldPass = String(req.body.oldPassword);
+  var newPass = String(req.body.newPassword);
+
+  User.findById(userId, function (err, user) {
+    if(user.authenticate(oldPass)) {
+      user.password = newPass;
+      user.save(function(err) {
+        if (err) return validationError(res, err);
+        res.status(200).send('OK');
+      });
+    } else {
+      res.status(403).send('Forbidden');
+    }
+  });
+};
+
 exports.email = function(req, res) {
   var transporter = nodemailer.createTransport(smtpTransport({
       service: 'gmail',

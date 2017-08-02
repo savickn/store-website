@@ -36,5 +36,9 @@ angular.module('passportApp')
       .state('test.alerts', {
         url: '/alerts',
         templateUrl: 'app/test/alerts.html'
+      })
+      .state('test.flash', {
+        url: '/flash',
+        templateUrl: 'app/test/flash.html'
       });
   });

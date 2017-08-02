@@ -5,8 +5,9 @@ angular.module('passportApp')
   var queue = [];
   var currentMessage = {};
 
-  $rootScope.$on("$routeChangeSuccess", function() {
+  $rootScope.$on("$stateChangeSuccess", function() {
     currentMessage = queue.shift() || {};
+    console.log('routechange', currentMessage, queue);
     $timeout(() => {
       currentMessage = {};
     }, 10000)
@@ -25,6 +26,9 @@ angular.module('passportApp')
     },
     clearMessage: function() {
       currentMessage = {};
+    },
+    clearQueue: function() {
+
     }
   };
 });
