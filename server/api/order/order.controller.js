@@ -64,7 +64,7 @@ function addLeadingZeroes(number) {
 //    sale is Stackable
 //    product already has promotion applied
 function calcSalePrice(product, sales) {
-  let salePrice = product.price;
+  let salePrice = product._price;
   let mainPromo = null;
   let stackables = [];
 
@@ -89,9 +89,19 @@ function calcSalePrice(product, sales) {
   }
   // applies stackables
   for(let s of stackables) {
-    salePrice *= (1 - promo.discountRate);
+    salePrice *= (1 - s.discountRate);
   }
   return salePrice;
+}
+
+//returns True/False if Sale applies to specific Product
+function isSaleApplicable(sale, productTypes) {
+  for(let t of productTypes) {
+    if(sale.validProducts.includes(t)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 // Creates a new order in the DB. Req must provide tax/shipping cost/subtotal
@@ -101,27 +111,31 @@ exports.create = function(req, res) {
     orderDate: new Date()
   };
 
+  console.log('req.body', req.body);
+
   // used to keep track of price changes for product
   let productPromotions = {};
-
   for(let product of req.body.products) {
-    console.log('order product', product);
-    productPromotions[product] = {
+    console.log('p', product);
+    productPromotions[product._name] = {
       'promos': [],
-      'price': product.price
+      'price': product._price
     };
-    for(let sale of res.body.promotions) {
-      if(sale.isApplicable([product.__t, product.brand])) {
-        productPromotions[product].promos.push(sale);
+    for(let sale of req.body.promotions) {
+      if(isSaleApplicable(sale, [product._data.__t, product._data.brand])) {
+        productPromotions[product._name].promos.push(sale);
       }
     }
-    productPromotions[product].price = calcSalePrice(product, productPromotions[product].promos);
+    productPromotions[product._name].price = calcSalePrice(product, productPromotions[product._name].promos);
   }
 
+  console.log('promos', productPromotions);
+
   let subtotal = 0;
-  for(let p in productPrices) {
-    subtotal += p.price;
+  for(let p in productPromotions) {
+    subtotal += productPromotions[p].price;
   }
+  console.log('subtotal', subtotal);
 
   Order.count({}, function(err, count) {
     let number = count + 1;

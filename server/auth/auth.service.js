@@ -27,13 +27,31 @@ function isAuthenticated() {
         if (!user) return res.status(401).send('Unauthorized');
 
         req.user = user;
+        console.log('user auth success');
         next();
       });
     });
 }
 
 /*
-** used to verify that an activation request contains the necessary token
+** used to verify that user correctly entered their existing password, WORKING
+*/
+function verifyOldPassword() {
+  return compose()
+    .use(function(req, res, next) {
+      console.log('verifying password');
+      if(req.user.authenticate(req.body.oldPassword)) {
+        console.log('password verified');
+        next();
+      } else {
+        let err = new Error("Your current password is incorrect!");
+        return res.status(403).send(err);
+      }
+    });
+}
+
+/*
+** used to verify that an activation request contains the necessary token, WORKING
 */
 function verifyActivationRequest() {
   return compose()
@@ -47,10 +65,13 @@ function verifyActivationRequest() {
     });
 }
 
+/*
+** used to verify resetToken, WORKING
+*/
 function verifyResetRequest() {
   return compose()
     .use(function(req, res, next) {
-      let resetToken = req.session.reset;
+      let resetToken = req.session.reset; //fix session not always defined
       jwt.verify(req.body.resetToken, config.secrets.session, {maxAge: '1 day'}, function(err, token) {
         if(err) return res.status(403).send('This link has expired!');
         if(token.key !== resetToken.key || token.id !== resetToken.id) return res.status(401).send('Unauthorized');
@@ -58,19 +79,6 @@ function verifyResetRequest() {
       });
     });
 }
-
-function verifyOldPassword() {
-  return compose()
-    .use(function(req, res, next) {
-      if(req.user.authenticate(req.body.oldPass)) {
-        next();
-      } else {
-        let err = new Error("Your current password is incorrect!");
-        return res.status(403).send(err);
-      }
-    });
-}
-
 
 /*
 ** used to check if currentUser is the author of the accessed material

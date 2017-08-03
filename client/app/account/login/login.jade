@@ -5,7 +5,7 @@
       form.form(name='loginForm' ng-submit='login(loginForm, user)' novalidate)
         .form-group(ng-class='{ "has-success": loginForm.email.$valid && submitted, "has-error": loginForm.email.$invalid && submitted }')
           label(for="email") Email
-          input.form-control(type='email' name='email' ng-model='user.email' pattern="[A-Za-z0-9]+@([A-Za-z])+(\\.[A-Za-z]+)+" mongoose-error required)
+          input.form-control(type='email' name='email' ng-model='user.email' placeholder="example@gmail.com" pattern="[A-Za-z0-9]+@([A-Za-z])+(\\.[A-Za-z]+)+" mongoose-error required)
           p.help-block(ng-show='loginForm.email.$error.required && submitted')
             | Please enter an email address.
           p.help-block.email-pattern(ng-show='loginForm.email.$error.pattern && submitted')

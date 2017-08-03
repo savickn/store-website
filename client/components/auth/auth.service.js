@@ -24,8 +24,7 @@ angular.module('passportApp')
         $http.post('/auth/local', {
           email: user.email,
           password: user.password
-        }).
-        success(function(data) {
+        }).success(function(data) {
           $cookieStore.put('token', data.token);
           UserService.getMe().then(function(me) {
             currentUser = me;
@@ -33,8 +32,7 @@ angular.module('passportApp')
           });
           deferred.resolve(data);
           return cb();
-        }).
-        error(function(err) {
+        }).error(function(err) {
           this.logout();
           deferred.reject(err);
           return cb(err);
@@ -91,7 +89,8 @@ angular.module('passportApp')
 
         return UserService.changePassword(currentUser._id, {
           oldPassword: oldPassword,
-          newPassword: newPassword
+          newPassword: newPassword,
+          confirmPassword: confirmPassword
         }).then(function(user) {
           return cb(user);
         }).catch(function(err) {

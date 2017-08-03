@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('passportApp')
-  .controller('OrderUploadCtrl', function ($scope, $timeout, Auth, OrderService, AlertService, ngCart, $state, DataService, AddressService, SaleService) {
+  .controller('OrderUploadCtrl', function ($scope, $timeout, $state, Auth, OrderService, AlertService, ProductService,
+    ngCart, DataService, AddressService, SaleService) {
     $scope.isAdmin = Auth.isAdmin();
     $scope.newShippingAddress = {};
     $scope.newBillingAddress = {};
@@ -20,6 +21,12 @@ angular.module('passportApp')
       paymentMethod: {},
       promotions: []
     };
+
+    /*(function getProductInfo() {
+      for (let product of ngCart.getItems()) {
+
+      }
+    }) {};*/
 
     /////////////////////// VALIDATE NEW INFO //////////////////////////
 
@@ -142,20 +149,76 @@ angular.module('passportApp')
       })
     };
 
-    $scope.applyPromotion = function(promoCode) {
-      SaleService.applyPromotion(promoCode).then(function(sale) {
-        $scope.newOrder.promotions.pushUnique(sale);
-        for(let p of $scope.newOrder.products) {
-          console.log(p);
+    //WORKING
+    function isApplicable(sale, productTypes) {
+      for(let t of productTypes) {
+        if(sale.validProducts.includes(t)) {
+          return true;
+        };
+      };
+      return false;
+    };
 
+    //WORKING
+    function calcSalePrice(product, sales) {
+      let salePrice = product._price;
+      let mainPromo = null;
+      let stackables = [];
+
+      for(let s of sales) {
+        // skips iteration if Product is discounted and Sale does not apply to discounted Products
+        if(!s.appliesToDiscountedProducts && product.discount > 0) {
+          continue;
         }
+        // adds Sale if stackable
+        if(s.stackable && !stackables.includes(s)) {
+          stackables.push(s);
+        } else { // handles primary Sales
+          if(!mainPromo || s.discountRate > mainPromo.discountRate) {
+            mainPromo = s;
+          }
+        }
+      };
+      // applies primary Sale
+      if(mainPromo) {
+        salePrice *= (1 - mainPromo.discountRate);
+      }
+      // applies stackables
+      for(let s of stackables) {
+        salePrice *= (1 - s.discountRate);
+      }
+      return salePrice;
+    }
 
+    function updateSubtotal() {
+      let subtotal = 0
+      for(let p of $scope.newOrder.products) {
+        subtotal += p._salePrice || p._price;
+      }
+      $scope.newOrder.subTotal = subtotal;
+    }
+
+    $scope.applyPromotion = function(promoCode) {
+      SaleService.applyPromotion(promoCode).then(function(response) {
+        let sale = response.sale;
+        console.log('sale', sale);
+        $scope.newOrder.promotions.pushUnique(sale);
+
+        for(let p of $scope.newOrder.products) {
+          let productPromos = [];
+          for(let s of $scope.newOrder.promotions) {
+            if(isApplicable(s, [p._data.__t, p._data.brand])) {
+              productPromos.pushUnique(s);
+            }
+          }
+          p._salePrice = calcSalePrice(p, productPromos);
+          if(p._salePrice === p._price) {
+            p._salePrice = null;
+          }
+        }
+        updateSubtotal();
       }).catch(function(err) {
         console.log(err);
       })
     }
-
-
-
-
   });

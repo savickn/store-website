@@ -32,20 +32,12 @@ module.exports = function(app) {
    .get(errors[404]);
 
   // used to render Reset Password form after clicking Reset Email link
-  app.route('/reset/:id')
+  /*app.route('/reset/:id')
     .get(function(req, res) {
       let viewFilePath = 'resetPassword';
       res.status(200);
       res.render(viewFilePath, {data: {token: req.query.resetToken}});
-
-      /*res.render(viewFilePath, {data: {token: req.query.resetToken}}, function (err, result) {
-        console.log('render err', err);
-        console.log('render result', result);
-        //console.log('res', res);
-        if (err) { return res.status(500).json(err); }
-        return res;
-      });*/
-    });
+    });*/
 
   // All other routes should redirect to the index.html
   app.route('/*')

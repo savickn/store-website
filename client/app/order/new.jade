@@ -1,95 +1,97 @@
 title Secure Checkout
 
 .container
-  .row
-    alert-message
+  form(name="orderForm" novalidate)
+    wizard
+      wz-step(wz-title="Shipping")
+        h3 Shipping Address
+        p Please select one of your saved addresses or specify a new address.
 
-  .row
-    .col-lg-12
-      form(name="orderForm" novalidate)
-        wizard
-          wz-step(wz-title="Shipping")
-            h3 Shipping Address
-            p Please select one of your saved addresses or specify a new address.
+        ns-select-address(address="newOrder.shippingAddress" addresses="shippingAddresses" ng-if="shippingState === 'Select'")
+        ns-add-address(address="newShippingAddress" cb-func="validateShipping(form, address, errors, submitted)" ng-if="shippingState === 'New'")
 
-            ns-select-address(address="newOrder.shippingAddress" addresses="shippingAddresses" ng-if="shippingState === 'Select'")
-            ns-add-address(address="newShippingAddress" cb-func="validateShipping(form, address, errors, submitted)" ng-if="shippingState === 'New'")
+        md-button.md-raised(ng-click="setShippingState('New')" ng-show="shippingState === 'Select'") Add a New Address
+        md-button.md-raised(ng-click="setShippingState('Select')" ng-show="shippingState !== 'Select'") Back
 
-            md-button.md-raised(ng-click="setShippingState('New')" ng-show="shippingState === 'Select'") Add a New Address
-            md-button.md-raised(ng-click="setShippingState('Select')" ng-show="shippingState !== 'Select'") Back
+        md-button.md-raised(type="submit" wz-next ng-if="newOrder.shippingAddress | isNotEmpty" ng-click="clearAlert()") Continue
 
-            md-button.md-raised(type="submit" wz-next ng-if="newOrder.shippingAddress | isNotEmpty" ng-click="clearAlert()") Continue
+      wz-step(wz-title="Payment")
+        h3 Choose a Payment Method
+        p Please select one of your saved payment methods or specify a new method.
 
-          wz-step(wz-title="Payment")
-            h3 Choose a Payment Method
-            p Please select one of your saved payment methods or specify a new method.
+        ns-select-payment(payment="newOrder.paymentMethod" payments="paymentMethods" ng-if="paymentState === 'Select'")
+        ns-add-payment(payment="newPayment" ng-if="paymentState === 'New'")
 
-            ns-select-payment(payment="newOrder.paymentMethod" payments="paymentMethods" ng-if="paymentState === 'Select'")
-            ns-add-payment(payment="newPayment" ng-if="paymentState === 'New'")
+        md-button.md-raised(ng-click="setPaymentState('New')" ng-show="paymentState === 'Select'") Add a New Payment Method
+        md-button.md-raised(ng-click="setPaymentState('Select')" ng-show="paymentState !== 'Select'") Back
 
-            md-button.md-raised(ng-click="setPaymentState('New')" ng-show="paymentState === 'Select'") Add a New Payment Method
-            md-button.md-raised(ng-click="setPaymentState('Select')" ng-show="paymentState !== 'Select'") Back
+        md-button.md-raised(type="submit" wz-next ng-if="newOrder.paymentMethod | isNotEmpty" ng-click="clearAlert()") Continue
 
-            md-button.md-raised(type="submit" wz-next ng-if="newOrder.paymentMethod | isNotEmpty" ng-click="clearAlert()") Continue
+      wz-step(wz-title="Billing")
+        h3 Billing Address
 
-          wz-step(wz-title="Billing")
-            h3 Billing Address
+        .form-group
+          label(for="sameAsShipping") Same as Shipping Address?
+          input.form-control(type="checkbox" name="sameAsShipping" ng-model="sameAsShipping" ng-change="setBillingAsShipping(sameAsShipping)")
 
-            .form-group
-              label(for="sameAsShipping") Same as Shipping Address?
-              input.form-control(type="checkbox" name="sameAsShipping" ng-model="sameAsShipping" ng-change="setBillingAsShipping(sameAsShipping)")
+        ns-select-address(address="newOrder.billingAddress" addresses='billingAddresses' ng-if="billingState === 'Select' && billingAddresses.length > 0")
+        ns-add-address(address="newBillingAddress" cb-func="validateBilling(form, address, errors, submitted)" ng-if="billingState === 'New'")
 
-            ns-select-address(address="newOrder.billingAddress" addresses='billingAddresses' ng-if="billingState === 'Select' && billingAddresses.length > 0")
-            ns-add-address(address="newBillingAddress" cb-func="validateBilling(form, address, errors, submitted)" ng-if="billingState === 'New'")
+        md-button.md-raised(ng-click="setBillingState('New')" ng-show="(billingState === 'Default') && !sameAsShipping") Add a New Address
+        md-button.md-raised(ng-click="setBillingState('Default')" ng-show="billingState !== 'Default'") Back
 
-            md-button.md-raised(ng-click="setBillingState('New')" ng-show="(billingState === 'Default') && !sameAsShipping") Add a New Address
-            md-button.md-raised(ng-click="setBillingState('Default')" ng-show="billingState !== 'Default'") Back
+        md-button.md-raised(type="submit" wz-next ng-if="newOrder.billingAddress | isNotEmpty" ng-click="getOrderInfo(newOrder); clearAlert()") Continue
 
-            md-button.md-raised(type="submit" wz-next ng-if="newOrder.billingAddress | isNotEmpty" ng-click="getOrderInfo(newOrder); clearAlert()") Continue
+      wz-step(wz-title="Review")
+        .flex-sidebar-content
+          .flex-content
+            p Please review all information before finalizing this order
 
-          wz-step(wz-title="Review")
-            .flex-sidebar-content
-              .flex-content
-                p Please review all information before finalizing this order
-  
-                h4 Product Info
-                ul.list-group
-                  li.list-group-item(ng-repeat="product in newOrder.products")
-                    p Product: {{product._name}}
-                    p Price: {{product._price}}
-  
-                h4 Payment Method
-                ns-show-payment(payment="newOrder.paymentMethod")
-  
-                h4 Shipping Address
-                ns-show-address(address="newOrder.shippingAddress")
-  
-                h4 Billing Address
-                ns-show-address(address="newOrder.billingAddress")
-                
-              .flex-sidebar
-    
-                h4 Order Info
-                p Subtotal: {{newOrder.subTotal}}
-                p Tax: {{newOrder.tax}}
-                p Shipping Costs: {{newOrder.shippingCost}}
-                p Total: {{newOrder.total}}
-                
-                h4 Gift Cards
-                .form-wrapper(name="giftCardForm")
-                  .input-group
-                    label(for="giftCard") Promo Code
-                    input.form-control(name="giftCard" ng-model="giftCard")
-                    button.btn.btn-primary(ng-click="applyGiftCard(giftCard)") Apply Gift Card
-                
-                h4 Promotions
-                .form-wrapper(name="promoForm")
-                  .input-group
-                    label(for="promo") Promo Code
-                    input.form-control(name="promo" ng-model="promoCode")
-                    button.btn.btn-primary(ng-click="applyPromotion(promoCode)") Apply Promotion
+            h4 Product Info
+            ul.list-group
+              li.list-group-item(ng-repeat="product in newOrder.products")
+                p {{product._name}}
+                .flex-item
+                  span(ng-class='{"line-through": product._salePrice}') Price: {{product._price}}
+                  span.pad-left.on-sale-text(ng-if="product._salePrice") Now: {{product._salePrice}}
 
-                button.btn.btn-primary(ng-click="checkout(orderForm, newOrder)") Process Order
+            h4 Payment Method
+            ns-show-payment(payment="newOrder.paymentMethod")
+
+            h4 Shipping Address
+            ns-show-address(address="newOrder.shippingAddress")
+
+            h4 Billing Address
+            ns-show-address(address="newOrder.billingAddress")
+            
+          .flex-sidebar
+
+            h4 Order Info
+            p Subtotal: {{newOrder.subTotal}}
+            p Tax: {{newOrder.tax}}
+            p Shipping Costs: {{newOrder.shippingCost}}
+            p Total: {{newOrder.total}}
+            
+            h4 Active Discounts
+            .sales(ng-repeat="sale in newOrder.promotions")
+              p {{sale.promotionalCode}}: {{sale.discountRate}}
+            
+            h4 Gift Cards
+            .form-wrapper(name="giftCardForm")
+              .input-group
+                label(for="giftCard") Promo Code
+                input.form-control(name="giftCard" ng-model="giftCard")
+                button.btn.btn-primary(ng-click="applyGiftCard(giftCard)") Apply Gift Card
+            
+            h4 Promotions
+            .form-wrapper(name="promoForm")
+              .input-group
+                label(for="promo") Promo Code
+                input.form-control(name="promo" ng-model="promoCode")
+                button.btn.btn-primary(ng-click="applyPromotion(promoCode)") Apply Promotion
+            
+
+        button.btn.btn-primary(ng-click="checkout(orderForm, newOrder)") Process Order
 
 
 

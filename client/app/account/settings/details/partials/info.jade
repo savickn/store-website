@@ -7,8 +7,8 @@
 
 	form.form(name='infoForm' ng-submit='updateUser(infoForm, user._id, userUpdates)' novalidate)
 		.form-group(ng-class='{ "has-success": infoForm.email.$valid && submitted, "has-error": infoForm.email.$invalid && submitted}')
-			label Email
-			input.form-control(type='email' name='email' placeholder="Please enter an email address." ng-model='userUpdates.email' pattern="[A-Za-z0-9]+@[A-Za-z]+(\\.[A-Za-z]+)+" required)
+			label(for="email") Email
+			input.form-control#email(type='email' name='email' placeholder="Please enter an email address." ng-model='userUpdates.email' pattern="[A-Za-z0-9]+@[A-Za-z]+(\\.[A-Za-z]+)+" required)
 			p.help-block(ng-show='infoForm.email.$error.required && submitted')
 				| Please enter an email address.
 			p.help-block(ng-show='infoForm.email.$error.pattern && submitted')
@@ -17,8 +17,8 @@
 				| {{ errors.email }}
 
 		.form-group(ng-class='{ "has-success": infoForm.phoneNumber.$valid && submitted, "has-error": infoForm.phoneNumber.$invalid && submitted}')
-			label Phone Number
-			input.form-control(type='tel' name='phoneNumber' placeholder="Please enter a phone number." ng-model='userUpdates.phoneNumber' pattern='((1-)|1)?[0-9]{3}-?[0-9]{3}-?[0-9]{4}' required)
+			label(for="phone") Phone Number
+			input.form-control#phone(type='tel' name='phoneNumber' placeholder="Please enter a phone number." ng-model='userUpdates.phoneNumber' pattern='((1-)|1)?[0-9]{3}-?[0-9]{3}-?[0-9]{4}' required)
 			p.help-block(ng-show='infoForm.phoneNumber.$error.required && submitted')
 				| Please enter a phone number.
 			p.help-block(ng-show='infoForm.phoneNumber.$error.pattern && submitted')
@@ -27,8 +27,8 @@
 				| {{ errors.phoneNumber }}
 
 		.form-group(ng-class='{ "has-success": infoForm.promos.$valid && submitted, "has-error": infoForm.promos.$invalid && submitted}')
-			label Receive Promotional Emails?
-			input.form-control(type='checkbox' name='promos' ng-model='userUpdates.promotionalEmails')
+			label(for="promos") Receive Promotional Emails?
+			input.form-control#promos(type='checkbox' name='promos' ng-model='userUpdates.promotionalEmails')
 			p.help-block(ng-show='infoForm.promos.$error.mongoose')
 				| {{ errors.promotionalEmails }}
 

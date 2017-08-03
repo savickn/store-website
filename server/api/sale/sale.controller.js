@@ -17,7 +17,7 @@ exports.new = function(req, res) {
 exports.applyPromotion = function(req, res) {
   Sale.findByPromotionalCode(req.query.promoCode).then(function(sale) {
     console.log('sale', sale);
-    return sale.isActive() ? res.status(200).json(sale) : res.status(500).send(new Error('This sale is no longer active.'));
+    return sale.isActive() ? res.status(200).json({sale: sale}) : res.status(500).send(new Error('This sale is no longer active.'));
   }).catch(function(err) {
     console.log('err', err);
     return res.status(500).send(err);

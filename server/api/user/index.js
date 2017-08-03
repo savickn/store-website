@@ -13,7 +13,7 @@ var router = express.Router();
 
 router.get('/resetEmail', controller.sendResetEmail); // used to send Reset Email
 router.put('/:id/reset', auth.verifyResetRequest(), controller.changePassword); // used to update password in MongoDB
-router.put('/:id/password', auth.isAuthenticated(), auth.verifyOldPassword(), controller.changePassword);
+router.put('/:id/password', [auth.isAuthenticated(), auth.verifyOldPassword()], controller.changePassword);
 
 router.get('/:id/activationEmail', auth.isAuthenticated(), controller.sendActivationEmail); // used to send Activation Email
 router.get('/:id/activate', auth.verifyActivationRequest(), controller.activateAccount); // used to activate account

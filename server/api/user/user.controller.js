@@ -110,6 +110,10 @@ var activationEmail = function(req, res, cb) {
   });
 }
 
+/*
+** used to search for users
+*/
+
 exports.search = function(req, res) {
   console.log(req.query);
   var searchObj = _.merge({}, req.query);
@@ -135,6 +139,7 @@ exports.search = function(req, res) {
 /**
  * Creates a new user
  */
+
 exports.create = function (req, res) {
   User.count(function(err, count) {
     if (err) return validationError(res, err);
@@ -167,6 +172,7 @@ exports.create = function (req, res) {
 /**
  * Get a single user
  */
+
 exports.show = function (req, res, next) {
   User.findById(req.params.id, function (err, user) {
     if (err) return next(err);
@@ -179,6 +185,7 @@ exports.show = function (req, res, next) {
  * Deletes a user
  * restriction: 'admin'
  */
+
 exports.destroy = function(req, res) {
   User.findByIdAndRemove(req.params.id, function(err, user) {
     if(err) return res.status(500).send(err);
@@ -226,30 +233,14 @@ exports.activateAccount = function(req, res) {
   User.findByIdAndUpdate(req.params.id, {$set: {active: true}}, {new: true}, function(err, user) {
     if(err) return validationError(res, err);
     return res.status(200).send('You have successfully activated your account!');
-    //res.sendFile(path.resolve(app.get('appPath') + '/index.html'));
+    //add code to invalidate reset token having reset the password
   });
 }
-
-/*
-* Changes a user's password
-*/
-
-exports.resetPassword = function(req, res) {
-  User.findById(req.params.id, function(err, user) {
-    if (err) return validationError(res, err);
-    user.password = req.body.newPassword;
-    user.save(function(err) {
-      if (err) return validationError(res, err);
-      return res.status(200).send('OK');
-    })
-  })
-}
-
-//{$set: {password: req.body.newPassword}}, {runValidators: true, new: true},
 
 /**
  * Change a users password
  */
+
 exports.changePassword = function(req, res) {
   let userId = req.params.id; //req.user._id;
   let newPass = req.body.newPassword;
@@ -295,6 +286,7 @@ exports.update = function(req, res) {
 /**
  * Get my info
  */
+
 exports.me = function(req, res, next) {
   User.findOne({_id: req.user._id})
   .select('-salt -hashedPassword')
@@ -309,6 +301,7 @@ exports.me = function(req, res, next) {
 /**
  * Authentication callback
  */
+
 exports.authCallback = function(req, res, next) {
   res.redirect('/');
 };
@@ -321,6 +314,10 @@ var validationError = function(res, err) {
   return res.status(422).json(err);
 };
 
+/*
+** used to delete a user if the creation process is interrupted
+*/
+
 var rollbackUser = function(res, error, id) {
   User.findByIdAndRemove(id, function(err, user) {
     return res.status(500).json({err: error, msg: 'Unable to create account. Please try again later.'});
@@ -329,6 +326,20 @@ var rollbackUser = function(res, error, id) {
 
 
 /* working
+
+exports.resetPassword = function(req, res) {
+  User.findById(req.params.id, function(err, user) {
+    if (err) return validationError(res, err);
+    user.password = req.body.newPassword;
+    user.save(function(err) {
+      if (err) return validationError(res, err);
+      //add code to invalidate reset token having reset the password
+      return res.status(200).send('OK');
+    })
+  })
+}
+
+//{$set: {password: req.body.newPassword}}, {runValidators: true, new: true},
 
 exports.changePassword = function(req, res) {
   var userId = req.params.id; //req.user._id;
