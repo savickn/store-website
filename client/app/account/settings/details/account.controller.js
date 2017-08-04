@@ -23,6 +23,7 @@ angular.module('passportApp')
 
       if(form.$valid && form.$dirty) {
         UserService.updateUser(userId, updates).then(function(user) {
+          $scope.user = user;
           Auth.setCurrentUser(user);
           $scope.submitted = false;
           AlertService.setAlert("Your account was successfully updated.", "Success");

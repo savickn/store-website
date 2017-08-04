@@ -1,9 +1,9 @@
 .container(ng-controller="InfoCtrl")
-  .padded-header
-    p(ng-if="!isActive && isLoggedIn") You have not activated your account. Click 
+  .info-block
+    p.center-text(ng-if="!isActive && isLoggedIn") You have not activated your account. Please check your inbox or click 
       span(ng-click="sendActivationEmail()") 
         b  here 
-      span  to activate your account.
+      span  to resend the activation email.
 
     alert-message
     flash-message

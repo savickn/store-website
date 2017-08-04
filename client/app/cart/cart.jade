@@ -1,16 +1,9 @@
 
 .container
 	ngcart-cart
-
 	.row
 		//.col-lg-4
 			p Paypal
 			ngcart-checkout(service="paypal" settings="paypal-settings")
-		//.col-lg-4
-			p Log
-			ngcart-checkout(service="log")
-		//.col-lg-4
-			p Http
-			ngcart-checkout(service="http" settings="{ url:'/orders/checkout' }")
 		.col-lg-4
-			a.md-button.md-raised(ui-sref="newOrder" ng-disabled="itemCount < 1") Checkout
+			a.md-button.md-raised(ng-disabled="itemCount < 1" ng-click="goToCheckout(itemCount)") Checkout

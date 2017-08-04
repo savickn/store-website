@@ -8,7 +8,6 @@ angular.module('passportApp')
 
     $scope.register = function(form, user) {
       $scope.submitted = true;
-
       if(form.$valid) {
         Auth.createUser({
           name: user.name,

@@ -342,6 +342,10 @@ form.form-wrapper {
 	bottom: 5px;
 }
 
+.center-text {
+  text-align: center;
+}
+
 // Component styles are injected through grunt
 // injector
 @import 'account/login/login.scss';
@@ -352,6 +356,7 @@ form.form-wrapper {
 @import 'review/review.scss';
 @import 'test/test.scss';
 @import 'user/index.scss';
+@import 'info/info.scss';
 @import 'modal/modal.scss';
 @import 'navbar/navbar.scss';
 // endinjector

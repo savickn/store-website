@@ -18,7 +18,7 @@
 
 		.form-group(ng-class='{ "has-success": infoForm.phoneNumber.$valid && submitted, "has-error": infoForm.phoneNumber.$invalid && submitted}')
 			label(for="phone") Phone Number
-			input.form-control#phone(type='tel' name='phoneNumber' placeholder="Please enter a phone number." ng-model='userUpdates.phoneNumber' pattern='((1-)|1)?[0-9]{3}-?[0-9]{3}-?[0-9]{4}' required)
+			input.form-control#phone(type='tel' name='phoneNumber' placeholder="Please enter a phone number." ng-model='userUpdates.phoneNumber' pattern='((1-)|1)?[0-9]{3}-?[0-9]{3}-?[0-9]{4}')
 			p.help-block(ng-show='infoForm.phoneNumber.$error.required && submitted')
 				| Please enter a phone number.
 			p.help-block(ng-show='infoForm.phoneNumber.$error.pattern && submitted')

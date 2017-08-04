@@ -16,14 +16,13 @@ angular.module('passportApp')
       $scope.newReview.product = $scope.currentProduct._id;
 
       ReviewService.addReview(newReview).then(function(review) {
-        console.log('pass');
+        review.author = Auth.getCurrentUser();
         $scope.submitted = false;
         $scope.$parent.currentProduct.reviews.push(review);
         $scope.newReview = {};
         $scope.rating = 1;
         AlertService.setAlert("Your review was successfully saved.", "Success");
       }).catch(function(err) {
-        console.log('fail');
         err = err.data;
         $scope.errors = {};
 

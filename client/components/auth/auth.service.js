@@ -218,7 +218,7 @@ angular.module('passportApp')
       },
 
       isOwner: function(userId) {
-        return (userId === currentUser._id) ? true : false;
+        return userId === currentUser._id ? true : false;
       },
 
       isLoggedIn: function() {

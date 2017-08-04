@@ -33,7 +33,7 @@ var ReviewSchema = new Schema({
   },
   date: {
     type: Date,
-    default: Date.now()
+    default: new Date()
   },
   verified: {
     type: Boolean,
